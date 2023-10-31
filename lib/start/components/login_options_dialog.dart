@@ -61,9 +61,7 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
                           direction: Axis.vertical,
                           spacing: 8.0,
                           children: platforms.map((e) {
-                            return SNSLoginButton(platform: e, onTap: () {
-                              
-                            });
+                            return SNSLoginButton(platform: e, onTap: e.onTap);
                           }).toList(),
                         ),
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_block/utils/sns_login_service.dart';
 
 enum SNSPlatform { kakao, apple, google, email }
 
@@ -72,6 +73,20 @@ extension SNSPlatformExtension on SNSPlatform {
         return Colors.black;
       case SNSPlatform.email:
         return Colors.white;
+    }
+  }
+
+  // Action
+  Function() get onTap {
+    switch (this) {
+      case SNSPlatform.kakao:
+        return KakaoLoginService.kakaoLogin();
+      case SNSPlatform.apple:
+        return () {};
+      case SNSPlatform.google:
+        return () {};
+      case SNSPlatform.email:
+        return () {};
     }
   }
 }
