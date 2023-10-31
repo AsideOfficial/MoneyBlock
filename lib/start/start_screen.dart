@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:money_block/start/components/login_button.dart';
+import 'package:money_block/start/components/login_options_dialog.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
@@ -7,12 +9,8 @@ class StartScreen extends StatelessWidget {
   Future<void> showMyDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      // barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return Image.asset(
-          'assets/icons/dialog.png',
-          width: 260,
-        );
+        return const LoginOptionsDialogs();
       },
     );
   }
@@ -39,17 +37,9 @@ class StartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: Image.asset(
-                      'assets/icons/login_button.png',
-                      width: 218,
-                      height: 61,
-                    ),
-                    onPressed: () {
-                      // showMyDialog(context);
-                    },
-                  ),
+                  LoginButton(onPressed: () {
+                    showMyDialog(context);
+                  }),
                   const SizedBox(height: 22.0),
                 ],
               ),

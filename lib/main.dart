@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:money_block/start_screen.dart';
+import 'package:money_block/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
