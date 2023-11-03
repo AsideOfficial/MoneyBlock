@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:money_block/constants.dart';
+import 'package:money_cycle/constants.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({

@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:money_block/start/components/login_button.dart';
-import 'package:money_block/start/components/login_options_dialog.dart';
+import 'package:money_cycle/start/components/login_button.dart';
+import 'package:money_cycle/start/components/login_options_dialog.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_block/utils/sns_login_service.dart';
+import 'package:money_cycle/utils/sns_login_service.dart';
 
 enum SNSPlatform { kakao, apple, google, email }
 

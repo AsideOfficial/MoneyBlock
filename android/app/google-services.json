@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11046090334",
+    "project_id": "moneycycle-5f900",
+    "storage_bucket": "moneycycle-5f900.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11046090334:android:4e536c81ff59b8dae3a6cf",
+        "android_client_info": {
+          "package_name": "com.aside.money_cycle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKzVylYD8i-Qn4CTmAR8iJVDtmUEnLkAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

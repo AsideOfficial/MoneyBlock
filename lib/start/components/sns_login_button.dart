@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:money_block/constants.dart';
-import 'package:money_block/start/model/sns_platform.dart';
+import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/start/model/sns_platform.dart';
 
 class SNSLoginButton extends StatelessWidget {
   const SNSLoginButton({

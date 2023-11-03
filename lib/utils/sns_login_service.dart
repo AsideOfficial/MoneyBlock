@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 
 class KakaoLoginService {
   static void loginWithKakaoTalk() async {
     try {
-      await UserApi.instance.loginWithKakaoTalk();
+      await kakao.UserApi.instance.loginWithKakaoTalk();
       debugPrint('카카오톡으로 로그인 성공');
     } catch (error) {
       debugPrint('카카오톡으로 로그인 실패 $error');
@@ -22,7 +22,7 @@ class KakaoLoginService {
 
   static void loginWithKakaoAccount() async {
     try {
-      await UserApi.instance.loginWithKakaoAccount();
+      await kakao.UserApi.instance.loginWithKakaoAccount();
       debugPrint('카카오계정으로 로그인 성공');
     } catch (error) {
       debugPrint('카카오계정으로 로그인 실패 $error');
@@ -34,10 +34,10 @@ class KakaoLoginService {
     return () async {
       // 카카오톡 설치 여부 확인
       // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-      if (await isKakaoTalkInstalled()) {
+      if (await kakao.isKakaoTalkInstalled()) {
         loginWithKakaoTalk();
         try {
-          User user = await UserApi.instance.me();
+          kakao.User user = await kakao.UserApi.instance.me();
           debugPrint('사용자 정보 요청 성공'
               '\n회원번호: ${user.id}'
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
@@ -51,3 +51,22 @@ class KakaoLoginService {
     };
   }
 }
+
+// class AppleLoginService {
+//   static Future<void> loginApp() async {
+//     final AuthorizationCredentialAppleID appleCredential =
+//         await SignInWithApple.getAppleIDCredential(
+//       scopes: [
+//         AppleIDAuthorizationScopes.email,
+//         AppleIDAuthorizationScopes.fullName,
+//       ],
+//     );
+
+//     final OAuthCredential credential = OAuthProvider('apple.com').credential(
+//       idToken: appleCredential.identityToken,
+//       accessToken: appleCredential.authorizationCode,
+//     );
+
+//     await FirebaseAuth.instance.signInWithCredential(credential);
+//   }
+// }

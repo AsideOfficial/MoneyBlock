@@ -1,11 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:money_block/start/start_screen.dart';
+import 'package:money_cycle/firebase_options.dart';
+import 'package:money_cycle/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   KakaoSdk.init(nativeAppKey: 'e9dee5f46be050bdeb181932b2a38718');
 
   //MARK: Set Screen Orientations
