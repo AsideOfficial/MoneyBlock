@@ -12,10 +12,12 @@ class MCButton extends StatelessWidget {
     this.backgroundColor,
     this.titleColor = Colors.white,
     this.onPressed,
+    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
   });
 
   final double? width;
   final double? height;
+  final EdgeInsets padding;
   final String? title;
   final Color? titleColor;
   final Color? backgroundColor;
@@ -35,7 +37,7 @@ class MCButton extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: padding,
           child: Center(
               child: Text(
             title ?? "",
