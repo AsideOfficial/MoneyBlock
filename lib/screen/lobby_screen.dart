@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:money_cycle/start/components/sign_in_dialog.dart';
 
 import '../components/mc_button.dart';
 import '../components/mc_capsule_container.dart';
@@ -47,6 +48,10 @@ class LobbyScreen extends StatelessWidget {
                           backgroundColor: Constants.blueNeon,
                           onPressed: () {
                             //TODO - 빠른 시작 로비
+                            showDialog(
+                              context: context,
+                              builder: (context) => const SignInDialog(),
+                            );
                           },
                         ),
                         const SizedBox(width: 12),

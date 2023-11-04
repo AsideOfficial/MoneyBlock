@@ -4,6 +4,8 @@ class Constants {
   static String appName = 'Money Cycle';
 
   //MARK: - Color
+  static Color grey100 = const Color(0xFF8C8C8C);
+
   static Color greenNeon = const Color(0xFF00D4A1);
   static Color blueNeon = const Color(0xFF34B5FF);
 
@@ -29,5 +31,12 @@ class Constants {
   static var defaultTextStyle = const TextStyle(
     color: Colors.white,
     fontFamily: 'ONE Mobile POP OTF',
+  );
+
+  static var titleTextStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 24,
+    fontFamily: 'ONE Mobile POP OTF',
+    fontWeight: FontWeight.w400,
   );
 }
