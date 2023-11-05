@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/start/components/sns_login_button.dart';
 import 'package:money_cycle/start/model/sns_platform.dart';
@@ -36,38 +37,33 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Stack(
+              MCContainer(
+                width: 251.0,
+                height: 256.0,
                 alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/components/dialog.png',
-                    width: 251.0,
-                    height: 256.0,
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '게임 로그인',
-                        style: Constants.defaultTextStyle.copyWith(
-                          fontSize: 24,
-                          letterSpacing: 0.20,
-                        ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '게임 로그인',
+                      style: Constants.defaultTextStyle.copyWith(
+                        fontSize: 24,
+                        letterSpacing: 0.20,
                       ),
-                      const SizedBox(height: 13.0),
-                      SizedBox(
-                        width: 184.0,
-                        child: Wrap(
-                          direction: Axis.vertical,
-                          spacing: 8.0,
-                          children: platforms.map((e) {
-                            return SNSLoginButton(platform: e, onTap: e.onTap);
-                          }).toList(),
-                        ),
+                    ),
+                    const SizedBox(height: 13.0),
+                    SizedBox(
+                      width: 184.0,
+                      child: Wrap(
+                        direction: Axis.vertical,
+                        spacing: 8.0,
+                        children: platforms.map((e) {
+                          return SNSLoginButton(platform: e, onTap: e.onTap);
+                        }).toList(),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(width: 10.0),
             ],

@@ -6,10 +6,13 @@ class MCContainer extends StatelessWidget {
     super.key,
     this.child,
     this.width,
+    this.alignment,
     this.height,
   });
+
   final double? width;
   final double? height;
+  final AlignmentGeometry? alignment;
   final Widget? child;
 
   @override
@@ -25,8 +28,12 @@ class MCContainer extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        padding: EdgeInsets.symmetric(
+          horizontal: (width ?? 0) / 50,
+          vertical: (width ?? 0) / 50,
+        ),
         child: Container(
+          alignment: alignment,
           decoration: ShapeDecoration(
             gradient: Constants.mainGradient,
             shape: RoundedRectangleBorder(
