@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_bounceable_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
+import 'package:money_cycle/start/components/alert_dialog.dart';
 
+import '../../components/mc_button.dart';
 import '../../constants.dart';
 
 class SignInDialog extends StatefulWidget {
@@ -15,6 +17,28 @@ class SignInDialog extends StatefulWidget {
 }
 
 class _SignInDialogState extends State<SignInDialog> {
+  bool isLoading = false;
+
+  Future<void> login() async {
+    await Future.delayed(const Duration(seconds: 3)); // 3초 동안 대기
+    // 여기에서 가짜 비동기 작업 수행
+    print("가짜 비동기 작업이 완료되었습니다.");
+  }
+
+  void showSignInAlert(String message) {
+    final dialog = MCAlertDialog(
+        title: "이메일 로그인",
+        message: message,
+        primaryAction: () => Get.back(),
+        primaryActionTitle: "다시 로그인하기");
+
+    Get.back();
+    showDialog(
+      context: context,
+      builder: (context) => dialog,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -45,12 +69,22 @@ class _SignInDialogState extends State<SignInDialog> {
                         obscureText: true,
                       ),
                       const SizedBox(height: 12),
-                      MCBounceableButton(
+                      MCButton(
+                        isLoading: isLoading,
                         width: 184,
                         height: 44,
                         title: "로그인",
                         backgroundColor: Constants.blueNeon,
-                        onPressed: () {},
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await login();
+                          setState(() {
+                            isLoading = false;
+                          });
+                          showSignInAlert("잘못된 로그인 형식입니다.");
+                        },
                       ),
                       MCBounceableButton(
                         height: 44,

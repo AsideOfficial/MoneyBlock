@@ -56,13 +56,7 @@ class LobbyScreen extends StatelessWidget {
                             //TODO - 빠른 시작 로비
                             showDialog(
                               context: context,
-                              builder: (context) => MCAlertDialog(
-                                  title: "이메일 로그인",
-                                  message: "해당 아이디로 가입된 정보가 없습니다.",
-                                  primaryAction: () {
-                                    Get.back();
-                                  },
-                                  primaryActionTitle: "다시 로그인하기"),
+                              builder: (context) => const SignInDialog(),
                             );
                           },
                         ),
