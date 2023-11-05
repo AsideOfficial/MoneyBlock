@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -44,6 +45,7 @@ class KakaoLoginService {
               '\n회원번호: ${user.id}'
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
               '\n이메일: ${user.kakaoAccount?.email}');
+              Get.toNamed("/lobby");
         } catch (error) {
           debugPrint('사용자 정보 요청 실패 $error');
         }

@@ -7,16 +7,14 @@ class SNSLoginButton extends StatelessWidget {
   const SNSLoginButton({
     super.key,
     required this.platform,
-    required this.onTap,
   });
 
   final SNSPlatform platform;
-  final Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return Bounceable(
-      onTap: onTap,
+      onTap: platform.onTap,
       child: Container(
         width: 184,
         height: 44,

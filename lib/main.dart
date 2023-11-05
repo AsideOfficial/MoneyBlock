@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
-import 'package:money_cycle/screen/lobby_screen.dart';
-import 'package:money_cycle/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/start",
-      getPages: [
-        GetPage(name: "/start", page: () => const StartScreen()),
-        GetPage(name: "/lobby", page: () => const LobbyScreen()),
-      ],
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }
