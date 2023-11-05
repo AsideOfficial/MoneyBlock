@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:money_cycle/start/components/sign_in_dialog.dart';
+import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
-import '../components/mc_button.dart';
+import '../components/mc_bounceable_button.dart';
 import '../components/mc_capsule_container.dart';
 import '../components/mc_container.dart';
 import '../constants.dart';
@@ -33,16 +34,20 @@ class LobbyScreen extends StatelessWidget {
                     chid: Row(
                       children: [
                         const Spacer(),
-                        MCButton(
+                        MCBounceableButton(
                           height: 42,
                           title: "방 만들기",
                           backgroundColor: Constants.greenNeon,
                           onPressed: () {
                             //TODO - 방만들기 로비
+                            showDialog(
+                              context: context,
+                              builder: (context) => const SignUpDailog(),
+                            );
                           },
                         ),
                         const SizedBox(width: 12),
-                        MCButton(
+                        MCBounceableButton(
                           height: 42,
                           title: "방 찾기",
                           backgroundColor: Constants.blueNeon,

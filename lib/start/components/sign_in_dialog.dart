@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
-import 'package:money_cycle/components/mc_button.dart';
+import 'package:money_cycle/components/mc_bounceable_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
 
@@ -36,21 +36,23 @@ class _SignInDialogState extends State<SignInDialog> {
                       const SizedBox(height: 16),
                       MCTextField(
                         hintText: "이메일",
+                        textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(height: 8),
                       MCTextField(
                         hintText: "비밀번호",
+                        textInputAction: TextInputAction.done,
                         obscureText: true,
                       ),
                       const SizedBox(height: 12),
-                      MCButton(
+                      MCBounceableButton(
                         width: 184,
                         height: 44,
                         title: "로그인",
                         backgroundColor: Constants.blueNeon,
                         onPressed: () {},
                       ),
-                      MCButton(
+                      MCBounceableButton(
                         height: 44,
                         title: "비밀번호를 잊어버리셧나요?",
                         onPressed: () {},
