@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class KakaoLoginService {
   static void loginWithKakaoTalk() async {
@@ -52,21 +54,21 @@ class KakaoLoginService {
   }
 }
 
-// class AppleLoginService {
-//   static Future<void> loginApp() async {
-//     final AuthorizationCredentialAppleID appleCredential =
-//         await SignInWithApple.getAppleIDCredential(
-//       scopes: [
-//         AppleIDAuthorizationScopes.email,
-//         AppleIDAuthorizationScopes.fullName,
-//       ],
-//     );
+class AppleLoginService {
+  static Future<void> loginApp() async {
+    final AuthorizationCredentialAppleID appleCredential =
+        await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
 
-//     final OAuthCredential credential = OAuthProvider('apple.com').credential(
-//       idToken: appleCredential.identityToken,
-//       accessToken: appleCredential.authorizationCode,
-//     );
+    final OAuthCredential credential = OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
 
-//     await FirebaseAuth.instance.signInWithCredential(credential);
-//   }
-// }
+    await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+}
