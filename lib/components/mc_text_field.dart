@@ -8,7 +8,7 @@ class MCTextField extends StatelessWidget {
     super.key,
     this.controller,
     this.hintText,
-    this.height = 48,
+    this.height = 42,
     this.suffixIcon,
     this.suffixText,
     this.suffix,
@@ -76,7 +76,7 @@ class MCTextField extends StatelessWidget {
       decoration: InputDecoration(
         counterText: counterText,
         contentPadding:
-            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         filled: true,
         fillColor: const Color(0xFFEEEEEE),
         errorText: error ? errorText : null,

@@ -19,6 +19,10 @@ enum SignUpState { email, password, complete }
 
 class _SignUpDailogState extends State<SignUpDailog> {
   SignUpState signUpState = SignUpState.email;
+  final emailController = TextEditingController();
+  final nickNameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final verifyPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class _SignUpDailogState extends State<SignUpDailog> {
               padding: const EdgeInsets.all(8.0),
               child: MCContainer(
                 width: 400,
-                height: 300,
+                height: 360,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: signUpPageAtIndex(),
@@ -91,6 +95,8 @@ class _SignUpDailogState extends State<SignUpDailog> {
     switch (signUpState) {
       case SignUpState.email:
         return EmailNickNameInput(
+          emailController: emailController,
+          nickNameController: nickNameController,
           signUpState: signUpState,
           onPressed: () {
             setState(() {
@@ -101,6 +107,8 @@ class _SignUpDailogState extends State<SignUpDailog> {
       case SignUpState.password:
         return PasswordInput(
           signUpState: signUpState,
+          passwordController: passwordController,
+          verifyPasswordController: verifyPasswordController,
           onPressed: () {
             //TODO - 회원가입 API 요청
             setState(() {
@@ -121,37 +129,123 @@ class _SignUpDailogState extends State<SignUpDailog> {
   }
 }
 
-class EmailNickNameInput extends StatelessWidget {
+class EmailNickNameInput extends StatefulWidget {
   final SignUpState signUpState;
   final Function()? onPressed;
+  final TextEditingController emailController;
+  final TextEditingController nickNameController;
   const EmailNickNameInput({
     super.key,
     required this.signUpState,
     this.onPressed,
+    required this.emailController,
+    required this.nickNameController,
   });
+
+  @override
+  State<EmailNickNameInput> createState() => _EmailNickNameInputState();
+}
+
+class _EmailNickNameInputState extends State<EmailNickNameInput> {
+  bool isValid = false;
+  bool isValidEmail = true;
+  bool isValidNickName = true;
+  final emailRegex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+');
+
+  void verifyApplyData() {
+    setState(() {
+      isValid = false;
+    });
+
+    // 이메일 점검
+    if (!isValidEmail) return;
+    if (!isValidNickName) return;
+    if (widget.emailController.text.isEmpty ||
+        widget.nickNameController.text.isEmpty) return;
+
+    setState(() {
+      isValid = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 28),
+      padding: const EdgeInsets.symmetric(vertical: 22),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("회원가입", style: Constants.titleTextStyle),
-          MCTextField(
-            hintText: "이메일",
-            textInputAction: TextInputAction.next,
+          SizedBox(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                MCTextField(
+                  hintText: "이메일",
+                  textInputAction: TextInputAction.next,
+                  controller: widget.emailController,
+                  onChanged: (p0) {
+                    setState(() {
+                      isValidEmail = false;
+                      if (emailRegex.hasMatch(widget.emailController.text)) {
+                        isValidEmail = true;
+                      } else {
+                        isValidEmail = false;
+                      }
+                    });
+                    verifyApplyData();
+                  },
+                ),
+                if (!isValidEmail)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 24, top: 2),
+                    child: Text(
+                      "올바른 이메일 형식을 입력해주세요.",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+              ],
+            ),
           ),
-          MCTextField(
-            hintText: "닉네임",
-            textInputAction: TextInputAction.done,
+          SizedBox(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MCTextField(
+                  controller: widget.nickNameController,
+                  hintText: "닉네임",
+                  textInputAction: TextInputAction.done,
+                  maxLength: 20,
+                  onChanged: (p0) {
+                    setState(() {
+                      isValidNickName = false;
+                      if (p0.length >= 3) {
+                        isValidNickName = true;
+                      }
+                    });
+                    verifyApplyData();
+                  },
+                ),
+                if (!isValidNickName)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 24, top: 2),
+                    child: Text(
+                      "3~20자 사이의 이름을 입력해주세요.",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+              ],
+            ),
           ),
           MCBounceableButton(
               width: 184,
               height: 44,
               title: "다음",
-              backgroundColor: Constants.blueNeon,
-              onPressed: onPressed),
+              backgroundColor: isValid ? Constants.blueNeon : Constants.grey100,
+              onPressed: isValid ? widget.onPressed : null),
         ],
       ),
     );
@@ -161,11 +255,15 @@ class EmailNickNameInput extends StatelessWidget {
 class PasswordInput extends StatefulWidget {
   final SignUpState signUpState;
   final Function() onPressed;
+  final TextEditingController passwordController;
+  final TextEditingController verifyPasswordController;
 
   const PasswordInput({
     super.key,
     required this.signUpState,
     required this.onPressed,
+    required this.passwordController,
+    required this.verifyPasswordController,
   });
 
   @override
@@ -174,39 +272,119 @@ class PasswordInput extends StatefulWidget {
 
 class _PasswordInputState extends State<PasswordInput> {
   bool isLoading = false;
+  bool isValid = false;
+  bool isValidPassword = true;
+  bool isValidNickName = true;
+  final passwordRegex = RegExp(r'^(?=.*[a-zA-Z0-9!@#\$%^&*])[\w\.-]{8,20}$');
+
+  void verifyApplyData() {
+    setState(() {
+      isValid = false;
+    });
+
+    // 이메일 점검
+    if (!isValidPassword) return;
+    if (!isValidNickName) return;
+    if (widget.passwordController.text.isEmpty ||
+        widget.verifyPasswordController.text.isEmpty) return;
+
+    setState(() {
+      isValid = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 28),
+      padding: const EdgeInsets.symmetric(vertical: 22),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("회원가입", style: Constants.titleTextStyle),
-          MCTextField(
-            hintText: "비밀번호",
-            textInputAction: TextInputAction.next,
+          SizedBox(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                MCTextField(
+                  obscureText: true,
+                  hintText: "비밀번호",
+                  textInputAction: TextInputAction.next,
+                  controller: widget.passwordController,
+                  onChanged: (p0) {
+                    setState(() {
+                      isValidPassword = false;
+                      if (passwordRegex
+                          .hasMatch(widget.verifyPasswordController.text)) {
+                        isValidPassword = true;
+                      } else {
+                        isValidPassword = false;
+                      }
+                    });
+                    verifyApplyData();
+                  },
+                ),
+                if (!isValidPassword)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 24, top: 2),
+                    child: Text(
+                      "8~20자리 영문자, 숫자, 특수문자로 조합. ",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+              ],
+            ),
           ),
-          MCTextField(
-            hintText: "비밀번호 확인",
-            textInputAction: TextInputAction.done,
-            obscureText: true,
+          SizedBox(
+            height: 70,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MCTextField(
+                  obscureText: true,
+                  controller: widget.verifyPasswordController,
+                  hintText: "비밀번호 확인",
+                  textInputAction: TextInputAction.done,
+                  maxLength: 20,
+                  onChanged: (p0) {
+                    setState(() {
+                      isValidNickName = false;
+                      if (p0 == widget.passwordController.text) {
+                        isValidNickName = true;
+                      }
+                    });
+                    verifyApplyData();
+                  },
+                ),
+                if (!isValidNickName)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 24, top: 2),
+                    child: Text(
+                      "3~20자 사이의 이름을 입력해주세요.",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+              ],
+            ),
           ),
           MCButton(
               isLoading: isLoading,
               width: 184,
               height: 44,
               title: "회원가입",
-              backgroundColor: Constants.blueNeon,
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                await widget.onPressed();
-                setState(() {
-                  isLoading = true;
-                });
-              }),
+              backgroundColor: isValid ? Constants.blueNeon : Constants.grey100,
+              onPressed: !isValid
+                  ? null
+                  : () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await widget.onPressed();
+                      setState(() {
+                        isLoading = true;
+                      });
+                    }),
         ],
       ),
     );
@@ -225,7 +403,7 @@ class CompletionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 28),
+      padding: const EdgeInsets.symmetric(vertical: 22),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

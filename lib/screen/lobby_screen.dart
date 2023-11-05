@@ -41,6 +41,7 @@ class LobbyScreen extends StatelessWidget {
                           onPressed: () {
                             //TODO - 방만들기 로비
                             showDialog(
+                              useSafeArea: false,
                               context: context,
                               builder: (context) => const SignUpDailog(),
                             );
