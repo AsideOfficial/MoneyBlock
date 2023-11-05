@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
+import 'package:money_cycle/controller/user_controller.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class KakaoLoginService {
@@ -23,12 +24,53 @@ class KakaoLoginService {
     }
   }
 
-  static void loginWithKakaoAccount() async {
+  static Future<void> loginWithKakaoAccount() async {
     try {
       kakao.UserApi.instance.loginWithKakaoAccount();
       debugPrint('카카오계정으로 로그인 성공');
     } catch (error) {
       debugPrint('카카오계정으로 로그인 실패 $error');
+    }
+  }
+
+  static Future<void> loginWithScopes(List<String> scopes) async {
+    if (scopes.isNotEmpty) {
+      kakao.OAuthToken token;
+
+      try {
+        token = await kakao.UserApi.instance.loginWithNewScopes(scopes);
+        debugPrint('현재 사용자가 동의한 동의항목: ${token.scopes}');
+      } catch (error) {
+        debugPrint('추가 동의 요청 실패 $error');
+        return;
+      }
+    }
+  }
+
+  static void getUserInfo(kakao.User user) {
+    try {
+      MCUserController.to.login(
+        name: user.kakaoAccount?.profile?.nickname ?? '이름 정보 없음',
+        phoneNumber: '연락처 정보 없음',
+        birthday: user.kakaoAccount?.birthday ?? '생일 정보 없음',
+        gender: (user.kakaoAccount?.gender ?? '성별 정보 없음') == kakao.Gender.male
+            ? '남성'
+            : '여성',
+        parentInfo: null,
+        location: null,
+      );
+      debugPrint('사용자 정보 요청 성공'
+          '\n회원번호: ${user.id}'
+          '\n이메일: ${user.kakaoAccount?.email}'
+          '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+          '\n연락처: ${user.kakaoAccount?.phoneNumber}'
+          '\n생일: ${user.kakaoAccount?.birthday}'
+          '\n출생연도: ${user.kakaoAccount?.birthyear}'
+          '\n성별: ${user.kakaoAccount?.gender}');
+
+      Get.toNamed("/lobby");
+    } catch (error) {
+      debugPrint('사용자 정보 요청 실패 $error');
     }
   }
 
@@ -39,19 +81,15 @@ class KakaoLoginService {
       // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
       if (await kakao.isKakaoTalkInstalled()) {
         await loginWithKakaoTalk();
-        try {
-          kakao.User user = await kakao.UserApi.instance.me();
-          debugPrint('사용자 정보 요청 성공'
-              '\n회원번호: ${user.id}'
-              '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-              '\n이메일: ${user.kakaoAccount?.email}');
-              Get.toNamed("/lobby");
-        } catch (error) {
-          debugPrint('사용자 정보 요청 실패 $error');
-        }
       } else {
-        loginWithKakaoAccount();
+        await loginWithKakaoAccount();
       }
+
+      kakao.User user = await kakao.UserApi.instance.me();
+
+      await loginWithScopes(['birthday', 'gender']);
+
+      getUserInfo(user);
     };
   }
 }

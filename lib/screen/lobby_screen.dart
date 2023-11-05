@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_cycle/controller/user_controller.dart';
 import 'package:money_cycle/start/components/sign_in_dialog.dart';
 
 import '../components/mc_button.dart';
@@ -37,6 +38,7 @@ class LobbyScreen extends StatelessWidget {
                           backgroundColor: Constants.greenNeon,
                           onPressed: () {
                             //TODO - 방만들기 로비
+                            print(MCUserController.to.user?.value.name);
                           },
                         ),
                         const SizedBox(width: 12),
