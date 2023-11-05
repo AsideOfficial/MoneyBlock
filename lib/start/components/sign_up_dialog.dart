@@ -44,7 +44,8 @@ class _SignUpDailogState extends State<SignUpDailog> {
             ),
             Row(
               children: [
-                if (signUpState.index >= 1)
+                if (signUpState.index >= 1 &&
+                    signUpState != SignUpState.complete)
                   Column(
                     children: [
                       Bounceable(
@@ -274,8 +275,8 @@ class _PasswordInputState extends State<PasswordInput> {
   bool isLoading = false;
   bool isValid = false;
   bool isValidPassword = true;
-  bool isValidNickName = true;
-  final passwordRegex = RegExp(r'^(?=.*[a-zA-Z0-9!@#\$%^&*])[\w\.-]{8,20}$');
+  bool isSamePassword = true;
+  RegExp regex = RegExp(r'(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
 
   void verifyApplyData() {
     setState(() {
@@ -284,7 +285,7 @@ class _PasswordInputState extends State<PasswordInput> {
 
     // 이메일 점검
     if (!isValidPassword) return;
-    if (!isValidNickName) return;
+    if (!isSamePassword) return;
     if (widget.passwordController.text.isEmpty ||
         widget.verifyPasswordController.text.isEmpty) return;
 
@@ -315,13 +316,13 @@ class _PasswordInputState extends State<PasswordInput> {
                   onChanged: (p0) {
                     setState(() {
                       isValidPassword = false;
-                      if (passwordRegex
-                          .hasMatch(widget.verifyPasswordController.text)) {
+                      if (regex.hasMatch(p0)) {
                         isValidPassword = true;
                       } else {
                         isValidPassword = false;
                       }
                     });
+
                     verifyApplyData();
                   },
                 ),
@@ -349,15 +350,15 @@ class _PasswordInputState extends State<PasswordInput> {
                   maxLength: 20,
                   onChanged: (p0) {
                     setState(() {
-                      isValidNickName = false;
+                      isSamePassword = false;
                       if (p0 == widget.passwordController.text) {
-                        isValidNickName = true;
+                        isSamePassword = true;
                       }
                     });
                     verifyApplyData();
                   },
                 ),
-                if (!isValidNickName)
+                if (!isSamePassword)
                   const Padding(
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(

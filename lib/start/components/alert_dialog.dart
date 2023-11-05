@@ -8,17 +8,22 @@ import 'package:money_cycle/components/mc_text_field.dart';
 import '../../constants.dart';
 
 class MCAlertDialog extends StatelessWidget {
-  const MCAlertDialog(
-      {super.key,
-      required this.title,
-      required this.message,
-      required this.primaryAction,
-      required this.primaryActionTitle});
+  const MCAlertDialog({
+    super.key,
+    required this.title,
+    required this.message,
+    required this.primaryAction,
+    required this.primaryActionTitle,
+    this.secondaryActionTitle,
+    this.secondaryAction,
+  });
 
   final String title;
   final String message;
   final String primaryActionTitle;
   final Function()? primaryAction;
+  final String? secondaryActionTitle;
+  final Function()? secondaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +37,31 @@ class MCAlertDialog extends StatelessWidget {
               child: MCContainer(
                 width: 400,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                  padding: const EdgeInsets.only(
+                      left: 40, right: 40, top: 28, bottom: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(title, style: Constants.titleTextStyle),
                       Text(message, style: Constants.defaultTextStyle),
-                      MCBounceableButton(
-                        width: 184,
-                        height: 44,
-                        title: primaryActionTitle,
-                        backgroundColor: Constants.blueNeon,
-                        onPressed: primaryAction,
+                      Column(
+                        children: [
+                          MCBounceableButton(
+                            width: 184,
+                            height: 44,
+                            title: primaryActionTitle,
+                            backgroundColor: Constants.blueNeon,
+                            onPressed: primaryAction,
+                          ),
+                          if (secondaryActionTitle != null)
+                            const SizedBox(height: 12),
+                          if (secondaryActionTitle != null)
+                            MCBounceableButton(
+                              padding: EdgeInsets.zero,
+                              title: secondaryActionTitle,
+                              onPressed: secondaryAction,
+                            ),
+                        ],
                       ),
                     ],
                   ),
