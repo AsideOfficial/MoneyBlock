@@ -16,10 +16,12 @@ class MCAlertDialog extends StatelessWidget {
     required this.primaryActionTitle,
     this.secondaryActionTitle,
     this.secondaryAction,
+    this.secondaryMessage,
   });
 
   final String title;
   final String message;
+  final String? secondaryMessage;
   final String primaryActionTitle;
   final Function()? primaryAction;
   final String? secondaryActionTitle;
@@ -43,6 +45,10 @@ class MCAlertDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(title, style: Constants.titleTextStyle),
+                      if (secondaryMessage != null)
+                        Text(secondaryMessage!,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14)),
                       Text(message, style: Constants.defaultTextStyle),
                       Column(
                         children: [

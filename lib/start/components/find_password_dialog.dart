@@ -5,6 +5,7 @@ import 'package:money_cycle/components/mc_bounceable_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
 import 'package:money_cycle/start/components/alert_dialog.dart';
+import 'package:money_cycle/start/components/sign_in_dialog.dart';
 import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
 import '../../components/mc_button.dart';
@@ -26,7 +27,7 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
     print("가짜 비동기 작업이 완료되었습니다.");
   }
 
-  void showSignInAlert(String message) {
+  void showSignInAlert({required String message}) {
     final dialog = MCAlertDialog(
       title: "비밀번호 찾기",
       message: message,
@@ -37,6 +38,26 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
         Get.back();
         Get.back();
         Get.dialog(const SignUpDailog(), name: "SignUpDailog");
+      },
+    );
+
+    // Get.back();
+    Get.dialog(dialog, name: "SignUpDailog");
+  }
+
+  void showMessageSendAlert(
+      {required String message, String? secondaryMessage}) {
+    final dialog = MCAlertDialog(
+      title: "비밀번호 찾기",
+      message: message,
+      secondaryMessage: secondaryMessage,
+      primaryActionTitle: "확인",
+      primaryAction: () => Get.back(),
+      secondaryActionTitle: "로그인하러 가기",
+      secondaryAction: () {
+        Get.back();
+        Get.back();
+        Get.dialog(const SignInDialog(), name: "SignInDialog");
       },
     );
 
@@ -87,7 +108,10 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
                           } catch (error) {
                             //TODO - Firebase 에러 핸들링
                           }
-                          showSignInAlert("해당 아이디로 가입된 정보가 없습니다.");
+
+                          showMessageSendAlert(
+                              message: "luke@sini.com",
+                              secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.");
                           setState(() {
                             isLoading = false;
                           });
