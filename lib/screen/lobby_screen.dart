@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:money_cycle/start/components/sign_in_dialog.dart';
 import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
