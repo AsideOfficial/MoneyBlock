@@ -3,7 +3,7 @@ import 'package:money_cycle/screen/lobby_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
 class AppPages {
-  static const initial = "/start";
+  static const initial = "/lobby";
 
   static final routes = [
     GetPage(name: "/start", page: () => const StartScreen()),

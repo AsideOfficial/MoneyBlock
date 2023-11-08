@@ -5,39 +5,64 @@ import 'package:money_cycle/components/mc_bounceable_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
 import 'package:money_cycle/start/components/alert_dialog.dart';
-import 'package:money_cycle/start/components/find_password_dialog.dart';
+import 'package:money_cycle/start/components/sign_in_dialog.dart';
+import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
 import '../../components/mc_button.dart';
 import '../../constants.dart';
 
-class SignInDialog extends StatefulWidget {
-  const SignInDialog({super.key});
+class FindPasswordDialog extends StatefulWidget {
+  const FindPasswordDialog({super.key});
 
   @override
-  State<SignInDialog> createState() => _SignInDialogState();
+  State<FindPasswordDialog> createState() => _FindPasswordDialogState();
 }
 
-class _SignInDialogState extends State<SignInDialog> {
+class _FindPasswordDialogState extends State<FindPasswordDialog> {
   bool isLoading = false;
 
-  Future<void> login() async {
+  Future<void> sendChangePasswordEmail() async {
     await Future.delayed(const Duration(seconds: 3)); // 3초 동안 대기
     // 여기에서 가짜 비동기 작업 수행
     print("가짜 비동기 작업이 완료되었습니다.");
   }
 
-  void showSignInAlert(String message) {
+  void showSignInAlert({required String message}) {
     final dialog = MCAlertDialog(
-        title: "이메일 로그인",
-        message: message,
-        primaryAction: () => Get.back(),
-        primaryActionTitle: "다시 로그인하기");
-
-    Get.back();
-    showDialog(
-      context: context,
-      builder: (context) => dialog,
+      title: "비밀번호 찾기",
+      message: message,
+      primaryActionTitle: "확인",
+      primaryAction: () => Get.back(),
+      secondaryActionTitle: "회원가입하러 가기",
+      secondaryAction: () {
+        Get.back();
+        Get.back();
+        Get.dialog(const SignUpDailog(), name: "SignUpDailog");
+      },
     );
+
+    // Get.back();
+    Get.dialog(dialog, name: "SignUpDailog");
+  }
+
+  void showMessageSendAlert(
+      {required String message, String? secondaryMessage}) {
+    final dialog = MCAlertDialog(
+      title: "비밀번호 찾기",
+      message: message,
+      secondaryMessage: secondaryMessage,
+      primaryActionTitle: "확인",
+      primaryAction: () => Get.back(),
+      secondaryActionTitle: "로그인하러 가기",
+      secondaryAction: () {
+        Get.back();
+        Get.back();
+        Get.dialog(const SignInDialog(), name: "SignInDialog");
+      },
+    );
+
+    // Get.back();
+    Get.dialog(dialog, name: "SignUpDailog");
   }
 
   @override
@@ -53,49 +78,50 @@ class _SignInDialogState extends State<SignInDialog> {
                 width: 400,
                 height: 300,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(height: 22),
-                      Text("이메일 로그인", style: Constants.titleTextStyle),
-                      const SizedBox(height: 16),
+                      Text("비밀번호 찾기", style: Constants.titleTextStyle),
+                      const Text(
+                        "가입했던 이메일을 입력해주세요.\n비밀번호 재설정 메일을 보내드립니다.",
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
                       MCTextField(
                         hintText: "이메일",
                         textInputAction: TextInputAction.next,
                       ),
-                      const SizedBox(height: 8),
-                      MCTextField(
-                        hintText: "비밀번호",
-                        textInputAction: TextInputAction.done,
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 12),
                       MCButton(
                         isLoading: isLoading,
                         width: 184,
                         height: 44,
-                        title: "로그인",
+                        title: "재설정 메일 보내기",
                         backgroundColor: Constants.blueNeon,
                         onPressed: () async {
                           setState(() {
                             isLoading = true;
                           });
-                          await login();
+                          try {
+                            await sendChangePasswordEmail();
+                          } catch (error) {
+                            //TODO - Firebase 에러 핸들링
+                          }
+
+                          showMessageSendAlert(
+                              message: "luke@sini.com",
+                              secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.");
                           setState(() {
                             isLoading = false;
                           });
-                          showSignInAlert("잘못된 로그인 형식입니다.");
                         },
                       ),
                       MCBounceableButton(
-                        height: 44,
-                        title: "비밀번호를 잊어버리셧나요?",
-                        onPressed: () {
-                          Get.back();
-                          showDialog(
-                              context: context,
-                              builder: (context) => const FindPasswordDialog());
-                        },
+                        padding: EdgeInsets.zero,
+                        title: "로그인하러 가기",
+                        titleColor: Colors.white,
+                        onPressed: () {},
                       )
                     ],
                   ),

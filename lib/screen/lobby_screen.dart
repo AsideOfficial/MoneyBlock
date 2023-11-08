@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:money_cycle/controller/user_controller.dart';
+import 'package:get/get.dart';
+import 'package:money_cycle/start/components/alert_dialog.dart';
 import 'package:money_cycle/start/components/sign_in_dialog.dart';
+import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
-import '../components/mc_button.dart';
+import '../components/mc_bounceable_button.dart';
 import '../components/mc_capsule_container.dart';
 import '../components/mc_container.dart';
 import '../constants.dart';
@@ -32,17 +35,22 @@ class LobbyScreen extends StatelessWidget {
                     chid: Row(
                       children: [
                         const Spacer(),
-                        MCButton(
+                        MCBounceableButton(
                           height: 42,
                           title: "방 만들기",
                           backgroundColor: Constants.greenNeon,
                           onPressed: () {
                             //TODO - 방만들기 로비
+                            showDialog(
+                              useSafeArea: false,
+                              context: context,
+                              builder: (context) => const SignUpDailog(),
+                            );
                             print(MCUserController.to.user?.value.name);
                           },
                         ),
                         const SizedBox(width: 12),
-                        MCButton(
+                        MCBounceableButton(
                           height: 42,
                           title: "방 찾기",
                           backgroundColor: Constants.blueNeon,

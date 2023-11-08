@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 
 import '../constants.dart';
 
-class MCButton extends StatelessWidget {
-  const MCButton({
+class MCBounceableButton extends StatelessWidget {
+  const MCBounceableButton({
     super.key,
     this.width,
     this.height,
@@ -14,23 +13,20 @@ class MCButton extends StatelessWidget {
     this.titleColor = Colors.white,
     this.onPressed,
     this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    this.isLoading,
   });
 
   final double? width;
   final double? height;
   final EdgeInsets padding;
   final String? title;
-  final bool? isLoading;
   final Color? titleColor;
   final Color? backgroundColor;
   final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
+    return Bounceable(
+      onTap: onPressed,
       child: Container(
         width: width,
         height: height,
@@ -42,22 +38,11 @@ class MCButton extends StatelessWidget {
         ),
         child: Padding(
           padding: padding,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            if (isLoading == null || isLoading == false)
-              Text(
-                title ?? "",
-                style: Constants.defaultTextStyle.copyWith(color: titleColor),
-              )
-            else
-              const SizedBox(
-                width: 16.0,
-                height: 16.0,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.0,
-                  color: Colors.white,
-                ),
-              )
-          ]),
+          child: Center(
+              child: Text(
+            title ?? "",
+            style: Constants.defaultTextStyle.copyWith(color: titleColor),
+          )),
         ),
       ),
     );
