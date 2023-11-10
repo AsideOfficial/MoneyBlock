@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-
-import '../constants.dart';
+import 'package:money_cycle/constants.dart';
 
 class MCBounceableButton extends StatelessWidget {
   const MCBounceableButton({
@@ -12,7 +11,7 @@ class MCBounceableButton extends StatelessWidget {
     this.backgroundColor,
     this.titleColor = Colors.white,
     this.onPressed,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    this.padding = const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
   });
 
   final double? width;
@@ -39,10 +38,11 @@ class MCBounceableButton extends StatelessWidget {
         child: Padding(
           padding: padding,
           child: Center(
-              child: Text(
-            title ?? "",
-            style: Constants.defaultTextStyle.copyWith(color: titleColor),
-          )),
+            child: Text(
+              title ?? "",
+              style: Constants.dialogSecondaryTextStyle.copyWith(),
+            ),
+          ),
         ),
       ),
     );

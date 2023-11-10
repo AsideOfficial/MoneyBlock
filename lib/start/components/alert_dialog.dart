@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_bounceable_button.dart';
+import 'package:money_cycle/components/mc_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
-import 'package:money_cycle/components/mc_text_field.dart';
 
 import '../../constants.dart';
 
@@ -46,13 +46,19 @@ class MCAlertDialog extends StatelessWidget {
                     children: [
                       Text(title, style: Constants.titleTextStyle),
                       if (secondaryMessage != null)
-                        Text(secondaryMessage!,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14)),
-                      Text(message, style: Constants.defaultTextStyle),
+                        Text(
+                          secondaryMessage!,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                        ),
+                      Text(
+                        message,
+                        style: Constants.defaultTextStyle,
+                        textAlign: TextAlign.center,
+                      ),
                       Column(
                         children: [
-                          MCBounceableButton(
+                          MCButton(
                             width: 184,
                             height: 44,
                             title: primaryActionTitle,
@@ -90,7 +96,7 @@ class MCAlertDialog extends StatelessWidget {
                         height: 46.0,
                       ),
                     ),
-                    const Spacer()
+                    const Spacer(),
                   ],
                 )
               ],

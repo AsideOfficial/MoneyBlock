@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
+import 'package:money_cycle/screen/lobby_screen.dart';
+import 'package:money_cycle/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +32,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppPages.initial,
+      // initialRoute: AppPages.initial,
       getPages: AppPages.routes,
+      home: Scaffold(
+        body: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return const LobbyScreen();
+            } else {
+              return const StartScreen();
+            }
+          }),
+        ),
+      ),
     );
   }
 }

@@ -21,14 +21,22 @@ class StartScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Image.asset(
-              'assets/images/main_illustration.png',
-              fit: BoxFit.cover,
-            ),
-            Image.asset(
-              'assets/logos/money_cycle_logo.png',
-              width: 359,
-              height: 203,
+            SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/main_illustration.png',
+                    fit: BoxFit.cover,
+                  ),
+                  Image.asset(
+                    'assets/logos/money_cycle_logo.png',
+                    width: 359,
+                    height: 203,
+                  ),
+                ],
+              ),
             ),
             SafeArea(
               child: Column(

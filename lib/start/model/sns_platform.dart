@@ -83,12 +83,14 @@ extension SNSPlatformExtension on SNSPlatform {
         return KakaoLoginService.kakaoLogin();
       case SNSPlatform.apple:
         return () {
-          return AppleLoginService.loginApp();
+          AppleLoginService.loginApp();
         };
       case SNSPlatform.google:
         return () {};
       case SNSPlatform.email:
-        return () {};
+        return () {
+          debugPrint('tap email login');
+        };
     }
   }
 }

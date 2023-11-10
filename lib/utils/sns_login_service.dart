@@ -95,7 +95,7 @@ class KakaoLoginService {
 }
 
 class AppleLoginService {
-  static Future<void> loginApp() async {
+  static void loginApp() async {
     final AuthorizationCredentialAppleID appleCredential =
         await SignInWithApple.getAppleIDCredential(
       scopes: [

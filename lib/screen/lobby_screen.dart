@@ -1,9 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:money_cycle/controller/user_controller.dart';
-import 'package:get/get.dart';
-import 'package:money_cycle/start/components/alert_dialog.dart';
-import 'package:money_cycle/start/components/sign_in_dialog.dart';
-import 'package:money_cycle/start/components/sign_up_dialog.dart';
 
 import '../components/mc_bounceable_button.dart';
 import '../components/mc_capsule_container.dart';
@@ -41,12 +37,7 @@ class LobbyScreen extends StatelessWidget {
                           backgroundColor: Constants.greenNeon,
                           onPressed: () {
                             //TODO - 방만들기 로비
-                            showDialog(
-                              useSafeArea: false,
-                              context: context,
-                              builder: (context) => const SignUpDailog(),
-                            );
-                            print(MCUserController.to.user?.value.name);
+                            FirebaseAuth.instance.signOut();
                           },
                         ),
                         const SizedBox(width: 12),
@@ -56,10 +47,6 @@ class LobbyScreen extends StatelessWidget {
                           backgroundColor: Constants.blueNeon,
                           onPressed: () {
                             //TODO - 빠른 시작 로비
-                            showDialog(
-                              context: context,
-                              builder: (context) => const SignInDialog(),
-                            );
                           },
                         ),
                         const SizedBox(width: 12),

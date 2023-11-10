@@ -67,89 +67,94 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-        contentPadding: EdgeInsets.zero,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        content: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MCContainer(
-                width: 400,
-                height: 300,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 22),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("비밀번호 찾기", style: Constants.titleTextStyle),
-                      const Text(
-                        "가입했던 이메일을 입력해주세요.\n비밀번호 재설정 메일을 보내드립니다.",
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                      MCTextField(
-                        hintText: "이메일",
-                        textInputAction: TextInputAction.next,
-                      ),
-                      MCButton(
-                        isLoading: isLoading,
-                        width: 184,
-                        height: 44,
-                        title: "재설정 메일 보내기",
-                        backgroundColor: Constants.blueNeon,
-                        onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          try {
-                            await sendChangePasswordEmail();
-                          } catch (error) {
-                            //TODO - Firebase 에러 핸들링
-                          }
-
-                          showMessageSendAlert(
-                              message: "luke@sini.com",
-                              secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.");
-                          setState(() {
-                            isLoading = false;
-                          });
-                        },
-                      ),
-                      MCBounceableButton(
-                        padding: EdgeInsets.zero,
-                        title: "로그인하러 가기",
-                        titleColor: Colors.white,
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Row(
+        body: Center(
+          child: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: Stack(
+              alignment: Alignment.topRight,
               children: [
-                const Spacer(),
-                Column(
-                  children: [
-                    Bounceable(
-                      scaleFactor: 0.8,
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Image.asset(
-                        'assets/icons/x_button.png',
-                        width: 46.0,
-                        height: 46.0,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MCContainer(
+                    width: 400,
+                    height: 300,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 22),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("비밀번호 찾기", style: Constants.titleTextStyle),
+                          const Text(
+                            "가입했던 이메일을 입력해주세요.\n비밀번호 재설정 메일을 보내드립니다.",
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                          MCTextField(
+                            hintText: "이메일",
+                            textInputAction: TextInputAction.next,
+                          ),
+                          MCButton(
+                            isLoading: isLoading,
+                            width: 184,
+                            height: 44,
+                            title: "재설정 메일 보내기",
+                            backgroundColor: Constants.blueNeon,
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              try {
+                                await sendChangePasswordEmail();
+                              } catch (error) {
+                                //TODO - Firebase 에러 핸들링
+                              }
+
+                              showMessageSendAlert(
+                                  message: "luke@sini.com",
+                                  secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.");
+                              setState(() {
+                                isLoading = false;
+                              });
+                            },
+                          ),
+                          MCBounceableButton(
+                            padding: EdgeInsets.zero,
+                            title: "로그인하러 가기",
+                            titleColor: Colors.white,
+                            onPressed: () {
+                              Get.back();
+                              showDialog(
+                                context: context,
+                                builder: (context) => const SignInDialog(),
+                              );
+                            },
+                          )
+                        ],
                       ),
                     ),
-                    const Spacer()
-                  ],
-                )
+                  ),
+                ),
+                Bounceable(
+                  scaleFactor: 0.8,
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Image.asset(
+                    'assets/icons/x_button.png',
+                    width: 46.0,
+                    height: 46.0,
+                  ),
+                ),
               ],
             ),
-          ],
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -39,4 +39,13 @@ class Constants {
     fontFamily: 'ONE Mobile POP OTF',
     fontWeight: FontWeight.w400,
   );
+
+  static var dialogSecondaryTextStyle = const TextStyle(
+    color: Color(0xFF52B6FF),
+    fontSize: 12,
+    fontFamily: 'Noto Sans KR',
+    fontWeight: FontWeight.w400,
+    decoration: TextDecoration.underline,
+    height: 0,
+  );
 }

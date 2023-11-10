@@ -28,10 +28,8 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      content: Stack(
+    return Center(
+      child: Stack(
         alignment: Alignment.topRight,
         children: [
           Row(
@@ -44,22 +42,31 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '게임 로그인',
+                    DefaultTextStyle(
                       style: Constants.defaultTextStyle.copyWith(
                         fontSize: 24,
                         letterSpacing: 0.20,
                       ),
+                      child: Text(
+                        '게임 로그인',
+                        style: Constants.defaultTextStyle.copyWith(
+                          fontSize: 24,
+                          letterSpacing: 0.20,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 13.0),
-                    SizedBox(
-                      width: 184.0,
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        spacing: 8.0,
-                        children: platforms.map((e) {
-                          return SNSLoginButton(platform: e);
-                        }).toList(),
+                    DefaultTextStyle(
+                      style: Constants.defaultTextStyle,
+                      child: SizedBox(
+                        width: 184.0,
+                        child: Wrap(
+                          direction: Axis.vertical,
+                          spacing: 8.0,
+                          children: platforms.map((e) {
+                            return SNSLoginButton(platform: e);
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ],
