@@ -19,7 +19,8 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
   @override
   void initState() {
     if (foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS) {
-      platforms.insert(1, SNSPlatform.apple);
+      platforms.insert(1, SNSPlatform.google);
+      // platforms.insert(1, SNSPlatform.apple);
     } else {
       platforms.insert(1, SNSPlatform.google);
     }

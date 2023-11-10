@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:money_cycle/controller/user_controller.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -94,8 +95,23 @@ class KakaoLoginService {
   }
 }
 
+class GoogleLoginService {
+  static void loginWithGoogle() async {
+    GoogleSignIn googleSignIn = GoogleSignIn();
+    GoogleSignInAccount? account = await googleSignIn.signIn();
+    if (account != null) {
+      GoogleSignInAuthentication authentication = await account.authentication;
+      OAuthCredential googleCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(googleCredential);
+    }
+  }
+}
+
 class AppleLoginService {
-  static void loginApp() async {
+  static void loginWithApple() async {
     final AuthorizationCredentialAppleID appleCredential =
         await SignInWithApple.getAppleIDCredential(
       scopes: [

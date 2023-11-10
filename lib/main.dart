@@ -14,6 +14,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   KakaoSdk.init(nativeAppKey: 'e9dee5f46be050bdeb181932b2a38718');
 
   //MARK: Set Screen Orientations

@@ -12,7 +12,20 @@
           "package_name": "com.aside.money_cycle"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "11046090334-t5f5m0don9md8o67be7lcn7hcht31aa0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aside.money_cycle",
+            "certificate_hash": "c26c36117c59846aa9d321640d4bb97c8a5cda8e"
+          }
+        },
+        {
+          "client_id": "11046090334-0lr250cj3g1381ec0eugulbvpluhrr1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCKzVylYD8i-Qn4CTmAR8iJVDtmUEnLkAM"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11046090334-0lr250cj3g1381ec0eugulbvpluhrr1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "11046090334-ascse69hjnp93bvdiv6skfb6b2uo9skj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.aside.moneyCycle"
+              }
+            }
+          ]
         }
       }
     }

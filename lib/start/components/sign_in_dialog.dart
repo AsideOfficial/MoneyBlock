@@ -57,10 +57,8 @@ class _SignInDialogState extends State<SignInDialog> {
       Get.back();
       Get.back();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        showSignInAlert('해당 아이디로 가입된 정보가 없습니다.');
-      } else if (e.code == 'wrong-password') {
-        debugPrint('비밀번호가 틀렸습니다.');
+      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        showSignInAlert('아이디 또는 비밀번호가 틀렸습니다.');
       }
     }
   }
