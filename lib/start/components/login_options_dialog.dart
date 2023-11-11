@@ -14,13 +14,14 @@ class LoginOptionsDialogs extends StatefulWidget {
 }
 
 class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
+  bool isLoading = false;
+
   List<SNSPlatform> platforms = [SNSPlatform.kakao, SNSPlatform.email];
 
   @override
   void initState() {
     if (foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS) {
-      platforms.insert(1, SNSPlatform.google);
-      // platforms.insert(1, SNSPlatform.apple);
+      platforms.insert(1, SNSPlatform.apple);
     } else {
       platforms.insert(1, SNSPlatform.google);
     }
@@ -40,36 +41,58 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
                 width: 251.0,
                 height: 256.0,
                 alignment: Alignment.center,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    DefaultTextStyle(
-                      style: Constants.defaultTextStyle.copyWith(
-                        fontSize: 24,
-                        letterSpacing: 0.20,
-                      ),
-                      child: Text(
-                        '게임 로그인',
-                        style: Constants.defaultTextStyle.copyWith(
-                          fontSize: 24,
-                          letterSpacing: 0.20,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DefaultTextStyle(
+                          style: Constants.defaultTextStyle.copyWith(
+                            fontSize: 24,
+                            letterSpacing: 0.20,
+                          ),
+                          child: Text(
+                            '게임 로그인',
+                            style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 24,
+                              letterSpacing: 0.20,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 13.0),
-                    DefaultTextStyle(
-                      style: Constants.defaultTextStyle,
-                      child: SizedBox(
-                        width: 184.0,
-                        child: Wrap(
-                          direction: Axis.vertical,
-                          spacing: 8.0,
-                          children: platforms.map((e) {
-                            return SNSLoginButton(platform: e);
-                          }).toList(),
+                        const SizedBox(height: 13.0),
+                        DefaultTextStyle(
+                          style: Constants.defaultTextStyle,
+                          child: SizedBox(
+                            width: 184.0,
+                            child: Wrap(
+                              direction: Axis.vertical,
+                              spacing: 8.0,
+                              children: platforms.map((e) {
+                                return SNSLoginButton(
+                                  platform: e,
+                                  onLogin: (p0) {
+                                    setState(() => isLoading = p0);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    if (isLoading)
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: Colors.black.withOpacity(0.3),
+                        child: Padding(
+                          padding: EdgeInsets.all(100.0),
+                          child: CircularProgressIndicator(
+                            color: Constants.blueNeon,
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ),

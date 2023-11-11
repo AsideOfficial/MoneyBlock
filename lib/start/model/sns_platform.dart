@@ -77,22 +77,18 @@ extension SNSPlatformExtension on SNSPlatform {
   }
 
   // Action
-  Function() get onTap {
+  Future<void> get onTap {
     switch (this) {
       case SNSPlatform.kakao:
         return KakaoLoginService.kakaoLogin();
       case SNSPlatform.apple:
-        return () {
-          AppleLoginService.loginWithApple();
-        };
+        return AppleLoginService.loginWithApple();
+
       case SNSPlatform.google:
-        return () {
-          GoogleLoginService.loginWithGoogle();
-        };
+        return GoogleLoginService.loginWithGoogle();
+
       case SNSPlatform.email:
-        return () {
-          debugPrint('tap email login');
-        };
+        return Future.sync(() => null);
     }
   }
 }

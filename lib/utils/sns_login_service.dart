@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
-import 'package:money_cycle/controller/user_controller.dart';
+import 'package:money_cycle/utils/firebase_auth_remote_data_source.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class KakaoLoginService {
+  static final firebaseAuthDataSource = FirebaseAuthRemoteDataSource();
+
   static Future<void> loginWithKakaoTalk() async {
     try {
       await kakao.UserApi.instance.loginWithKakaoTalk();
@@ -48,83 +49,93 @@ class KakaoLoginService {
     }
   }
 
-  static void getUserInfo(kakao.User user) {
-    try {
-      MCUserController.to.login(
-        name: user.kakaoAccount?.profile?.nickname ?? '이름 정보 없음',
-        phoneNumber: '연락처 정보 없음',
-        birthday: user.kakaoAccount?.birthday ?? '생일 정보 없음',
-        gender: (user.kakaoAccount?.gender ?? '성별 정보 없음') == kakao.Gender.male
-            ? '남성'
-            : '여성',
-        parentInfo: null,
-        location: null,
-      );
-      debugPrint('사용자 정보 요청 성공'
-          '\n회원번호: ${user.id}'
-          '\n이메일: ${user.kakaoAccount?.email}'
-          '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-          '\n연락처: ${user.kakaoAccount?.phoneNumber}'
-          '\n생일: ${user.kakaoAccount?.birthday}'
-          '\n출생연도: ${user.kakaoAccount?.birthyear}'
-          '\n성별: ${user.kakaoAccount?.gender}');
-
-      Get.toNamed("/lobby");
-    } catch (error) {
-      debugPrint('사용자 정보 요청 실패 $error');
-    }
-  }
+  // static void getUserInfo(kakao.User user) {
+  //   try {
+  //     MCUserController.to.login(
+  //       name: user.kakaoAccount?.profile?.nickname ?? '이름 정보 없음',
+  //       phoneNumber: '연락처 정보 없음',
+  //       birthday: user.kakaoAccount?.birthday ?? '생일 정보 없음',
+  //       gender: (user.kakaoAccount?.gender ?? '성별 정보 없음') == kakao.Gender.male
+  //           ? '남성'
+  //           : '여성',
+  //       parentInfo: null,
+  //       location: null,
+  //     );
+  //     debugPrint('사용자 정보 요청 성공'
+  //         '\n회원번호: ${user.id}'
+  //         '\n이메일: ${user.kakaoAccount?.email}'
+  //         '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+  //         '\n연락처: ${user.kakaoAccount?.phoneNumber}'
+  //         '\n생일: ${user.kakaoAccount?.birthday}'
+  //         '\n출생연도: ${user.kakaoAccount?.birthyear}'
+  //         '\n성별: ${user.kakaoAccount?.gender}');
+  //   } catch (error) {
+  //     debugPrint('사용자 정보 요청 실패 $error');
+  //   }
+  // }
 
   // 카카오 로그인
-  static Function() kakaoLogin() {
-    return () async {
-      // 카카오톡 설치 여부 확인
-      // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-      if (await kakao.isKakaoTalkInstalled()) {
-        await loginWithKakaoTalk();
-      } else {
-        await loginWithKakaoAccount();
-      }
+  static Future<void> kakaoLogin() async {
+    // 카카오톡 설치 여부 확인
+    // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+    if (await kakao.isKakaoTalkInstalled()) {
+      await loginWithKakaoTalk();
+    } else {
+      await loginWithKakaoAccount();
+    }
 
-      kakao.User user = await kakao.UserApi.instance.me();
+    kakao.User user = await kakao.UserApi.instance.me();
 
-      await loginWithScopes(['birthday', 'gender']);
+    final customToken = await firebaseAuthDataSource.createCustomToken({
+      'uid': user.id.toString(),
+      'displayName': user.kakaoAccount?.profile?.nickname ?? '',
+      'email': user.kakaoAccount?.email,
+    });
 
-      getUserInfo(user);
-    };
+    await FirebaseAuth.instance.signInWithCustomToken(customToken);
   }
 }
 
 class GoogleLoginService {
-  static void loginWithGoogle() async {
-    GoogleSignIn googleSignIn = GoogleSignIn();
-    GoogleSignInAccount? account = await googleSignIn.signIn();
-    if (account != null) {
-      GoogleSignInAuthentication authentication = await account.authentication;
-      OAuthCredential googleCredential = GoogleAuthProvider.credential(
-        idToken: authentication.idToken,
-        accessToken: authentication.accessToken,
-      );
-      await FirebaseAuth.instance.signInWithCredential(googleCredential);
+  static Future<void> loginWithGoogle() async {
+    try {
+      GoogleSignIn googleSignIn = GoogleSignIn();
+      GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account != null) {
+        GoogleSignInAuthentication authentication =
+            await account.authentication;
+        OAuthCredential googleCredential = GoogleAuthProvider.credential(
+          idToken: authentication.idToken,
+          accessToken: authentication.accessToken,
+        );
+
+        await FirebaseAuth.instance.signInWithCredential(googleCredential);
+      }
+    } catch (e) {
+      debugPrint('google login error: $e');
     }
   }
 }
 
 class AppleLoginService {
-  static void loginWithApple() async {
-    final AuthorizationCredentialAppleID appleCredential =
-        await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-    );
+  static Future<void> loginWithApple() async {
+    try {
+      final AuthorizationCredentialAppleID appleCredential =
+          await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
 
-    final OAuthCredential credential = OAuthProvider('apple.com').credential(
-      idToken: appleCredential.identityToken,
-      accessToken: appleCredential.authorizationCode,
-    );
+      final OAuthCredential credential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      debugPrint('apple login error: $e');
+    }
   }
 }
