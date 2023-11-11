@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
@@ -18,6 +19,30 @@ class LobbyScreen extends StatefulWidget {
 class _LobbyScreenState extends State<LobbyScreen> {
   bool isFetching = true;
   bool hasUserData = true;
+
+  Widget toolButton({
+    required String iconUrl,
+    label,
+    required Function() onTap,
+  }) {
+    return Column(
+      children: [
+        Bounceable(
+          onTap: onTap,
+          child: Image.asset(
+            iconUrl,
+            width: 46.0,
+            height: 46.0,
+          ),
+        ),
+        const SizedBox(height: 2.0),
+        Text(
+          label,
+          style: Constants.defaultTextStyle.copyWith(fontSize: 10.0),
+        )
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -72,17 +97,85 @@ class _LobbyScreenState extends State<LobbyScreen> {
           else if (!isFetching && !hasUserData)
             AddInformationScreen(uid: widget.userID)
           else
-            const Center(
+            Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 26),
                 child: MCContainer(
-                  width: 544,
+                  width: 640,
+                  strokePadding: const EdgeInsets.all(8.0),
                   child: Column(
-                    children: [],
+                    children: [
+                      const SizedBox(height: 28.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 42.0),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/icons/profile_image.png',
+                              width: 50.0,
+                              height: 50.0,
+                            ),
+                            const SizedBox(width: 10.0),
+                            Obx(
+                              () => Text(
+                                Get.find<MCUserController>().user!.value.name,
+                                style: Constants.defaultTextStyle
+                                    .copyWith(fontSize: 20),
+                              ),
+                            ),
+                            const Spacer(),
+                            toolButton(
+                              iconUrl: 'assets/icons/my_page.png',
+                              label: '마이페이지',
+                              onTap: () {
+                                //TODO: 마이페이지 이동
+                              },
+                            ),
+                            const SizedBox(width: 22.0),
+                            toolButton(
+                              iconUrl: 'assets/icons/setting.png',
+                              label: '환경설정',
+                              onTap: () {
+                                //TODO: 환경설정 이동
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 27.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Bounceable(
+                              onTap: () {
+                                //TODO: 방만들기 이동
+                              },
+                              child: Image.asset(
+                                'assets/components/create_room_button.png',
+                                width: 270,
+                                height: 180,
+                              ),
+                            ),
+                            Bounceable(
+                              onTap: () {
+                                //TODO: 방 참가하기 이동
+                              },
+                              child: Image.asset(
+                                'assets/components/participate_room_button.png',
+                                width: 270,
+                                height: 180,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );

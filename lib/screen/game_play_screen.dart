@@ -200,7 +200,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 }
 
 class ActionButton extends StatefulWidget {
-  bool isMyTurn;
+  final bool isMyTurn;
 
   final String title;
   final Color backgroundColor;
@@ -208,7 +208,7 @@ class ActionButton extends StatefulWidget {
   final String assetPath;
   final Function()? onPressed;
 
-  ActionButton({
+  const ActionButton({
     super.key,
     required this.backgroundColor,
     required this.titleColor,
