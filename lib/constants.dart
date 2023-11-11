@@ -5,6 +5,7 @@ class Constants {
 
   //MARK: - Color
   static Color grey100 = const Color(0xFF8C8C8C);
+  static Color dark100 = const Color(0xFF303030);
 
   static Color greenNeon = const Color(0xFF00D4A1);
   static Color blueNeon = const Color(0xFF34B5FF);
@@ -27,6 +28,12 @@ class Constants {
     colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
   );
 
+  static BoxShadow defaultShadow = const BoxShadow(
+    color: Color(0x3F000000),
+    blurRadius: 4,
+    offset: Offset(0, 4),
+  );
+
   // Text Styles
   static var defaultTextStyle = const TextStyle(
     color: Colors.white,
@@ -36,6 +43,13 @@ class Constants {
   static var titleTextStyle = const TextStyle(
     color: Colors.white,
     fontSize: 24,
+    fontFamily: 'ONE Mobile POP OTF',
+    fontWeight: FontWeight.w400,
+  );
+
+  static var largeTextStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 20,
     fontFamily: 'ONE Mobile POP OTF',
     fontWeight: FontWeight.w400,
   );
