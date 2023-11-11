@@ -92,7 +92,9 @@ class KakaoLoginService {
       'email': user.kakaoAccount?.email,
     });
 
-    await FirebaseAuth.instance.signInWithCustomToken(customToken);
+    final userID =
+        await FirebaseAuth.instance.signInWithCustomToken(customToken);
+    debugPrint('Login Succeed: $userID');
   }
 }
 
@@ -109,7 +111,9 @@ class GoogleLoginService {
           accessToken: authentication.accessToken,
         );
 
-        await FirebaseAuth.instance.signInWithCredential(googleCredential);
+        final userID =
+            await FirebaseAuth.instance.signInWithCredential(googleCredential);
+        debugPrint('Login Succeed: $userID');
       }
     } catch (e) {
       debugPrint('google login error: $e');
@@ -133,7 +137,9 @@ class AppleLoginService {
         accessToken: appleCredential.authorizationCode,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userID =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      debugPrint('Login Succeed: $userID');
     } catch (e) {
       debugPrint('apple login error: $e');
     }
