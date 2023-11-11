@@ -11,9 +11,8 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
-  bool isSwipeUp = false;
-
-  bool isMyTurn = true;
+  bool isSwipeUp = true;
+  bool isMyTurn = true; // TODO - 데이터 연동 필요
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +101,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "저축",
                       backgroundColor: const Color(0xFF70C14A),
                       titleColor: const Color(0xFF1F6200),
@@ -109,6 +109,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       onPressed: () {},
                     ),
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "투자",
                       backgroundColor: Constants.cardRed,
                       titleColor: const Color(0xFF97010C),
@@ -116,6 +117,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       onPressed: () {},
                     ),
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "지출",
                       backgroundColor: Constants.cardBlue,
                       titleColor: const Color(0xFF002D9B),
@@ -123,6 +125,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       onPressed: () {},
                     ),
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "대출",
                       backgroundColor: Constants.cardOrange,
                       titleColor: const Color(0xFF913B0B),
@@ -135,6 +138,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "행운복권",
                       backgroundColor: Constants.cardYellow,
                       titleColor: const Color(0xFFB86300),
@@ -142,6 +146,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       onPressed: () {},
                     ),
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "무급휴가",
                       backgroundColor: Constants.cardGreenBlue,
                       titleColor: const Color(0xFF005349),
@@ -149,6 +154,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       onPressed: () {},
                     ),
                     ActionButton(
+                      isMyTurn: isMyTurn,
                       title: "랜덤게임",
                       backgroundColor: Constants.cardPink,
                       titleColor: const Color(0xFFA90054),
@@ -193,64 +199,89 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 }
 
-class ActionButton extends StatelessWidget {
+class ActionButton extends StatefulWidget {
+  bool isMyTurn;
+
   final String title;
   final Color backgroundColor;
   final Color titleColor;
   final String assetPath;
   final Function()? onPressed;
 
-  const ActionButton({
+  ActionButton({
     super.key,
     required this.backgroundColor,
     required this.titleColor,
     required this.assetPath,
     this.onPressed,
     required this.title,
+    required this.isMyTurn,
   });
 
+  @override
+  State<ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<ActionButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: CupertinoButton(
           padding: EdgeInsets.zero,
-          onPressed: onPressed,
-          child: Container(
-            width: 150,
-            height: 90,
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              color: backgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              shadows: const [
-                BoxShadow(
-                  color: Color(0x4C000000),
-                  blurRadius: 6,
-                  offset: Offset(3, 3),
-                  spreadRadius: 1,
-                )
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 4),
-                    child: Text(title,
-                        style: Constants.titleTextStyle
-                            .copyWith(color: titleColor)),
+          onPressed: widget.isMyTurn ? widget.onPressed : null,
+          child: Stack(
+            children: [
+              Container(
+                width: 150,
+                height: 90,
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  color: widget.backgroundColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  Expanded(
-                    child: Image.asset(assetPath, fit: BoxFit.fitHeight),
-                  )
-                ],
+                  shadows: const [
+                    BoxShadow(
+                      color: Color(0x4C000000),
+                      blurRadius: 6,
+                      offset: Offset(3, 3),
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 4),
+                        child: Text(widget.title,
+                            style: Constants.titleTextStyle
+                                .copyWith(color: widget.titleColor)),
+                      ),
+                      Expanded(
+                        child: Image.asset(widget.assetPath,
+                            fit: BoxFit.fitHeight),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
+              if (!widget.isMyTurn)
+                Container(
+                  width: 150,
+                  height: 90,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: const Color(0x996D6D6D),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                )
+            ],
           )),
     );
   }
@@ -328,7 +359,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                                   children: [
                                     const Spacer(),
                                     Text("100,000,000원",
-                                        style: Constants.defaultTextStyle),
+                                        style: Constants
+                                            .defaultTextStyle), // TODO - 자산 현황 연동
                                     const SizedBox(width: 11)
                                   ],
                                 )),
