@@ -9,8 +9,6 @@ import 'package:money_cycle/firebase_options.dart';
 import 'package:money_cycle/screen/lobby_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
-import 'screen/game_play_screen.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -43,7 +41,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const LobbyScreen();
             } else {
-              return const GamePlayScreen();
+              return const StartScreen();
             }
           }),
         ),
