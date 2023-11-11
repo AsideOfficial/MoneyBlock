@@ -38,8 +38,10 @@ class MyApp extends StatelessWidget {
         body: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: ((context, snapshot) {
+            final userID = snapshot.data?.uid;
+
             if (snapshot.hasData) {
-              return const LobbyScreen();
+              return LobbyScreen(userID: userID!);
             } else {
               return const StartScreen();
             }

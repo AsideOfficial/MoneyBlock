@@ -87,7 +87,7 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
                         height: double.infinity,
                         color: Colors.black.withOpacity(0.3),
                         child: Padding(
-                          padding: EdgeInsets.all(100.0),
+                          padding: const EdgeInsets.all(100.0),
                           child: CircularProgressIndicator(
                             color: Constants.blueNeon,
                           ),
