@@ -72,17 +72,28 @@ class _LobbyScreenState extends State<LobbyScreen> {
           else if (!isFetching && !hasUserData)
             AddInformationScreen(uid: widget.userID)
           else
-            const Center(
+            Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 26),
                 child: MCContainer(
                   width: 544,
                   child: Column(
-                    children: [],
+                    children: [
+                      const SizedBox(height: 33.0),
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/components/icons/profile_image.png',
+                            width: 50.0,
+                            height: 50.0,
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );
