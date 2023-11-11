@@ -49,31 +49,6 @@ class KakaoLoginService {
     }
   }
 
-  // static void getUserInfo(kakao.User user) {
-  //   try {
-  //     MCUserController.to.login(
-  //       name: user.kakaoAccount?.profile?.nickname ?? '이름 정보 없음',
-  //       phoneNumber: '연락처 정보 없음',
-  //       birthday: user.kakaoAccount?.birthday ?? '생일 정보 없음',
-  //       gender: (user.kakaoAccount?.gender ?? '성별 정보 없음') == kakao.Gender.male
-  //           ? '남성'
-  //           : '여성',
-  //       parentInfo: null,
-  //       location: null,
-  //     );
-  //     debugPrint('사용자 정보 요청 성공'
-  //         '\n회원번호: ${user.id}'
-  //         '\n이메일: ${user.kakaoAccount?.email}'
-  //         '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-  //         '\n연락처: ${user.kakaoAccount?.phoneNumber}'
-  //         '\n생일: ${user.kakaoAccount?.birthday}'
-  //         '\n출생연도: ${user.kakaoAccount?.birthyear}'
-  //         '\n성별: ${user.kakaoAccount?.gender}');
-  //   } catch (error) {
-  //     debugPrint('사용자 정보 요청 실패 $error');
-  //   }
-  // }
-
   // 카카오 로그인
   static Future<void> kakaoLogin() async {
     // 카카오톡 설치 여부 확인

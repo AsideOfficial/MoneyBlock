@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             final userID = snapshot.data?.uid;
 
             if (snapshot.hasData) {
-              return LobbyScreen(userID: userID);
+              return LobbyScreen(userID: userID!);
             } else {
               return const StartScreen();
             }

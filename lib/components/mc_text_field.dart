@@ -17,6 +17,7 @@ class MCTextField extends StatelessWidget {
     this.inputFormatters,
     this.maxLength,
     this.counterText = "",
+    this.fillColor,
     this.maxLines = 1,
     this.expands = false,
     this.keyboardType,
@@ -39,6 +40,7 @@ class MCTextField extends StatelessWidget {
   final Function(String)? onSubmitted;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
+  final Color? fillColor;
   final String? counterText;
   final int? maxLines;
   final bool expands;
@@ -78,7 +80,7 @@ class MCTextField extends StatelessWidget {
         contentPadding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         filled: true,
-        fillColor: const Color(0xFFEEEEEE),
+        fillColor: fillColor ?? const Color(0xFFEEEEEE),
         errorText: error ? errorText : null,
         // errorStyle: Constants.textFieldErrorStyle.copyWith(color: Colors.black),
         enabledBorder: outlineInputBorder,

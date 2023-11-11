@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/controller/user_controller.dart';
+import 'package:money_cycle/start/add_information_screen.dart';
 import 'package:money_cycle/utils/firebase_service.dart';
 
 class LobbyScreen extends StatefulWidget {
   const LobbyScreen({super.key, required this.userID});
 
-  final String? userID;
+  final String userID;
 
   @override
   State<LobbyScreen> createState() => _LobbyScreenState();
@@ -14,13 +17,20 @@ class LobbyScreen extends StatefulWidget {
 
 class _LobbyScreenState extends State<LobbyScreen> {
   bool isFetching = true;
+  bool hasUserData = true;
 
   @override
   void initState() {
-    if (widget.userID != null) {
-      FirebaseService.getUserData(userID: widget.userID!)
-          .then((value) => print(value));
-    }
+    FirebaseService.getUserData(userID: widget.userID).then((user) {
+      if (user != null) {
+        Get.put(MCUserController());
+        MCUserController.to.login(userData: user);
+      } else {
+        setState(() => hasUserData = false);
+        debugPrint('require user data');
+      }
+      setState(() => isFetching = false);
+    });
 
     super.initState();
   }
@@ -59,17 +69,20 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 ],
               ),
             )
+          else if (!isFetching && !hasUserData)
+            AddInformationScreen(uid: widget.userID)
           else
             const Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 26),
-              child: MCContainer(
-                width: 544,
-                child: Column(
-                  children: [],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 26),
+                child: MCContainer(
+                  width: 544,
+                  child: Column(
+                    children: [],
+                  ),
                 ),
               ),
-            )),
+            )
         ],
       ),
     );
