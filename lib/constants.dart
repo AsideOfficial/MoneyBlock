@@ -10,6 +10,15 @@ class Constants {
   static Color greenNeon = const Color(0xFF00D4A1);
   static Color blueNeon = const Color(0xFF34B5FF);
 
+  // 카드 배경 (7가지 액션)
+  static Color cardGreen = const Color(0xFF70C14A);
+  static Color cardRed = const Color(0xFFF2515D);
+  static Color cardBlue = const Color(0xFF507EEB);
+  static Color cardOrange = const Color(0xFFF68F17);
+  static Color cardYellow = const Color(0xFFFFD31F);
+  static Color cardGreenBlue = const Color(0xFF00AA96);
+  static Color cardPink = const Color(0xFFF65CA9);
+
   // Theme
   static ThemeData theme = ThemeData(
     fontFamily: 'ONE Mobile POP OTF',
