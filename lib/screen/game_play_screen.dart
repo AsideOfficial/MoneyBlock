@@ -327,10 +327,8 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                                 child: Row(
                                   children: [
                                     const Spacer(),
-                                    Text(
-                                      "100,000,000원",
-                                      style: Constants.defaultTextStyle,
-                                    ),
+                                    Text("100,000,000원",
+                                        style: Constants.defaultTextStyle),
                                     const SizedBox(width: 11)
                                   ],
                                 )),
