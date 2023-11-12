@@ -25,7 +25,7 @@ class Constants {
     scaffoldBackgroundColor: Colors.white,
   );
 
-  static LinearGradient mainGradient = const LinearGradient(
+  static const LinearGradient mainGradient = LinearGradient(
     begin: Alignment(0.00, 1.00),
     end: Alignment(0, -1),
     colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
@@ -41,6 +41,16 @@ class Constants {
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFF1E4CBB), Color(0xFF507EEB)],
+  );
+  static const LinearGradient redGradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFFD40817), Color(0xFFF3515D)],
+  );
+  static const LinearGradient greenGradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFF37AB00), Color(0xFF87D861)],
   );
 
   static BoxShadow defaultShadow = const BoxShadow(

@@ -11,7 +11,7 @@ class MCContainer extends StatelessWidget {
     this.borderRadius = 36,
     this.shadows,
     this.strokePadding,
-    this.gradient = Constants.subGradient,
+    this.gradient = Constants.mainGradient,
   });
 
   final double? width;

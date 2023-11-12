@@ -25,7 +25,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       alignment: Alignment.center,
       children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: Constants.mainGradient,
           ),
         ),
@@ -214,6 +214,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         strokePadding: EdgeInsets.all(5),
                         width: 170,
                         height: 250,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 34),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ActionChoiceButton(title: "소비"),
+                              ActionChoiceButton(title: "보험"),
+                              ActionChoiceButton(title: "기부"),
+                            ],
+                          ),
+                        ),
                       ),
                       Bounceable(
                         scaleFactor: 0.8,
@@ -227,12 +238,38 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     ],
                   ),
                   const SizedBox(width: 12),
-                  const MCContainer(
+                  MCContainer(
                     borderRadius: 20,
                     gradient: Constants.blueGradient,
-                    strokePadding: EdgeInsets.all(5),
+                    strokePadding: const EdgeInsets.all(5),
                     width: 530,
                     height: 250,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 24, left: 30, right: 10, bottom: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("지출 활동", style: Constants.titleTextStyle),
+                          const SizedBox(height: 18),
+                          Text("왼쪽의 3가지 지출 활동중 1가지를 누르고 지출활동을 하세요.",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 16)),
+                          const SizedBox(height: 16),
+                          Text("소비 : 소비는 이러이러한 것입니다.",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 16)),
+                          const SizedBox(height: 10),
+                          Text("보험 : 소비는 이러이러한 것입니다.",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 16)),
+                          const SizedBox(height: 10),
+                          Text("기부 : 소비는 이러이러한 것입니다.",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 16)),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               )
@@ -259,6 +296,36 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 )))
       ],
     ));
+  }
+}
+
+class ActionChoiceButton extends StatelessWidget {
+  final String title;
+  const ActionChoiceButton({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Bounceable(
+      duration: const Duration(seconds: 1),
+      onTap: () {},
+      child: SizedBox(
+        width: 100,
+        height: 50,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset("assets/icons/blue_button.png"),
+            Text(
+              title,
+              style: Constants.defaultTextStyle.copyWith(fontSize: 20),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
