@@ -4,6 +4,7 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/models/enums/game_action.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -16,6 +17,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
   bool isActionChoicing = true;
+  GameActionType currentActionType = GameActionType.saving;
+
+  void onActionButtonTap(GameActionType action) {
+    setState(() {
+      currentActionType = action;
+      isActionChoicing = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +119,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       titleColor: const Color(0xFF1F6200),
                       assetPath: "assets/icons/saving.png",
                       onPressed: () {
-                        setState(() => isActionChoicing = true);
+                        onActionButtonTap(GameActionType.saving);
                       },
                     ),
                     ActionButton(
@@ -120,7 +129,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       titleColor: const Color(0xFF97010C),
                       assetPath: "assets/icons/investment.png",
                       onPressed: () {
-                        setState(() => isActionChoicing = true);
+                        onActionButtonTap(GameActionType.investment);
                       },
                     ),
                     ActionButton(
@@ -130,7 +139,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       titleColor: const Color(0xFF002D9B),
                       assetPath: "assets/icons/expend.png",
                       onPressed: () {
-                        setState(() => isActionChoicing = true);
+                        onActionButtonTap(GameActionType.expend);
                       },
                     ),
                     ActionButton(
@@ -203,76 +212,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               const SizedBox(
                 height: 40,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    children: [
-                      const MCContainer(
-                        borderRadius: 20,
-                        gradient: Constants.blueGradient,
-                        strokePadding: EdgeInsets.all(5),
-                        width: 170,
-                        height: 250,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 34),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ActionChoiceButton(title: "소비"),
-                              ActionChoiceButton(title: "보험"),
-                              ActionChoiceButton(title: "기부"),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Bounceable(
-                        scaleFactor: 0.8,
-                        onTap: () => setState(() => isActionChoicing = false),
-                        child: Image.asset(
-                          'assets/icons/back_button.png',
-                          width: 46.0,
-                          height: 46.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 12),
-                  MCContainer(
-                    borderRadius: 20,
-                    gradient: Constants.blueGradient,
-                    strokePadding: const EdgeInsets.all(5),
-                    width: 530,
-                    height: 250,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 24, left: 30, right: 10, bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("지출 활동", style: Constants.titleTextStyle),
-                          const SizedBox(height: 18),
-                          Text("왼쪽의 3가지 지출 활동중 1가지를 누르고 지출활동을 하세요.",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 16)),
-                          const SizedBox(height: 16),
-                          Text("소비 : 소비는 이러이러한 것입니다.",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 16)),
-                          const SizedBox(height: 10),
-                          Text("보험 : 소비는 이러이러한 것입니다.",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 16)),
-                          const SizedBox(height: 10),
-                          Text("기부 : 소비는 이러이러한 것입니다.",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
+              showActtionDialog()
             ],
           ),
         AnimatedPositioned(
@@ -296,6 +236,77 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 )))
       ],
     ));
+  }
+
+  Row showActtionDialog() {
+    final model = currentActionType.actionData;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Stack(
+          children: [
+            MCContainer(
+              borderRadius: 20,
+              gradient: Constants.blueGradient,
+              strokePadding: const EdgeInsets.all(5),
+              width: 170,
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 34),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: model.actions.map((action) {
+                    return ActionChoiceButton(
+                      title: action.title,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            Bounceable(
+              scaleFactor: 0.8,
+              onTap: () => setState(() => isActionChoicing = false),
+              child: Image.asset(
+                'assets/icons/back_button.png',
+                width: 46.0,
+                height: 46.0,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 12),
+        MCContainer(
+          borderRadius: 20,
+          gradient: Constants.blueGradient,
+          strokePadding: const EdgeInsets.all(5),
+          width: 530,
+          height: 250,
+          child: Padding(
+            padding:
+                const EdgeInsets.only(top: 24, left: 30, right: 10, bottom: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("${model.title} 활동", style: Constants.titleTextStyle),
+                const SizedBox(height: 18),
+                Text(
+                    "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 누르고 ${model.title}활동을 하세요.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                const SizedBox(height: 16),
+                Text("소비 : 소비는 이러이러한 것입니다.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                const SizedBox(height: 10),
+                Text("보험 : 소비는 이러이러한 것입니다.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                const SizedBox(height: 10),
+                Text("기부 : 소비는 이러이러한 것입니다.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -1,18 +1,30 @@
 import 'package:flutter/widgets.dart';
+import 'package:money_cycle/models/game_action.dart';
 
 import '../../constants.dart';
 
-enum GameAction { saving, investment, expend }
+enum GameActionType { saving, investment, expend }
 
-extension GameActionExtension on GameAction {
+extension GameActionExtension on GameActionType {
   LinearGradient get linearBackground {
     switch (this) {
-      case GameAction.saving:
+      case GameActionType.saving:
         return Constants.greenGradient;
-      case GameAction.investment:
+      case GameActionType.investment:
         return Constants.redGradient;
-      case GameAction.expend:
+      case GameActionType.expend:
         return Constants.blueGradient;
+    }
+  }
+
+  GameAction get actionData {
+    switch (this) {
+      case GameActionType.saving:
+        return savingModel;
+      case GameActionType.investment:
+        return investmentModel;
+      case GameActionType.expend:
+        return expendModel;
     }
   }
 }

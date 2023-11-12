@@ -8,8 +8,6 @@ import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
 import 'package:money_cycle/screen/game_play_screen.dart';
 import 'package:money_cycle/screen/lobby_screen.dart';
-import 'package:money_cycle/screen/waiting_room_screen.dart';
-import 'package:money_cycle/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

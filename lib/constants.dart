@@ -25,6 +25,7 @@ class Constants {
     scaffoldBackgroundColor: Colors.white,
   );
 
+  //MARK :- Gradient
   static const LinearGradient mainGradient = LinearGradient(
     begin: Alignment(0.00, 1.00),
     end: Alignment(0, -1),
@@ -42,16 +43,20 @@ class Constants {
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFF1E4CBB), Color(0xFF507EEB)],
   );
+
   static const LinearGradient redGradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFFD40817), Color(0xFFF3515D)],
   );
+
   static const LinearGradient greenGradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFF37AB00), Color(0xFF87D861)],
   );
+
+  //MARK: - Shadow
 
   static BoxShadow defaultShadow = const BoxShadow(
     color: Color(0x3F000000),
@@ -59,7 +64,7 @@ class Constants {
     offset: Offset(0, 4),
   );
 
-  // Text Styles
+  // MARK: - Text Styles
   static var defaultTextStyle = const TextStyle(
     color: Colors.white,
     fontFamily: 'ONE Mobile POP OTF',
