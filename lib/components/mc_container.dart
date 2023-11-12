@@ -11,6 +11,7 @@ class MCContainer extends StatelessWidget {
     this.borderRadius = 36,
     this.shadows,
     this.strokePadding,
+    this.gradient = Constants.subGradient,
   });
 
   final double? width;
@@ -20,6 +21,7 @@ class MCContainer extends StatelessWidget {
   final double borderRadius;
   final List<BoxShadow>? shadows;
   final EdgeInsetsGeometry? strokePadding;
+  final LinearGradient? gradient;
 
   EdgeInsetsGeometry get getStrokePadding {
     if (strokePadding == null) {
@@ -50,7 +52,7 @@ class MCContainer extends StatelessWidget {
         child: Container(
           alignment: alignment,
           decoration: ShapeDecoration(
-            gradient: Constants.mainGradient,
+            gradient: gradient,
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 2, color: Colors.white),
               borderRadius: BorderRadius.circular(borderRadius),

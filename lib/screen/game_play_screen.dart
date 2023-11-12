@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 
@@ -13,6 +15,7 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
+  bool isActionChoicing = true;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +109,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: const Color(0xFF70C14A),
                       titleColor: const Color(0xFF1F6200),
                       assetPath: "assets/icons/saving.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -114,7 +119,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardRed,
                       titleColor: const Color(0xFF97010C),
                       assetPath: "assets/icons/investment.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -122,7 +129,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardBlue,
                       titleColor: const Color(0xFF002D9B),
                       assetPath: "assets/icons/expend.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -130,7 +139,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardOrange,
                       titleColor: const Color(0xFF913B0B),
                       assetPath: "assets/icons/loan.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     )
                   ],
                 ),
@@ -143,7 +154,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardYellow,
                       titleColor: const Color(0xFFB86300),
                       assetPath: "assets/icons/lottery.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -151,7 +164,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardGreenBlue,
                       titleColor: const Color(0xFF005349),
                       assetPath: "assets/icons/vacation.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -159,7 +174,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardPink,
                       titleColor: const Color(0xFFA90054),
                       assetPath: "assets/icons/random_game.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     const SizedBox(
                       width: 150,
@@ -175,6 +192,52 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             )
           ],
         ),
+        if (isActionChoicing)
+          GestureDetector(
+            child: Container(color: Colors.black.withOpacity(0.3)),
+            onTap: () => setState(() => isActionChoicing = false),
+          ),
+        if (isActionChoicing)
+          Column(
+            children: [
+              const SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      const MCContainer(
+                        borderRadius: 20,
+                        gradient: Constants.blueGradient,
+                        strokePadding: EdgeInsets.all(5),
+                        width: 170,
+                        height: 250,
+                      ),
+                      Bounceable(
+                        scaleFactor: 0.8,
+                        onTap: () => setState(() => isActionChoicing = false),
+                        child: Image.asset(
+                          'assets/icons/back_button.png',
+                          width: 46.0,
+                          height: 46.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  const MCContainer(
+                    borderRadius: 20,
+                    gradient: Constants.blueGradient,
+                    strokePadding: EdgeInsets.all(5),
+                    width: 530,
+                    height: 250,
+                  ),
+                ],
+              )
+            ],
+          ),
         AnimatedPositioned(
             curve: Curves.decelerate,
             duration: const Duration(milliseconds: 400),

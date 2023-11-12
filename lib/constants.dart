@@ -31,10 +31,16 @@ class Constants {
     colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
   );
 
-  static LinearGradient subGradient = const LinearGradient(
+  static const LinearGradient subGradient = LinearGradient(
     begin: Alignment(0.00, -1.00),
     end: Alignment(0, 1),
     colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+  );
+
+  static const LinearGradient blueGradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFF1E4CBB), Color(0xFF507EEB)],
   );
 
   static BoxShadow defaultShadow = const BoxShadow(
