@@ -56,6 +56,12 @@ class Constants {
     colors: [Color(0xFF37AB00), Color(0xFF87D861)],
   );
 
+  static const LinearGradient greyGradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+  );
+
   //MARK: - Shadow
 
   static BoxShadow defaultShadow = const BoxShadow(

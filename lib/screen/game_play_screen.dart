@@ -279,7 +279,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           borderRadius: 20,
           gradient: Constants.blueGradient,
           strokePadding: const EdgeInsets.all(5),
-          width: 530,
+          width: (currentActionType != GameActionType.expend) ? 340 : 530,
           height: 250,
           child: Padding(
             padding:
@@ -290,7 +290,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 Text("${model.title} 활동", style: Constants.titleTextStyle),
                 const SizedBox(height: 18),
                 Text(
-                    "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 누르고 ${model.title}활동을 하세요.",
+                    "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 고르세요.",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
                 const SizedBox(height: 16),
                 Text("소비 : 소비는 이러이러한 것입니다.",
@@ -305,6 +305,100 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             ),
           ),
         ),
+        if (currentActionType != GameActionType.expend)
+          const SizedBox(width: 10),
+        if (currentActionType != GameActionType.expend)
+          MCContainer(
+            borderRadius: 20,
+            gradient: Constants.greyGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 180,
+            height: 250,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 18, left: 16, right: 16, bottom: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("현재 금리",
+                      style: Constants.titleTextStyle
+                          .copyWith(color: Constants.dark100)),
+                  const SizedBox(height: 18),
+                  Text("현재 금리는\n이러이러합니다.",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, color: Constants.dark100)),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text("기간 및 금액",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("금리(연)",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("3개월이상~6개월미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.0",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("6개월이상~1년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("1년이상~3년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("1년이상~3년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
