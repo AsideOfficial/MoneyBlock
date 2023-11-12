@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action.dart';
+import 'package:money_cycle/models/game_action.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -275,6 +276,37 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           ],
         ),
         const SizedBox(width: 12),
+        // MCContainer(
+        //   borderRadius: 20,
+        //   gradient: Constants.blueGradient,
+        //   strokePadding: const EdgeInsets.all(5),
+        //   width: (currentActionType != GameActionType.expend) ? 340 : 530,
+        //   height: 250,
+        //   child: Padding(
+        //     padding:
+        //         const EdgeInsets.only(top: 24, left: 30, right: 10, bottom: 10),
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         Text("${model.title} 활동", style: Constants.titleTextStyle),
+        //         const SizedBox(height: 18),
+        //         Text(
+        //             "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 고르세요.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 16),
+        //         Text("소비 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 10),
+        //         Text("보험 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 10),
+        //         Text("기부 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+
         MCContainer(
           borderRadius: 20,
           gradient: Constants.blueGradient,
@@ -287,20 +319,95 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${model.title} 활동", style: Constants.titleTextStyle),
+                Text(model.actions[0].title, style: Constants.titleTextStyle),
                 const SizedBox(height: 18),
-                Text(
-                    "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 고르세요.",
+                Text("어떤 ${model.actions[0].title}를 하시겠습니까?",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
                 const SizedBox(height: 16),
-                Text("소비 : 소비는 이러이러한 것입니다.",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                const SizedBox(height: 10),
-                Text("보험 : 소비는 이러이러한 것입니다.",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                const SizedBox(height: 10),
-                Text("기부 : 소비는 이러이러한 것입니다.",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      key: UniqueKey(),
+                      itemCount: model.actions[0].items.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              right: 10, top: 1, bottom: 1),
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            width: 110,
+                            height: 136,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    width: 1,
+                                    color: Colors.white,
+                                    strokeAlign: BorderSide.strokeAlignOutside),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color(0x4C000000),
+                                  blurRadius: 6,
+                                  offset: Offset(3, 3),
+                                  spreadRadius: 1,
+                                )
+                              ],
+                            ),
+                            child: Column(children: [
+                              Container(
+                                clipBehavior: Clip.hardEdge,
+                                height: 60,
+                                decoration:
+                                    BoxDecoration(color: Constants.cardBlue),
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      model.actions[0].items[index].title,
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${model.actions[0].items[index].price}원",
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(
+                                              fontSize: 16,
+                                              color: Constants.dark100),
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      model.actions[0].items[index].description,
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(
+                                              fontSize: 10,
+                                              color: Constants.dark100),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ]),
+                          ),
+                        );
+                      }),
+                ),
               ],
             ),
           ),
