@@ -18,6 +18,7 @@ class MCTextField extends StatelessWidget {
     this.maxLength,
     this.counterText = "",
     this.fillColor,
+    this.borderRadius = 20.0,
     this.maxLines = 1,
     this.expands = false,
     this.keyboardType,
@@ -41,6 +42,7 @@ class MCTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
   final Color? fillColor;
+  final double borderRadius;
   final String? counterText;
   final int? maxLines;
   final bool expands;
@@ -52,12 +54,13 @@ class MCTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputAction? textInputAction;
 
-  final outlineInputBorder = OutlineInputBorder(
-    borderSide: const BorderSide(color: Colors.transparent),
-    borderRadius: BorderRadius.circular(20.0),
-  );
   @override
   Widget build(BuildContext context) {
+    final outlineInputBorder = OutlineInputBorder(
+      borderSide: const BorderSide(color: Colors.transparent),
+      borderRadius: BorderRadius.circular(borderRadius),
+    );
+
     return TextField(
       maxLength: maxLength,
       textInputAction: textInputAction,

@@ -85,7 +85,10 @@ class _LoginOptionsDialogsState extends State<LoginOptionsDialogs> {
                       Container(
                         width: double.infinity,
                         height: double.infinity,
-                        color: Colors.black.withOpacity(0.3),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(36.0),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(100.0),
                           child: CircularProgressIndicator(

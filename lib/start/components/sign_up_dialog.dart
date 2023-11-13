@@ -250,7 +250,7 @@ class _EmailNickNameInputState extends State<EmailNickNameInput> {
               children: [
                 MCTextField(
                   controller: widget.nickNameController,
-                  hintText: "닉네임",
+                  hintText: "이름",
                   textInputAction: TextInputAction.done,
                   maxLength: 20,
                   onChanged: (p0) {

@@ -192,6 +192,8 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                                 userData: MCUser(
                                   uid: widget.uid,
                                   name: nameController.text,
+                                  nickNm: nameController.text,
+                                  profileImageIndex: 0,
                                   phoneNumber: phoneNumberController.text,
                                   birthday: birthdayController.text,
                                   gender: genderController.text,
