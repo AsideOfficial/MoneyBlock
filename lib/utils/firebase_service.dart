@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:money_cycle/start/model/mc_room.dart';
+import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
 
 class FirebaseService {
@@ -54,5 +54,12 @@ class FirebaseService {
     }
 
     return randomInt;
+  }
+
+  static Future<String> getRoomId({required int code}) async {
+    final snapshot = await roomRef.where('roomCode', isEqualTo: code).get();
+    final id = snapshot.docs[0].id;
+
+    return id;
   }
 }
