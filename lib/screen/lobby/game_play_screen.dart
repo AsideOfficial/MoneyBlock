@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/models/enums/game_action.dart';
+import 'package:money_cycle/models/game_action.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -13,6 +17,15 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
+  bool isActionChoicing = true;
+  GameActionType currentActionType = GameActionType.saving;
+
+  void onActionButtonTap(GameActionType action) {
+    setState(() {
+      currentActionType = action;
+      isActionChoicing = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +35,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       alignment: Alignment.center,
       children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: Constants.mainGradient,
           ),
         ),
@@ -106,7 +119,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: const Color(0xFF70C14A),
                       titleColor: const Color(0xFF1F6200),
                       assetPath: "assets/icons/saving.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        onActionButtonTap(GameActionType.saving);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -114,7 +129,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardRed,
                       titleColor: const Color(0xFF97010C),
                       assetPath: "assets/icons/investment.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        onActionButtonTap(GameActionType.investment);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -122,7 +139,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardBlue,
                       titleColor: const Color(0xFF002D9B),
                       assetPath: "assets/icons/expend.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        onActionButtonTap(GameActionType.expend);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -130,7 +149,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardOrange,
                       titleColor: const Color(0xFF913B0B),
                       assetPath: "assets/icons/loan.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     )
                   ],
                 ),
@@ -143,7 +164,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardYellow,
                       titleColor: const Color(0xFFB86300),
                       assetPath: "assets/icons/lottery.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -151,7 +174,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardGreenBlue,
                       titleColor: const Color(0xFF005349),
                       assetPath: "assets/icons/vacation.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     ActionButton(
                       isMyTurn: isMyTurn,
@@ -159,7 +184,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       backgroundColor: Constants.cardPink,
                       titleColor: const Color(0xFFA90054),
                       assetPath: "assets/icons/random_game.png",
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() => isActionChoicing = true);
+                      },
                     ),
                     const SizedBox(
                       width: 150,
@@ -175,6 +202,20 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             )
           ],
         ),
+        if (isActionChoicing)
+          GestureDetector(
+            child: Container(color: Colors.black.withOpacity(0.3)),
+            onTap: () => setState(() => isActionChoicing = false),
+          ),
+        if (isActionChoicing)
+          Column(
+            children: [
+              const SizedBox(
+                height: 40,
+              ),
+              showActtionDialog()
+            ],
+          ),
         AnimatedPositioned(
             curve: Curves.decelerate,
             duration: const Duration(milliseconds: 400),
@@ -196,6 +237,307 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 )))
       ],
     ));
+  }
+
+  Row showActtionDialog() {
+    final model = currentActionType.actionData;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Stack(
+          children: [
+            MCContainer(
+              borderRadius: 20,
+              gradient: Constants.blueGradient,
+              strokePadding: const EdgeInsets.all(5),
+              width: 170,
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 34),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: model.actions.map((action) {
+                    return ActionChoiceButton(
+                      title: action.title,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            Bounceable(
+              scaleFactor: 0.8,
+              onTap: () => setState(() => isActionChoicing = false),
+              child: Image.asset(
+                'assets/icons/back_button.png',
+                width: 46.0,
+                height: 46.0,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 12),
+        // MCContainer(
+        //   borderRadius: 20,
+        //   gradient: Constants.blueGradient,
+        //   strokePadding: const EdgeInsets.all(5),
+        //   width: (currentActionType != GameActionType.expend) ? 340 : 530,
+        //   height: 250,
+        //   child: Padding(
+        //     padding:
+        //         const EdgeInsets.only(top: 24, left: 30, right: 10, bottom: 10),
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         Text("${model.title} 활동", style: Constants.titleTextStyle),
+        //         const SizedBox(height: 18),
+        //         Text(
+        //             "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 고르세요.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 16),
+        //         Text("소비 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 10),
+        //         Text("보험 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //         const SizedBox(height: 10),
+        //         Text("기부 : 소비는 이러이러한 것입니다.",
+        //             style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+
+        MCContainer(
+          borderRadius: 20,
+          gradient: Constants.blueGradient,
+          strokePadding: const EdgeInsets.all(5),
+          width: (currentActionType != GameActionType.expend) ? 340 : 530,
+          height: 250,
+          child: Padding(
+            padding:
+                const EdgeInsets.only(top: 24, left: 30, right: 10, bottom: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(model.actions[0].title, style: Constants.titleTextStyle),
+                const SizedBox(height: 18),
+                Text("어떤 ${model.actions[0].title}를 하시겠습니까?",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      key: UniqueKey(),
+                      itemCount: model.actions[0].items.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              right: 10, top: 1, bottom: 1),
+                          child: Container(
+                            clipBehavior: Clip.antiAlias,
+                            width: 110,
+                            height: 136,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    width: 1,
+                                    color: Colors.white,
+                                    strokeAlign: BorderSide.strokeAlignOutside),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              shadows: const [
+                                BoxShadow(
+                                  color: Color(0x4C000000),
+                                  blurRadius: 6,
+                                  offset: Offset(3, 3),
+                                  spreadRadius: 1,
+                                )
+                              ],
+                            ),
+                            child: Column(children: [
+                              Container(
+                                clipBehavior: Clip.hardEdge,
+                                height: 60,
+                                decoration:
+                                    BoxDecoration(color: Constants.cardBlue),
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      model.actions[0].items[index].title,
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${model.actions[0].items[index].price}원",
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(
+                                              fontSize: 16,
+                                              color: Constants.dark100),
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      model.actions[0].items[index].description,
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(
+                                              fontSize: 10,
+                                              color: Constants.dark100),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ]),
+                          ),
+                        );
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (currentActionType != GameActionType.expend)
+          const SizedBox(width: 10),
+        if (currentActionType != GameActionType.expend)
+          MCContainer(
+            borderRadius: 20,
+            gradient: Constants.greyGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 180,
+            height: 250,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 18, left: 16, right: 16, bottom: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("현재 금리",
+                      style: Constants.titleTextStyle
+                          .copyWith(color: Constants.dark100)),
+                  const SizedBox(height: 18),
+                  Text("현재 금리는\n이러이러합니다.",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, color: Constants.dark100)),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text("기간 및 금액",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("금리(연)",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("3개월이상~6개월미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.0",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("6개월이상~1년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("1년이상~3년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text("1년이상~3년미만",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 10, color: Constants.dark100)),
+                      const Spacer(),
+                      Text("2.5",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 10, color: Constants.dark100))
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ActionChoiceButton extends StatelessWidget {
+  final String title;
+  const ActionChoiceButton({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Bounceable(
+      duration: const Duration(seconds: 1),
+      onTap: () {},
+      child: SizedBox(
+        width: 100,
+        height: 50,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset("assets/icons/blue_button.png"),
+            Text(
+              title,
+              style: Constants.defaultTextStyle.copyWith(fontSize: 20),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
