@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-
-import '../constants.dart';
+import 'package:money_cycle/constants.dart';
 
 class WaitingRoomScreen extends StatelessWidget {
   const WaitingRoomScreen({super.key});

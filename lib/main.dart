@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
-import 'package:money_cycle/screen/lobby/lobby_screen.dart';
+import 'package:money_cycle/screen/lobby/screens/lobby_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
 void main() async {
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return LobbyScreen(userID: userID!);
             } else {
-              return const GamePlayScreen();
+              return const StartScreen();
             }
           }),
         ),

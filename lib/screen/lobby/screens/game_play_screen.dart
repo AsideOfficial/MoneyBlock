@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action.dart';
-import 'package:money_cycle/models/game_action.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_cycle/screen/lobby/qr_scanner.dart';
+import 'package:money_cycle/screen/lobby/screens/qr_scanner.dart';
 
 class ParticipateRoomScreen extends StatelessWidget {
   const ParticipateRoomScreen({super.key});

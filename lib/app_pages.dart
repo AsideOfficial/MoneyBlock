@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:money_cycle/screen/lobby/game_play_screen.dart';
-import 'package:money_cycle/screen/lobby/participate_room_screen.dart';
+import 'package:money_cycle/screen/lobby/screens/game_play_screen.dart';
+import 'package:money_cycle/screen/lobby/screens/participate_room_screen.dart';
 
 class AppPages {
   static final routes = [
