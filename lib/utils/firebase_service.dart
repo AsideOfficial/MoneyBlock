@@ -17,7 +17,7 @@ class FirebaseService {
     return user;
   }
 
-  static updateUserData({required MCUser userData}) {
+  static Future<void> updateUserData({required MCUser userData}) async {
     final userRef = FirebaseFirestore.instance
         .collection('User')
         .doc(userData.uid)
@@ -25,7 +25,7 @@ class FirebaseService {
           fromFirestore: MCUser.fromFirestore,
           toFirestore: (MCUser user, _) => user.toFirestore(),
         );
-    userRef
+    await userRef
         .set(userData)
         .onError((e, _) => debugPrint("Error writing document: $e"));
   }

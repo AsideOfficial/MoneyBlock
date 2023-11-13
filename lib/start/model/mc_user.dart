@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MCUser {
   final String uid;
   final String name;
+  final String nickNm;
+  final int profileImageIndex;
   final String phoneNumber;
   final String birthday;
   final String gender;
@@ -12,6 +14,8 @@ class MCUser {
   const MCUser({
     required this.uid,
     required this.name,
+    required this.nickNm,
+    required this.profileImageIndex,
     required this.phoneNumber,
     required this.birthday,
     required this.gender,
@@ -25,6 +29,8 @@ class MCUser {
     return MCUser(
       uid: data?['uid'] as String,
       name: data?['name'] as String,
+      nickNm: data?['nickNm'] as String,
+      profileImageIndex: data?['profileImageIndex'] as int,
       phoneNumber: data?['phoneNumber'] as String,
       birthday: data?['birthday'] as String,
       gender: data?['gender'] as String,
@@ -37,6 +43,8 @@ class MCUser {
     return {
       'uid': uid,
       'name': name,
+      'nickNm': nickNm,
+      'profileImageIndex': profileImageIndex,
       'phoneNumber': phoneNumber,
       'birthday': birthday,
       'gender': gender,
