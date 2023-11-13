@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
