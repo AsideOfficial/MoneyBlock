@@ -7,7 +7,7 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/user_controller.dart';
 import 'package:money_cycle/screen/lobby/model/game_mode.dart';
 import 'package:money_cycle/screen/lobby/model/game_variable.dart';
-import 'package:money_cycle/start/model/mc_room.dart';
+import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -314,7 +314,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
 
                                 final roomData = MCRoom(
                                   roomName:
-                                      '${Get.find<MCUserController>().user!.value.nickNm}의 방',
+                                      "'${Get.find<MCUserController>().user!.value.nickNm}'의 방",
                                   hostId: Get.find<MCUserController>()
                                       .user!
                                       .value
@@ -325,7 +325,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                   savingsInterestRate: savingRate,
                                   loanInterestRate: loanRate,
                                   investmentChangeRate: changeRate,
-                                  participantsId: [
+                                  participantsIds: [
                                     Get.find<MCUserController>()
                                         .user!
                                         .value
@@ -334,8 +334,11 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                 );
                                 await FirebaseService.createRoom(
                                     roomData: roomData);
+                                final roomId = await FirebaseService.getRoomId(
+                                    code: roomCode);
 
-                                Get.toNamed('/waiting_room');
+                                Get.offAndToNamed('/waiting_room',
+                                    arguments: roomId);
                               }
                             : null,
                         child: Image.asset(
