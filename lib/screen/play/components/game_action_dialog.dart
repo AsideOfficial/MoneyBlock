@@ -7,8 +7,6 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/action_choice_button.dart';
-
-import '../game_play_screen.dart';
 // import 'package:money_cycle/screen/game_play_screen.dart';
 
 class GameActionDialog extends StatelessWidget {
