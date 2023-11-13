@@ -6,8 +6,8 @@ import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action.dart';
-import 'package:money_cycle/screen/game_action_dialog.dart';
-import 'package:money_cycle/screen/game_controller.dart';
+import 'package:money_cycle/screen/lobby/components/game_action_dialog.dart';
+import 'package:money_cycle/controller/game_controller.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});

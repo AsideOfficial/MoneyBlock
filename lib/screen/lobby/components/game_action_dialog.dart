@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action.dart';
-import 'package:money_cycle/screen/game_controller.dart';
-import 'package:money_cycle/screen/game_play_screen.dart';
+import 'package:money_cycle/controller/game_controller.dart';
+
+import '../screens/game_play_screen.dart';
+// import 'package:money_cycle/screen/game_play_screen.dart';
 
 class GameActionDialog extends StatelessWidget {
   const GameActionDialog({super.key});
@@ -32,6 +34,7 @@ class GameActionDialog extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Center(
                     child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: model.actions.length,
                       itemBuilder: (context, index) {
@@ -50,13 +53,16 @@ class GameActionDialog extends StatelessWidget {
                   ),
                 ),
               ),
-              Bounceable(
-                scaleFactor: 0.8,
-                onTap: () => gameController.isActionChoicing = false,
-                child: Image.asset(
-                  'assets/icons/back_button.png',
-                  width: 46.0,
-                  height: 46.0,
+              Transform.translate(
+                offset: const Offset(-14, -14),
+                child: Bounceable(
+                  scaleFactor: 0.8,
+                  onTap: () => gameController.isActionChoicing = false,
+                  child: Image.asset(
+                    gameController.currentBackButtonAssetString,
+                    width: 46.0,
+                    height: 46.0,
+                  ),
                 ),
               ),
             ],
@@ -216,11 +222,11 @@ class GameActionDialog extends StatelessWidget {
                   children: [
                     Text(specificActionModel?.title ?? "",
                         style: Constants.titleTextStyle),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 10),
                     Text("어떤 ${specificActionModel?.title}를 하시겠습니까?",
                         style:
                             Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
                           controller: ScrollController(initialScrollOffset: 58),
@@ -228,7 +234,7 @@ class GameActionDialog extends StatelessWidget {
                           key: UniqueKey(),
                           itemCount: gameController
                               .curretnSpecificActionModel?.items.length,
-                          itemExtent: 120,
+                          // itemExtent: 120,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             final item = gameController
@@ -239,7 +245,7 @@ class GameActionDialog extends StatelessWidget {
                               child: Container(
                                 clipBehavior: Clip.antiAlias,
                                 width: 110,
-                                height: 136,
+                                height: 148,
                                 decoration: ShapeDecoration(
                                   color: Colors.white,
                                   shape: RoundedRectangleBorder(
@@ -277,34 +283,34 @@ class GameActionDialog extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6, horizontal: 8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${item?.price}원",
-                                          style: Constants.defaultTextStyle
-                                              .copyWith(
-                                                  fontSize: 16,
-                                                  color: Constants.dark100),
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          item?.description ?? "",
-                                          style: Constants.defaultTextStyle
-                                              .copyWith(
-                                                  fontSize: 10,
-                                                  color: Constants.dark100),
-                                        ),
-                                      ],
+                                  SizedBox(
+                                    height: 74,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 6, horizontal: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${item?.price}원",
+                                            style: Constants.defaultTextStyle
+                                                .copyWith(
+                                                    fontSize: 16,
+                                                    color: Constants.dark100),
+                                          ),
+                                          const SizedBox(
+                                            height: 4,
+                                          ),
+                                          Text(
+                                            item?.description ?? "",
+                                            style: Constants.defaultTextStyle
+                                                .copyWith(
+                                                    fontSize: 10,
+                                                    color: Constants.dark100),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ]),
@@ -317,6 +323,43 @@ class GameActionDialog extends StatelessWidget {
               ),
             ),
         ],
+      );
+    });
+  }
+}
+
+class ActionChoiceButton extends StatelessWidget {
+  final String title;
+  final Function()? onTap;
+  final String? buttonString;
+  // bool? isSelected;
+  const ActionChoiceButton({
+    super.key,
+    required this.title,
+    this.onTap,
+    this.buttonString,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GetX<GameController>(builder: (gameController) {
+      return Bounceable(
+        duration: const Duration(seconds: 1),
+        onTap: onTap,
+        child: SizedBox(
+          width: 100,
+          height: 50,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(gameController.currentAssetString),
+              Text(
+                title,
+                style: Constants.defaultTextStyle.copyWith(fontSize: 20),
+              )
+            ],
+          ),
+        ),
       );
     });
   }
