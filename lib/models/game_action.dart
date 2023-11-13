@@ -136,3 +136,30 @@ final expendModel = GameAction(
     ]),
   ],
 );
+
+final loanModel = GameAction(
+  title: "대출",
+  description: "대출에 대한 설명 ~~~",
+  actions: [
+    SpecifitGameAction(title: '신용대출', items: [
+      GameActionItem(
+          title: "신용대출21", description: "신용대출 상품 1에 대한 설명", price: 100000),
+      GameActionItem(
+          title: "신용대출2", description: "신용대출 상품 1에 대한 설명", price: 300000),
+      GameActionItem(
+          title: "신용대출3", description: "신용대출 상품 1에 대한 설명", price: 500000),
+      GameActionItem(
+          title: "신용대출4", description: "신용대출 상품 1에 대한 설명", price: 1000000),
+    ]),
+    SpecifitGameAction(title: '담보대출', items: [
+      GameActionItem(
+          title: "담보대출1", description: "담보대출 상품 1에 대한 설명", price: 100000),
+      GameActionItem(
+          title: "담보대출2", description: "담보대출 상품 2에 대한 설명", price: 300000),
+      GameActionItem(
+          title: "담보대출3", description: "담보대출 상품 3에 대한 설명", price: 500000),
+      GameActionItem(
+          title: "담보대출4", description: "담보대출 상품 4에 대한 설명", price: 1000000),
+    ]),
+  ],
+);

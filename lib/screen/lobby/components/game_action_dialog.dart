@@ -4,7 +4,7 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
-import 'package:money_cycle/models/enums/game_action.dart';
+import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 
 import '../screens/game_play_screen.dart';
@@ -41,7 +41,6 @@ class GameActionDialog extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: ActionChoiceButton(
-                            buttonString: gameController.currentColorString,
                             title: model.actions[index].title,
                             onTap: () {
                               gameController.specificActionButtonTap(index);

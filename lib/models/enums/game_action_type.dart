@@ -3,7 +3,7 @@ import 'package:money_cycle/models/game_action.dart';
 
 import '../../constants.dart';
 
-enum GameActionType { saving, investment, expend }
+enum GameActionType { saving, investment, expend, loan }
 
 extension GameActionExtension on GameActionType {
   LinearGradient get linearBackground {
@@ -14,6 +14,8 @@ extension GameActionExtension on GameActionType {
         return Constants.redGradient;
       case GameActionType.expend:
         return Constants.blueGradient;
+      case GameActionType.loan:
+        return Constants.orangeGradient;
     }
   }
 
@@ -25,6 +27,8 @@ extension GameActionExtension on GameActionType {
         return investmentModel;
       case GameActionType.expend:
         return expendModel;
+      case GameActionType.loan:
+        return loanModel;
     }
   }
 }

@@ -56,6 +56,12 @@ class Constants {
     colors: [Color(0xFF37AB00), Color(0xFF87D861)],
   );
 
+  static const LinearGradient orangeGradient = LinearGradient(
+    begin: Alignment(0.00, 1.00),
+    end: Alignment(0, -1),
+    colors: [Color(0xFFFF9950), Color(0xFFFA5A00)],
+  );
+
   static const LinearGradient greyGradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),

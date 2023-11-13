@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:money_cycle/models/enums/game_action.dart';
+import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game_action.dart';
 
 import '../constants.dart';
@@ -41,6 +41,8 @@ class GameController extends GetxController {
         return investmentModel;
       case GameActionType.expend:
         return expendModel;
+      case GameActionType.loan:
+        return loanModel;
     }
   }
 
@@ -52,6 +54,8 @@ class GameController extends GetxController {
         return Constants.redGradient;
       case GameActionType.expend:
         return Constants.blueGradient;
+      case GameActionType.loan:
+        return Constants.orangeGradient;
     }
   }
 
@@ -63,17 +67,8 @@ class GameController extends GetxController {
         return Constants.cardRed;
       case GameActionType.expend:
         return Constants.cardBlue;
-    }
-  }
-
-  String get currentColorString {
-    switch (_curretnActionType.value) {
-      case GameActionType.saving:
-        return "green";
-      case GameActionType.investment:
-        return "red";
-      case GameActionType.expend:
-        return "blue";
+      case GameActionType.loan:
+        return Constants.cardOrange;
     }
   }
 
@@ -84,6 +79,8 @@ class GameController extends GetxController {
       case GameActionType.investment:
         return "assets/icons/red_button.png";
       case GameActionType.expend:
+        return "assets/icons/blue_button.png";
+      case GameActionType.loan:
         return "assets/icons/blue_button.png";
     }
   }
@@ -96,6 +93,8 @@ class GameController extends GetxController {
         return "assets/icons/back_button_red.png";
       case GameActionType.expend:
         return "assets/icons/back_button_blue.png";
+      case GameActionType.loan:
+        return "assets/icons/back_button_orange.png";
     }
   }
 }
