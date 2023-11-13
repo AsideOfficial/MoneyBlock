@@ -124,7 +124,7 @@ final expendModel = GameAction(
       GameActionItem(
           title: "보험4", description: "보험 상품 4에 대한 설명", price: 1000000),
     ]),
-    SpecifitGameAction(title: '적금', items: [
+    SpecifitGameAction(title: '기부', items: [
       GameActionItem(
           title: "기부1", description: "기부 상품 1에 대한 설명", price: 100000),
       GameActionItem(

@@ -530,16 +530,21 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
 class ActionChoiceButton extends StatelessWidget {
   final String title;
+  final Function()? onTap;
+  final String? buttonString;
+  // bool? isSelected;
   const ActionChoiceButton({
     super.key,
     required this.title,
+    this.onTap,
+    this.buttonString,
   });
 
   @override
   Widget build(BuildContext context) {
     return Bounceable(
       duration: const Duration(seconds: 1),
-      onTap: () {},
+      onTap: onTap,
       child: SizedBox(
         width: 100,
         height: 50,
@@ -667,7 +672,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
             gradient: const LinearGradient(
               begin: Alignment(0.00, -1.00),
               end: Alignment(0, 1),
-              colors: [Color(0xFFFFEDE0), Color(0xFFE5C4A5)],
+              colors: [Color(0xFFE9E7FF), Color(0xFFB8B5D4)],
             ),
             boxShadow: [
               BoxShadow(
