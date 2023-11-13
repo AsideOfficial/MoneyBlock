@@ -6,7 +6,7 @@ import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
-import 'package:money_cycle/screen/lobby/components/game_action_dialog.dart';
+import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 
 class GamePlayScreen extends StatefulWidget {

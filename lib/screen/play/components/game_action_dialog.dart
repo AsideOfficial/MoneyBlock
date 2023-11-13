@@ -6,8 +6,9 @@ import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/screen/play/components/action_choice_button.dart';
 
-import '../screens/game_play_screen.dart';
+import '../game_play_screen.dart';
 // import 'package:money_cycle/screen/game_play_screen.dart';
 
 class GameActionDialog extends StatelessWidget {
@@ -322,43 +323,6 @@ class GameActionDialog extends StatelessWidget {
               ),
             ),
         ],
-      );
-    });
-  }
-}
-
-class ActionChoiceButton extends StatelessWidget {
-  final String title;
-  final Function()? onTap;
-  final String? buttonString;
-  // bool? isSelected;
-  const ActionChoiceButton({
-    super.key,
-    required this.title,
-    this.onTap,
-    this.buttonString,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GetX<GameController>(builder: (gameController) {
-      return Bounceable(
-        duration: const Duration(seconds: 1),
-        onTap: onTap,
-        child: SizedBox(
-          width: 100,
-          height: 50,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(gameController.currentAssetString),
-              Text(
-                title,
-                style: Constants.defaultTextStyle.copyWith(fontSize: 20),
-              )
-            ],
-          ),
-        ),
       );
     });
   }
