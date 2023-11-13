@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
 
@@ -12,7 +12,7 @@ class WaitingRoomScreen extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: Constants.mainGradient,
             ),
           ),
@@ -24,19 +24,19 @@ class WaitingRoomScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 50),
                   child: Row(
                     children: [
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          child: SizedBox(
-                            height: 46,
-                            width: 46,
-                            child: Image.asset(
-                              "assets/icons/back_button.png",
-                            ),
+                      Bounceable(
+                        onTap: () {
+                          //TODO - 대기실 퇴장 API 연동
+                          Get.back();
+                        },
+                        child: SizedBox(
+                          height: 46,
+                          width: 46,
+                          child: Image.asset(
+                            "assets/icons/back_button.png",
                           ),
-                          onPressed: () {
-                            //TODO - 대기실 퇴장 API 연동
-                            Get.back();
-                          }),
+                        ),
+                      ),
                       const SizedBox(width: 24),
                       Text(
                         "3학년 4반 토끼팀",

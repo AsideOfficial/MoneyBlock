@@ -45,6 +45,8 @@ dependencies:
   http: ^1.1.0
   cloud_firestore: ^4.13.0
   qr_code_scanner: ^1.0.1
+  syncfusion_flutter_sliders: ^23.1.44
+  syncfusion_flutter_core: ^23.1.44
 
 dev_dependencies:
   flutter_test:

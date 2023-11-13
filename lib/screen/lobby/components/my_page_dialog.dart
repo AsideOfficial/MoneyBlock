@@ -32,6 +32,7 @@ class _MyPageDialogState extends State<MyPageDialog> {
   void initState() {
     profileImageIndex =
         Get.find<MCUserController>().user!.value.profileImageIndex;
+    nameController.text = Get.find<MCUserController>().user!.value.nickNm;
     super.initState();
   }
 
@@ -129,8 +130,8 @@ class _MyPageDialogState extends State<MyPageDialog> {
                                     fillColor: Colors.white,
                                     borderRadius: 50,
                                     onChanged: (p0) {
-                                      setState(
-                                          () => nameError = (p0.length < 3));
+                                      setState(() => nameError =
+                                          (p0.length < 3 || p0.length > 20));
                                     },
                                   ),
                                   Row(
@@ -156,24 +157,28 @@ class _MyPageDialogState extends State<MyPageDialog> {
                               width: 184,
                               height: 44,
                               title: "저장하기",
-                              backgroundColor: Constants.blueNeon,
-                              onPressed: () async {
-                                final newUserData = MCUser(
-                                  uid: currentUserData.uid,
-                                  name: currentUserData.name,
-                                  nickNm: nameController.text,
-                                  profileImageIndex: profileImageIndex,
-                                  phoneNumber: currentUserData.phoneNumber,
-                                  birthday: currentUserData.birthday,
-                                  gender: currentUserData.gender,
-                                );
+                              backgroundColor:
+                                  nameError ? Colors.grey : Constants.blueNeon,
+                              onPressed: nameError
+                                  ? null
+                                  : () async {
+                                      final newUserData = MCUser(
+                                        uid: currentUserData.uid,
+                                        name: currentUserData.name,
+                                        nickNm: nameController.text,
+                                        profileImageIndex: profileImageIndex,
+                                        phoneNumber:
+                                            currentUserData.phoneNumber,
+                                        birthday: currentUserData.birthday,
+                                        gender: currentUserData.gender,
+                                      );
 
-                                await FirebaseService.updateUserData(
-                                    userData: newUserData);
+                                      await FirebaseService.updateUserData(
+                                          userData: newUserData);
 
-                                widget.onUpdate();
-                                Get.back();
-                              },
+                                      widget.onUpdate();
+                                      Get.back();
+                                    },
                             ),
                           ],
                         ),

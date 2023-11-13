@@ -85,6 +85,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      const SizedBox(height: 200),
                       const SizedBox(
                         width: 32.0,
                         height: 32.0,
@@ -100,7 +101,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
                           ),
                         ]),
                       ),
-                      const SizedBox(height: 22.0)
                     ],
                   ),
                 )
@@ -143,7 +143,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                               ),
                               const Spacer(),
                               toolButton(
-                                iconUrl: 'assets/icons/my_page.png',
+                                iconUrl: 'assets/icons/my_page_button.png',
                                 label: '마이페이지',
                                 onTap: () {
                                   showDialog(
@@ -158,7 +158,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                               ),
                               const SizedBox(width: 22.0),
                               toolButton(
-                                iconUrl: 'assets/icons/setting.png',
+                                iconUrl: 'assets/icons/logout_button.png',
                                 label: '로그아웃',
                                 onTap: () {
                                   FirebaseAuth.instance.signOut();
@@ -175,7 +175,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                             children: [
                               Bounceable(
                                 onTap: () {
-                                  //TODO: 방만들기 이동
+                                  Get.toNamed('/create_room');
                                 },
                                 child: Image.asset(
                                   'assets/components/create_room_button.png',
