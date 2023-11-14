@@ -320,7 +320,14 @@ class AssetBar extends StatelessWidget {
                 ],
               )),
         ),
-        SizedBox(height: 38, child: Image.asset(assetType.badgeAssetPath)),
+        Tooltip(
+          preferBelow: false,
+          message: "Hi",
+          showDuration: const Duration(seconds: 3),
+          triggerMode: TooltipTriggerMode.tap,
+          child: SizedBox(
+              height: 38, child: Image.asset(assetType.badgeAssetPath)),
+        )
       ],
     );
   }
