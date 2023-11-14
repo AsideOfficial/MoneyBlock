@@ -38,8 +38,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         children: [
           //MARK: - Back Layer
           Container(
-            decoration: const BoxDecoration(
-              gradient: Constants.mainGradient,
+            decoration: BoxDecoration(
+              color: Constants.background,
             ),
           ),
           Column(

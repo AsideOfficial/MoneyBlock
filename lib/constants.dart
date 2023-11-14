@@ -19,6 +19,8 @@ class Constants {
   static Color cardGreenBlue = const Color(0xFF00AA96);
   static Color cardPink = const Color(0xFFF65CA9);
 
+  static Color background = const Color(0xFFC4BBFF);
+
   // Theme
   static ThemeData theme = ThemeData(
     fontFamily: 'ONE Mobile POP OTF',
@@ -66,6 +68,18 @@ class Constants {
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+  );
+
+  static const LinearGradient grey00Gradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
+  );
+
+  static const LinearGradient purpleGradient = LinearGradient(
+    begin: Alignment(0.00, 1.00),
+    end: Alignment(0, -1),
+    colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
   );
 
   //MARK: - Shadow

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/screen/play/components/game_item_card.dart';
 
 class MyAssetSheet extends StatefulWidget {
   const MyAssetSheet({Key? key, required this.isSwipeUp}) : super(key: key);
@@ -23,11 +25,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
           height: size.height * 2,
           width: size.width,
           decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment(0.00, -1.00),
-                end: Alignment(0, 1),
-                colors: [Color(0xFFE9E7FF), Color(0xFFB8B5D4)],
-              ),
+              gradient: Constants.purpleGradient,
               boxShadow: [
                 BoxShadow(
                   color: const Color(0x4C000000),
@@ -58,7 +56,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         Text(
                           "나의 자산현황",
                           style: Constants.largeTextStyle
-                              .copyWith(color: Constants.dark100),
+                              .copyWith(color: Colors.white),
                         ),
                         const Spacer(),
                         Stack(
@@ -101,7 +99,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                       children: [
                         MCContainer(
                           borderRadius: 20,
-                          gradient: Constants.greyGradient,
+                          gradient: Constants.grey00Gradient,
                           strokePadding: const EdgeInsets.all(5),
                           width: 220,
                           height: 270,
@@ -223,130 +221,103 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                             height: 300,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                gradient: Constants.greyGradient),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 28, left: 28, bottom: 20),
-                                    child: Text(
-                                      "저축",
-                                      style: Constants.titleTextStyle
-                                          .copyWith(color: Constants.dark100),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 400,
-                                      width: 600,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: 3,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10, top: 1, bottom: 1),
-                                              child: Container(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  width: 110,
-                                                  height: 148,
-                                                  decoration: ShapeDecoration(
-                                                    color: Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      side: const BorderSide(
-                                                          width: 1,
-                                                          color: Colors.white,
-                                                          strokeAlign: BorderSide
-                                                              .strokeAlignOutside),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    shadows: const [
-                                                      BoxShadow(
-                                                        color:
-                                                            Color(0x4C000000),
-                                                        blurRadius: 6,
-                                                        offset: Offset(3, 3),
-                                                        spreadRadius: 1,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  child: Column(children: [
-                                                    Container(
-                                                      clipBehavior:
-                                                          Clip.hardEdge,
-                                                      height: 60,
-                                                      decoration: BoxDecoration(
-                                                          color: gameController
-                                                              .currentCardColor),
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .bottomLeft,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            "테스트",
-                                                            style: Constants
-                                                                .defaultTextStyle
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        16),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                        height: 74,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 6,
-                                                                  horizontal:
-                                                                      8),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                "100000원",
-                                                                style: Constants
-                                                                    .defaultTextStyle
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                        color: Constants
-                                                                            .dark100),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              Text(
-                                                                "테스트 설명 설명",
-                                                                style: Constants
-                                                                    .defaultTextStyle
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            10,
-                                                                        color: Constants
-                                                                            .dark100),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ))
-                                                  ])));
-                                        },
+                                gradient: Constants.grey00Gradient),
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: 1000,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "저축",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ]),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 58),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor: gameController
+                                                    .currentCardColor,
+                                                item: savingModel
+                                                    .actions[0].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "투자",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 58),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor: Constants.cardRed,
+                                                item: investmentModel
+                                                    .actions[1].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "대출",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 58),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor:
+                                                    Constants.cardOrange,
+                                                item: loanModel
+                                                    .actions[1].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                            ),
                           ),
                         )
                       ],
