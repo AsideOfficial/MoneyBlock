@@ -40,16 +40,22 @@ class Constants {
     colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
   );
 
-  static const LinearGradient blueGradient = LinearGradient(
-    begin: Alignment(0, 1),
-    end: Alignment(0.00, -1.00),
-    colors: [Color(0xFF1E4CBB), Color(0xFF507EEB)],
-  );
-
   static const LinearGradient redGradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFFD40817), Color(0xFFF3515D)],
+  );
+
+  static const LinearGradient orangeGradient = LinearGradient(
+    begin: Alignment(0.00, 1.00),
+    end: Alignment(0, -1),
+    colors: [Color(0xFFFF9950), Color(0xFFFA5A00)],
+  );
+
+  static const LinearGradient yellowGradient = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
+    colors: [Color(0xFFFA9B0C), Color(0xFFFFD31F)],
   );
 
   static const LinearGradient greenGradient = LinearGradient(
@@ -58,10 +64,16 @@ class Constants {
     colors: [Color(0xFF37AB00), Color(0xFF87D861)],
   );
 
-  static const LinearGradient orangeGradient = LinearGradient(
+  static const LinearGradient blueGradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFF1E4CBB), Color(0xFF507EEB)],
+  );
+
+  static const LinearGradient purpleGradient = LinearGradient(
     begin: Alignment(0.00, 1.00),
     end: Alignment(0, -1),
-    colors: [Color(0xFFFF9950), Color(0xFFFA5A00)],
+    colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
   );
 
   static const LinearGradient greyGradient = LinearGradient(
@@ -74,12 +86,6 @@ class Constants {
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
     colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
-  );
-
-  static const LinearGradient purpleGradient = LinearGradient(
-    begin: Alignment(0.00, 1.00),
-    end: Alignment(0, -1),
-    colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
   );
 
   //MARK: - Shadow

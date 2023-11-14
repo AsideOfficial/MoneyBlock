@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 
@@ -38,15 +39,6 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(11.0),
-                    child: handle(),
-                  ),
-                ],
-              ),
               Padding(
                 padding: const EdgeInsets.only(left: 40, right: 40, top: 8),
                 child: Column(
@@ -59,34 +51,15 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                               .copyWith(color: Colors.white),
                         ),
                         const Spacer(),
-                        Stack(
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 24),
-                              child: MCContainer(
-                                  strokePadding: const EdgeInsets.symmetric(
-                                      horizontal: 2, vertical: 2),
-                                  borderRadius: 10,
-                                  width: 200,
-                                  height: 44,
-                                  shadows: [Constants.defaultShadow],
-                                  child: Row(
-                                    children: [
-                                      const Spacer(),
-                                      Text("100,000,000원",
-                                          style: Constants
-                                              .defaultTextStyle), // TODO - 자산 현황 연동
-                                      const SizedBox(width: 11)
-                                    ],
-                                  )),
-                            ),
-                            SizedBox(
-                                height: 56,
-                                child:
-                                    Image.asset("assets/icons/krw_coin.png")),
-                          ],
+                        const AssetBar(assetType: AssetType.cash),
+                        const SizedBox(
+                          width: 6,
                         ),
+                        const AssetBar(assetType: AssetType.saving),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        const AssetBar(assetType: AssetType.loan),
                       ],
                     ),
                     const SizedBox(
@@ -178,7 +151,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                         width: 600,
                                         child: ListView.builder(
                                           controller: ScrollController(
-                                              initialScrollOffset: 58),
+                                              initialScrollOffset: 30),
                                           shrinkWrap: true,
                                           itemCount: savingModel
                                               .actions[0].items.length,
@@ -207,7 +180,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                         width: 600,
                                         child: ListView.builder(
                                           controller: ScrollController(
-                                              initialScrollOffset: 58),
+                                              initialScrollOffset: 30),
                                           shrinkWrap: true,
                                           itemCount: savingModel
                                               .actions[0].items.length,
@@ -235,7 +208,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                         width: 600,
                                         child: ListView.builder(
                                           controller: ScrollController(
-                                              initialScrollOffset: 58),
+                                              initialScrollOffset: 30),
                                           shrinkWrap: true,
                                           itemCount: savingModel
                                               .actions[0].items.length,
@@ -260,7 +233,16 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                     //MARK: - 자산 보유 아이템 창
                   ],
                 ),
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: handle(),
+                  ),
+                ],
+              ),
             ],
           ));
     });
@@ -268,14 +250,78 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
 
   Container handle() {
     return Container(
-      width: 60,
-      height: 5,
+      width: 30,
+      height: 3,
       decoration: ShapeDecoration(
-        color: const Color(0xFF696969),
+        color: const Color(0xFF482BC5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(17),
         ),
       ),
+    );
+  }
+}
+
+enum AssetType { cash, saving, loan }
+
+extension AssetTypeExtension on AssetType {
+  LinearGradient get gradient {
+    switch (this) {
+      case AssetType.cash:
+        return Constants.yellowGradient;
+      case AssetType.saving:
+        return Constants.greenGradient;
+      case AssetType.loan:
+        return Constants.orangeGradient;
+    }
+  }
+
+  String get badgeAssetPath {
+    switch (this) {
+      case AssetType.cash:
+        return "assets/icons/badge_cash.png";
+      case AssetType.saving:
+        return "assets/icons/badge_saving.png";
+      case AssetType.loan:
+        return "assets/icons/badge_loan.png";
+    }
+  }
+}
+
+class AssetBar extends StatelessWidget {
+  final AssetType assetType;
+  const AssetBar({
+    super.key,
+    required this.assetType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24),
+          child: MCContainer(
+              gradient: assetType.gradient,
+              strokePadding:
+                  const EdgeInsets.symmetric(horizontal: 0.5, vertical: 0.5),
+              borderRadius: 10,
+              width: 116,
+              height: 30,
+              shadows: [Constants.defaultShadow],
+              child: Row(
+                children: [
+                  const Spacer(),
+                  Text("3,000,000",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 12)), // TODO - 자산 현황 연동
+                  const SizedBox(width: 11)
+                ],
+              )),
+        ),
+        SizedBox(height: 38, child: Image.asset(assetType.badgeAssetPath)),
+      ],
     );
   }
 }
