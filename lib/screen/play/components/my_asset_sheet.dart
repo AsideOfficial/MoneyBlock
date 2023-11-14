@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
@@ -286,6 +287,28 @@ extension AssetTypeExtension on AssetType {
         return "assets/icons/badge_loan.png";
     }
   }
+
+  String get title {
+    switch (this) {
+      case AssetType.cash:
+        return "보유현금";
+      case AssetType.saving:
+        return "저축금액";
+      case AssetType.loan:
+        return "대출금액";
+    }
+  }
+
+  String get description {
+    switch (this) {
+      case AssetType.cash:
+        return "물건을 살 때 치르는 돈";
+      case AssetType.saving:
+        return "돈을 모으는 것";
+      case AssetType.loan:
+        return "돈을 빌리는 것";
+    }
+  }
 }
 
 class AssetBar extends StatelessWidget {
@@ -320,11 +343,35 @@ class AssetBar extends StatelessWidget {
                 ],
               )),
         ),
-        Tooltip(
-          preferBelow: false,
-          message: "Hi",
-          showDuration: const Duration(seconds: 3),
+        JustTheTooltip(
+          content: SizedBox(
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      assetType.title,
+                      style: Constants.largeTextStyle
+                          .copyWith(color: Constants.dark100),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      assetType.description,
+                      style: Constants.defaultTextStyle
+                          .copyWith(color: Constants.dark100),
+                    ),
+                  ],
+                ),
+              )),
+          fadeInDuration: const Duration(seconds: 1),
+          fadeOutDuration: const Duration(seconds: 1),
+          showDuration: const Duration(seconds: 2),
           triggerMode: TooltipTriggerMode.tap,
+          backgroundColor: const Color(0xFFF2F2F2),
           child: SizedBox(
               height: 38, child: Image.asset(assetType.badgeAssetPath)),
         )
