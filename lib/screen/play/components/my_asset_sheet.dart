@@ -100,7 +100,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         MCContainer(
                           borderRadius: 20,
                           gradient: Constants.grey00Gradient,
-                          strokePadding: const EdgeInsets.all(5),
+                          strokePadding: const EdgeInsets.all(0.4),
                           width: 220,
                           height: 270,
                           child: Padding(
@@ -109,106 +109,40 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("현재 금리",
+                                Text("보유 자산",
                                     style: Constants.titleTextStyle
                                         .copyWith(color: Constants.dark100)),
-                                const SizedBox(height: 18),
-                                Text("현재 금리는\n이러이러합니다.",
-                                    style: Constants.defaultTextStyle.copyWith(
-                                        fontSize: 16,
-                                        color: Constants.dark100)),
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Text("기간 및 금액",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("금리(연)",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                const Spacer(),
+                                const AssetListTile(
+                                    title: "현금", price: 5000000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("3개월이상~6개월미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.0",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "투자", price: 2340000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("6개월이상~1년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "저축", price: 2400000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("1년이상~3년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "대출", price: -3000000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "총", price: 1000000000),
+                                const SizedBox(height: 10),
+                                Container(
+                                    height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("1년이상~3년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
                               ],
                             ),
                           ),
@@ -342,6 +276,32 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
           borderRadius: BorderRadius.circular(17),
         ),
       ),
+    );
+  }
+}
+
+class AssetListTile extends StatelessWidget {
+  final String title;
+  final int? price;
+
+  const AssetListTile({
+    super.key,
+    required this.title,
+    this.price,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(title,
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 14, color: Constants.dark100)),
+        const Spacer(),
+        Text("${price ?? 0}원",
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 14, color: Constants.dark100))
+      ],
     );
   }
 }
