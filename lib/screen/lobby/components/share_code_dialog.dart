@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_button.dart';
@@ -10,6 +11,43 @@ class ShareCodeDialog extends StatelessWidget {
   const ShareCodeDialog({super.key, required this.roomCode});
 
   final int roomCode;
+
+  void showSnackBar() {
+    Get.snackbar(
+      '',
+      '',
+      duration: const Duration(seconds: 1),
+      animationDuration: const Duration(milliseconds: 400),
+      maxWidth: 230,
+      titleText: Container(
+        width: 230,
+        height: 50,
+        alignment: Alignment.center,
+        decoration: ShapeDecoration(
+          color: const Color(0xFF696969),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Text(
+          '초대코드가 복사되었습니다.',
+          style: Constants.defaultTextStyle.copyWith(fontSize: 14.0),
+        ),
+      ),
+      borderRadius: 50,
+      barBlur: 0,
+      backgroundColor: Colors.transparent,
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +117,12 @@ class ShareCodeDialog extends StatelessWidget {
                       ),
                       const SizedBox(height: 16.0),
                       Bounceable(
-                        onTap: () {},
+                        onTap: () async {
+                          await Clipboard.setData(
+                              ClipboardData(text: roomCode.toString()));
+
+                          showSnackBar();
+                        },
                         child: Container(
                           width: 65,
                           height: 24,
