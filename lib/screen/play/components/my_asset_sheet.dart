@@ -40,7 +40,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 40, right: 40, top: 8),
+                padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                 child: Column(
                   children: [
                     Row(

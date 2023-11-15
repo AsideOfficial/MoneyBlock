@@ -254,7 +254,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           AnimatedPositioned(
               curve: Curves.decelerate,
               duration: const Duration(milliseconds: 400),
-              top: !isSwipeUp ? size.height * 0.06 : size.height * 0.76,
+              top: !isSwipeUp ? size.height * 0.04 : size.height * 0.85,
               child: GestureDetector(
                   onPanEnd: (details) {
                     if (details.velocity.pixelsPerSecond.dy > -100) {

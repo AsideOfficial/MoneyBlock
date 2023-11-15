@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class GameActionContainer extends StatefulWidget {
   const GameActionContainer({super.key});
@@ -15,6 +17,10 @@ class GameActionContainer extends StatefulWidget {
 
 class _GameActionContainerState extends State<GameActionContainer> {
   bool isLoan = true;
+  bool isCreditLoan = true;
+  double cash = 10000000;
+  double currentAmount = 7000000;
+
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(
@@ -64,35 +70,92 @@ class _GameActionContainerState extends State<GameActionContainer> {
                 const SizedBox(
                   height: 34,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TabButton(
-                      title: '대출',
-                      isSelected: isLoan,
-                      onPressed: () {
-                        setState(() => isLoan = true);
-                      },
-                    ),
-                    TabButton(
-                      title: '상환',
-                      isSelected: !isLoan,
-                      onPressed: () {
-                        setState(() => isLoan = false);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                const Row(),
                 SizedBox(
-                  width: 200,
+                  width: 184,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TabButton(
+                              title: '대출',
+                              isSelected: isLoan,
+                              onPressed: () {
+                                setState(() => isLoan = true);
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: TabButton(
+                              title: '상환',
+                              isSelected: !isLoan,
+                              onPressed: () {
+                                setState(() => isLoan = false);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       Text("보유현금 X (0.5 ~2)",
                           style: Constants.defaultTextStyle),
                       const SizedBox(height: 12),
                       Text("대출게이지", style: Constants.defaultTextStyle),
+                      SizedBox(
+                        width: 140,
+                        child: SfSliderTheme(
+                          data: SfSliderThemeData(
+                            activeTrackHeight: 2,
+                            inactiveTrackHeight: 2,
+                            trackCornerRadius: 2,
+                            activeTrackColor: Colors.white.withOpacity(0.8),
+                            inactiveTrackColor: const Color(0xFF7062AD),
+                            overlayRadius: 10,
+                          ),
+                          child: SfSlider(
+                            value: currentAmount,
+                            min: cash * 0.5,
+                            max: cash * 2,
+                            stepSize: 100000,
+                            thumbIcon: Container(
+                              width: 18,
+                              height: 18,
+                              decoration: const ShapeDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment(0.00, 1.00),
+                                  end: Alignment(0, -1),
+                                  colors: [
+                                    Color(0xFF6322EE),
+                                    Color(0xFF8572FF)
+                                  ],
+                                ),
+                                shape: OvalBorder(
+                                  side:
+                                      BorderSide(width: 1, color: Colors.white),
+                                ),
+                                shadows: [
+                                  BoxShadow(
+                                    color: Color(0x3F000000),
+                                    blurRadius: 1,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                currentAmount = value;
+                              });
+
+                              debugPrint(value.toString());
+                            },
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       Text("대출금액", style: Constants.defaultTextStyle),
                       const SizedBox(height: 10),
@@ -132,7 +195,7 @@ class _GameActionContainerState extends State<GameActionContainer> {
                     Get.back();
                   },
                   child: SizedBox(
-                    width: 180,
+                    width: 184,
                     height: 50,
                     child: Stack(
                       alignment: Alignment.center,
@@ -183,7 +246,7 @@ class TabButton extends StatelessWidget {
           ),
           if (isSelected)
             Container(
-              width: 80,
+              // width: 80,
               height: 2,
               color: Colors.white,
             )
