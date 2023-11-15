@@ -196,7 +196,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 20, top: 20, bottom: 23, right: 20),
+                        left: 20, top: 20, bottom: 23, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -222,18 +222,23 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                                   fontSize: 20,
                                                   color: Constants.dark100)),
                                     ),
-                                    const SizedBox(width: 13),
+                                    const SizedBox(width: 6),
                                     SizedBox(
                                         width: 50,
                                         height: 50,
                                         child: Image.asset(
                                             "assets/images/profile_cow.png")),
                                     const SizedBox(width: 10),
-                                    Text("닉네임",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 20,
-                                                color: Constants.dark100)),
+                                    SizedBox(
+                                      width: 86,
+                                      child: Text("닉네임이다",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: Constants.defaultTextStyle
+                                              .copyWith(
+                                                  fontSize: 20,
+                                                  color: Constants.dark100)),
+                                    ),
                                   ],
                                 ),
                               );
