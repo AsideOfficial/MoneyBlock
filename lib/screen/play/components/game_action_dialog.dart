@@ -182,22 +182,10 @@ class GameActionDialog extends StatelessWidget {
                   children: [
                     Text("${model.title} 활동", style: Constants.titleTextStyle),
                     const SizedBox(height: 18),
-                    Text(
-                        "왼쪽의 ${model.actions.length}가지 ${model.title} 활동중 1가지를 고르세요.",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                    const SizedBox(height: 16),
-                    Text("소비 : 소비는 이러이러한 것입니다.",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                    const SizedBox(height: 10),
-                    Text("보험 : 소비는 이러이러한 것입니다.",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                    const SizedBox(height: 10),
-                    Text("기부 : 소비는 이러이러한 것입니다.",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                    Text(model.description,
+                        maxLines: 3,
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 16, height: 2)),
                   ],
                 ),
               ),

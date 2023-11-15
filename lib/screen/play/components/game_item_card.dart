@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/utils/extension/int.dart';
-import 'package:money_cycle/utils/extension/string.dart';
 
 class GameItemCard extends StatelessWidget {
   const GameItemCard({
@@ -71,6 +70,7 @@ class GameItemCard extends StatelessWidget {
                   const SizedBox(
                     height: 4,
                   ),
+                  //TODO - 액션 타입에 따른 분기 처리 필요
                   Text(
                     item?.description ?? "",
                     style: Constants.defaultTextStyle

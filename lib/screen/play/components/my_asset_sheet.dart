@@ -158,8 +158,8 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (context, index) {
                                             return GameItemCard(
-                                                accentColor: gameController
-                                                    .currentCardColor,
+                                                accentColor:
+                                                    Constants.cardGreen,
                                                 item: savingModel
                                                     .actions[0].items[index]);
                                           },
