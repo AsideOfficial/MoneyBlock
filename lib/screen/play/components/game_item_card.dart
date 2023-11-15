@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/utils/extension/int.dart';
+import 'package:money_cycle/utils/extension/string.dart';
 
 class GameItemCard extends StatelessWidget {
   const GameItemCard({
@@ -62,7 +64,7 @@ class GameItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${item?.price}원",
+                    "${(item!.price >= 1000000) ? ("${(item!.price / 10000.0).toStringAsFixed(0)}만") : item?.price.commaString}원",
                     style: Constants.defaultTextStyle
                         .copyWith(fontSize: 16, color: Constants.dark100),
                   ),
