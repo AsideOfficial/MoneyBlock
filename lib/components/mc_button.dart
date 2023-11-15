@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 
 import '../constants.dart';
 
@@ -27,9 +28,8 @@ class MCButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
+    return Bounceable(
+      onTap: onPressed,
       child: Container(
         width: width,
         height: height,
