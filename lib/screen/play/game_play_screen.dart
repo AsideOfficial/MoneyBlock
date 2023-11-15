@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
+import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
@@ -38,8 +40,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         children: [
           //MARK: - Back Layer
           Container(
-            decoration: const BoxDecoration(
-              gradient: Constants.mainGradient,
+            decoration: BoxDecoration(
+              color: Constants.background,
             ),
           ),
           Column(
@@ -172,6 +174,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         titleColor: const Color(0xFFB86300),
                         assetPath: "assets/icons/lottery.png",
                         onPressed: () {
+                          Get.dialog(
+                            const LotteryAlert(),
+                          );
                           // setState(() => isActionChoicing = true);
                         },
                       ),
@@ -183,6 +188,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         assetPath: "assets/icons/vacation.png",
                         onPressed: () {
                           // setState(() => isActionChoicing = true);
+                          Get.dialog(
+                            const VacationAlert(),
+                          );
                         },
                       ),
                       ActionButton(
@@ -248,6 +256,153 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ],
       );
     }));
+  }
+}
+
+class LotteryAlert extends StatelessWidget {
+  const LotteryAlert({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      content: MCContainer(
+        strokePadding: const EdgeInsets.all(3),
+        gradient: Constants.yellowGradient,
+        width: 300,
+        height: 300,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 28, bottom: 18),
+          child: Column(
+            children: [
+              Text("행운복권 당첨!", style: Constants.titleTextStyle),
+              const SizedBox(height: 6),
+              Text("복권에 당첨되었습니다.",
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 10),
+              SizedBox(
+                  height: 70, child: Image.asset("assets/icons/lottery.png")),
+              const SizedBox(height: 4),
+              Text("현금 +6,000,000원", style: Constants.titleTextStyle),
+              const SizedBox(height: 6),
+              Text("당첨금을 받아가세요.",
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 12),
+              Bounceable(
+                duration: const Duration(seconds: 1),
+                onTap: () {
+                  Get.back();
+                },
+                child: SizedBox(
+                  width: 180,
+                  height: 50,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset("assets/icons/button_long_yellow.png"),
+                      Text(
+                        "확인",
+                        style:
+                            Constants.defaultTextStyle.copyWith(fontSize: 20),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class VacationAlert extends StatefulWidget {
+  const VacationAlert({
+    super.key,
+  });
+
+  @override
+  State<VacationAlert> createState() => _VacationAlertState();
+}
+
+class _VacationAlertState extends State<VacationAlert> {
+  bool isVacation = false;
+  bool isVacationFinished = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      content: MCContainer(
+        strokePadding: const EdgeInsets.all(3),
+        gradient: Constants.greenBlueGradient,
+        width: 300,
+        height: 300,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 28, bottom: 18),
+          child: Column(
+            children: [
+              Text("무급휴가", style: Constants.titleTextStyle),
+              const SizedBox(height: 6),
+              Text("지금 바로 휴가를 즐기세요.",
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 10),
+              SizedBox(
+                  height: 70, child: Image.asset("assets/icons/vacation.png")),
+              const SizedBox(height: 4),
+              Text("휴가를 떠난 당신, 2턴을 쉬게 됩니다..",
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 6),
+              Text("다만 마지막 라운드라면 1턴만 쉽니다.",
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 12),
+              Bounceable(
+                duration: const Duration(seconds: 1),
+                onTap: () {
+                  // Get.back();
+                  if (!isVacation) {
+                    setState(() {
+                      isVacation = true;
+                    });
+                    return;
+                  }
+                  if (isVacationFinished) {
+                    Get.back();
+                    return;
+                  }
+
+                  setState(() {
+                    isVacationFinished = true;
+                  });
+                },
+                child: SizedBox(
+                  width: 180,
+                  height: 50,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset((isVacation && !isVacationFinished)
+                          ? "assets/icons/button_long_green_blue_disabled.png"
+                          : "assets/icons/button_long_green_blue.png"),
+                      Text(
+                        isVacation ? "휴가종료" : "확인",
+                        style:
+                            Constants.defaultTextStyle.copyWith(fontSize: 20),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

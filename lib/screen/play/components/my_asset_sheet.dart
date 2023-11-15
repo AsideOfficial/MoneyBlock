@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/screen/play/components/game_item_card.dart';
 
 class MyAssetSheet extends StatefulWidget {
   const MyAssetSheet({Key? key, required this.isSwipeUp}) : super(key: key);
@@ -23,11 +27,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
           height: size.height * 2,
           width: size.width,
           decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment(0.00, -1.00),
-                end: Alignment(0, 1),
-                colors: [Color(0xFFE9E7FF), Color(0xFFB8B5D4)],
-              ),
+              gradient: Constants.purpleGradient,
               boxShadow: [
                 BoxShadow(
                   color: const Color(0x4C000000),
@@ -40,15 +40,6 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(11.0),
-                    child: handle(),
-                  ),
-                ],
-              ),
               Padding(
                 padding: const EdgeInsets.only(left: 40, right: 40, top: 8),
                 child: Column(
@@ -58,37 +49,18 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         Text(
                           "나의 자산현황",
                           style: Constants.largeTextStyle
-                              .copyWith(color: Constants.dark100),
+                              .copyWith(color: Colors.white),
                         ),
                         const Spacer(),
-                        Stack(
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 24),
-                              child: MCContainer(
-                                  strokePadding: const EdgeInsets.symmetric(
-                                      horizontal: 2, vertical: 2),
-                                  borderRadius: 10,
-                                  width: 200,
-                                  height: 44,
-                                  shadows: [Constants.defaultShadow],
-                                  child: Row(
-                                    children: [
-                                      const Spacer(),
-                                      Text("100,000,000원",
-                                          style: Constants
-                                              .defaultTextStyle), // TODO - 자산 현황 연동
-                                      const SizedBox(width: 11)
-                                    ],
-                                  )),
-                            ),
-                            SizedBox(
-                                height: 56,
-                                child:
-                                    Image.asset("assets/icons/krw_coin.png")),
-                          ],
+                        const AssetBar(assetType: AssetType.cash),
+                        const SizedBox(
+                          width: 6,
                         ),
+                        const AssetBar(assetType: AssetType.saving),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        const AssetBar(assetType: AssetType.loan),
                       ],
                     ),
                     const SizedBox(
@@ -101,8 +73,8 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                       children: [
                         MCContainer(
                           borderRadius: 20,
-                          gradient: Constants.greyGradient,
-                          strokePadding: const EdgeInsets.all(5),
+                          gradient: Constants.grey00Gradient,
+                          strokePadding: const EdgeInsets.all(0.4),
                           width: 220,
                           height: 270,
                           child: Padding(
@@ -111,106 +83,40 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("현재 금리",
+                                Text("보유 자산",
                                     style: Constants.titleTextStyle
                                         .copyWith(color: Constants.dark100)),
-                                const SizedBox(height: 18),
-                                Text("현재 금리는\n이러이러합니다.",
-                                    style: Constants.defaultTextStyle.copyWith(
-                                        fontSize: 16,
-                                        color: Constants.dark100)),
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Text("기간 및 금액",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("금리(연)",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                const Spacer(),
+                                const AssetListTile(
+                                    title: "현금", price: 5000000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("3개월이상~6개월미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.0",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "투자", price: 2340000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("6개월이상~1년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "저축", price: 2400000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
-                                const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("1년이상~3년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "대출", price: -3000000),
+                                const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFABABAB)),
+                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                const SizedBox(height: 10),
+                                const AssetListTile(
+                                    title: "총", price: 1000000000),
+                                const SizedBox(height: 10),
+                                Container(
+                                    height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Text("1년이상~3년미만",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100)),
-                                    const Spacer(),
-                                    Text("2.5",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 10,
-                                                color: Constants.dark100))
-                                  ],
-                                ),
                               ],
                             ),
                           ),
@@ -223,130 +129,103 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                             height: 300,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                gradient: Constants.greyGradient),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 28, left: 28, bottom: 20),
-                                    child: Text(
-                                      "저축",
-                                      style: Constants.titleTextStyle
-                                          .copyWith(color: Constants.dark100),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 400,
-                                      width: 600,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: 3,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10, top: 1, bottom: 1),
-                                              child: Container(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  width: 110,
-                                                  height: 148,
-                                                  decoration: ShapeDecoration(
-                                                    color: Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      side: const BorderSide(
-                                                          width: 1,
-                                                          color: Colors.white,
-                                                          strokeAlign: BorderSide
-                                                              .strokeAlignOutside),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    shadows: const [
-                                                      BoxShadow(
-                                                        color:
-                                                            Color(0x4C000000),
-                                                        blurRadius: 6,
-                                                        offset: Offset(3, 3),
-                                                        spreadRadius: 1,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  child: Column(children: [
-                                                    Container(
-                                                      clipBehavior:
-                                                          Clip.hardEdge,
-                                                      height: 60,
-                                                      decoration: BoxDecoration(
-                                                          color: gameController
-                                                              .currentCardColor),
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .bottomLeft,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            "테스트",
-                                                            style: Constants
-                                                                .defaultTextStyle
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        16),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                        height: 74,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 6,
-                                                                  horizontal:
-                                                                      8),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                "100000원",
-                                                                style: Constants
-                                                                    .defaultTextStyle
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            16,
-                                                                        color: Constants
-                                                                            .dark100),
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              Text(
-                                                                "테스트 설명 설명",
-                                                                style: Constants
-                                                                    .defaultTextStyle
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            10,
-                                                                        color: Constants
-                                                                            .dark100),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ))
-                                                  ])));
-                                        },
+                                gradient: Constants.grey00Gradient),
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: 1000,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "저축",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ]),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 30),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor: gameController
+                                                    .currentCardColor,
+                                                item: savingModel
+                                                    .actions[0].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "투자",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 30),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor: Constants.cardRed,
+                                                item: investmentModel
+                                                    .actions[1].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 28, left: 28, bottom: 20),
+                                        child: Text(
+                                          "대출",
+                                          style: Constants.titleTextStyle
+                                              .copyWith(
+                                                  color: Constants.dark100),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 140,
+                                        width: 600,
+                                        child: ListView.builder(
+                                          controller: ScrollController(
+                                              initialScrollOffset: 30),
+                                          shrinkWrap: true,
+                                          itemCount: savingModel
+                                              .actions[0].items.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return GameItemCard(
+                                                accentColor:
+                                                    Constants.cardOrange,
+                                                item: loanModel
+                                                    .actions[1].items[index]);
+                                          },
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                            ),
                           ),
                         )
                       ],
@@ -355,7 +234,16 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                     //MARK: - 자산 보유 아이템 창
                   ],
                 ),
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: handle(),
+                  ),
+                ],
+              ),
             ],
           ));
     });
@@ -363,14 +251,157 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
 
   Container handle() {
     return Container(
-      width: 60,
-      height: 5,
+      width: 30,
+      height: 3,
       decoration: ShapeDecoration(
-        color: const Color(0xFF696969),
+        color: const Color(0xFF482BC5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(17),
         ),
       ),
+    );
+  }
+}
+
+enum AssetType { cash, saving, loan }
+
+extension AssetTypeExtension on AssetType {
+  LinearGradient get gradient {
+    switch (this) {
+      case AssetType.cash:
+        return Constants.yellowGradient;
+      case AssetType.saving:
+        return Constants.greenGradient;
+      case AssetType.loan:
+        return Constants.orangeGradient;
+    }
+  }
+
+  String get badgeAssetPath {
+    switch (this) {
+      case AssetType.cash:
+        return "assets/icons/badge_cash.png";
+      case AssetType.saving:
+        return "assets/icons/badge_saving.png";
+      case AssetType.loan:
+        return "assets/icons/badge_loan.png";
+    }
+  }
+
+  String get title {
+    switch (this) {
+      case AssetType.cash:
+        return "보유현금";
+      case AssetType.saving:
+        return "저축금액";
+      case AssetType.loan:
+        return "대출금액";
+    }
+  }
+
+  String get description {
+    switch (this) {
+      case AssetType.cash:
+        return "물건을 살 때 치르는 돈";
+      case AssetType.saving:
+        return "돈을 모으는 것";
+      case AssetType.loan:
+        return "돈을 빌리는 것";
+    }
+  }
+}
+
+class AssetBar extends StatelessWidget {
+  final AssetType assetType;
+  const AssetBar({
+    super.key,
+    required this.assetType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24),
+          child: MCContainer(
+              gradient: assetType.gradient,
+              strokePadding:
+                  const EdgeInsets.symmetric(horizontal: 0.5, vertical: 0.5),
+              borderRadius: 10,
+              width: 116,
+              height: 30,
+              shadows: [Constants.defaultShadow],
+              child: Row(
+                children: [
+                  const Spacer(),
+                  Text("3,000,000",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 12)), // TODO - 자산 현황 연동
+                  const SizedBox(width: 11)
+                ],
+              )),
+        ),
+        JustTheTooltip(
+          content: SizedBox(
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      assetType.title,
+                      style: Constants.largeTextStyle
+                          .copyWith(color: Constants.dark100),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      assetType.description,
+                      style: Constants.defaultTextStyle
+                          .copyWith(color: Constants.dark100),
+                    ),
+                  ],
+                ),
+              )),
+          fadeInDuration: const Duration(seconds: 1),
+          fadeOutDuration: const Duration(seconds: 1),
+          showDuration: const Duration(seconds: 2),
+          triggerMode: TooltipTriggerMode.tap,
+          backgroundColor: const Color(0xFFF2F2F2),
+          child: SizedBox(
+              height: 38, child: Image.asset(assetType.badgeAssetPath)),
+        )
+      ],
+    );
+  }
+}
+
+class AssetListTile extends StatelessWidget {
+  final String title;
+  final int? price;
+
+  const AssetListTile({
+    super.key,
+    required this.title,
+    this.price,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(title,
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 14, color: Constants.dark100)),
+        const Spacer(),
+        Text("${price ?? 0}원",
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 14, color: Constants.dark100))
+      ],
     );
   }
 }
