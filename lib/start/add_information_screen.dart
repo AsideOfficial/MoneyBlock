@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
@@ -7,9 +9,7 @@ import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:money_cycle/utils/text_validator.dart';
 
 class AddInformationScreen extends StatefulWidget {
-  const AddInformationScreen({super.key, required this.uid});
-
-  final String uid;
+  const AddInformationScreen({super.key});
 
   @override
   State<AddInformationScreen> createState() => _AddInformationScreenState();
@@ -187,10 +187,10 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                     const SizedBox(height: 34.0),
                     Bounceable(
                       onTap: checkCondition()
-                          ? () {
-                              FirebaseService.updateUserData(
+                          ? () async {
+                              await FirebaseService.updateUserData(
                                 userData: MCUser(
-                                  uid: widget.uid,
+                                  uid: FirebaseAuth.instance.currentUser!.uid,
                                   name: nameController.text,
                                   nickNm: nameController.text,
                                   profileImageIndex: 0,
@@ -200,6 +200,7 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                                   location: locationController.text,
                                 ),
                               );
+                              Get.back();
                             }
                           : null,
                       child: Image.asset(

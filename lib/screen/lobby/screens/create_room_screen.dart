@@ -136,21 +136,23 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
             },
           ),
           variableSlideBar(
-              variable: GameVariable.loanInterestRate,
-              value: loanRate,
-              min: 1.0,
-              max: 9.0,
-              onChange: (newValue) {
-                setState(() => loanRate = newValue);
-              }),
+            variable: GameVariable.loanInterestRate,
+            value: loanRate,
+            min: 1.0,
+            max: 9.0,
+            onChange: (newValue) {
+              setState(() => loanRate = newValue);
+            },
+          ),
           variableSlideBar(
-              variable: GameVariable.investmentChangeRate,
-              value: changeRate,
-              min: -20.0,
-              max: 100.0,
-              onChange: (newValue) {
-                setState(() => changeRate = newValue);
-              }),
+            variable: GameVariable.investmentChangeRate,
+            value: changeRate,
+            min: -20.0,
+            max: 100.0,
+            onChange: (newValue) {
+              setState(() => changeRate = newValue);
+            },
+          ),
         ],
       ),
     );
@@ -179,7 +181,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
               inactiveTrackHeight: 2,
               trackCornerRadius: 2,
               activeTrackColor: Colors.white.withOpacity(0.8),
-              inactiveTrackColor: Colors.white.withOpacity(0.8),
+              inactiveTrackColor: const Color(0xFF7062AD),
               overlayRadius: 10,
             ),
             child: SfSlider(
@@ -268,11 +270,15 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     savingRate = generateRandomDouble(min: 2.0, max: 10.0);
     loanRate = generateRandomDouble(min: 1.0, max: 9.0);
     changeRate = generateRandomDouble(min: -10.0, max: 10.0);
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -311,6 +317,10 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                             ? () async {
                                 final roomCode =
                                     await FirebaseService.createUniqueCode();
+                                final Map<String, bool> host = {
+                                  Get.find<MCUserController>().user!.value.uid:
+                                      true,
+                                };
 
                                 final roomData = MCRoom(
                                   roomName:
@@ -325,13 +335,10 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                   savingsInterestRate: savingRate,
                                   loanInterestRate: loanRate,
                                   investmentChangeRate: changeRate,
-                                  participantsIds: [
-                                    Get.find<MCUserController>()
-                                        .user!
-                                        .value
-                                        .uid,
-                                  ],
+                                  participants: host,
+                                  isPlaying: false,
                                 );
+
                                 await FirebaseService.createRoom(
                                     roomData: roomData);
                                 final roomId = await FirebaseService.getRoomId(
