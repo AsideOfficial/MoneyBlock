@@ -19,6 +19,7 @@ class WaitingRoomScreen extends StatefulWidget {
 }
 
 class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
+  final roomID = Get.arguments;
   final roomStream = FirebaseFirestore.instance
       .collection('Room')
       .doc(Get.arguments)
@@ -72,15 +73,51 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
             width: 46,
             height: 46,
           ),
-          const SizedBox(
-            height: 2,
-          ),
+          const SizedBox(height: 2),
           Text(
             label,
             style: Constants.defaultTextStyle.copyWith(fontSize: 10),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> tapBackButton({required MCRoom? roomData}) async {
+    if (roomData?.participants.keys.length == 1) {
+      FirebaseService.removeRoom(roomID: roomID);
+    } else {
+      var currentParticipants = roomData?.participants;
+      currentParticipants?.remove(FirebaseAuth.instance.currentUser!.uid);
+
+      if (roomData?.hostId == FirebaseAuth.instance.currentUser!.uid) {
+        String? newHostId = currentParticipants?.keys.first;
+        currentParticipants?[newHostId!] = true;
+
+        await FirebaseService.updateRoom(
+          roomId: roomID,
+          key: 'hostId',
+          value: newHostId,
+        );
+      }
+
+      await FirebaseService.updateRoom(
+        roomId: roomID,
+        key: 'participants',
+        value: currentParticipants,
+      );
+    }
+  }
+
+  Future<void> toggleReady(
+      {required MCRoom? roomData, required bool current}) async {
+    var currentParticipants = roomData?.participants;
+    currentParticipants?[FirebaseAuth.instance.currentUser!.uid] = !current;
+
+    await FirebaseService.updateRoom(
+      roomId: roomID,
+      key: 'participants',
+      value: currentParticipants,
     );
   }
 
@@ -109,25 +146,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                         children: [
                           Bounceable(
                             onTap: () async {
-                              if (roomData?.participants.keys.length == 1) {
-                                FirebaseService.removeRoom(
-                                    roomID: Get.arguments);
-                              } else {
-                                if (roomData?.hostId ==
-                                    FirebaseAuth.instance.currentUser!.uid) {
-                                  await FirebaseService.updateRoom(
-                                    roomId: Get.arguments,
-                                    key: 'hostId',
-                                    value: roomData?.participants.keys.last,
-                                  );
-                                }
-                                await FirebaseService.updateRoom(
-                                  roomId: Get.arguments,
-                                  key: 'participants',
-                                  value: roomData?.participants.remove(
-                                      FirebaseAuth.instance.currentUser!.uid),
-                                );
-                              }
+                              tapBackButton(roomData: roomData);
                               Get.back();
                             },
                             child: SizedBox(
@@ -168,11 +187,14 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                       if (roomData != null)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: roomData.participants.keys.map((uid) {
+                          children:
+                              List<String>.from(roomData.participants.keys)
+                                  .reversed
+                                  .map((uid) {
                             return PlayerCard(
+                              key: UniqueKey(),
                               userId: uid,
-                              isHost: roomData.hostId ==
-                                  FirebaseAuth.instance.currentUser!.uid,
+                              isHost: roomData.hostId == uid,
                               isReady: roomData.participants[uid]!,
                             );
                           }).toList(),
@@ -180,57 +202,58 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                       else
                         PlayerCard(
                           userId: FirebaseAuth.instance.currentUser!.uid,
-                          isHost: false,
-                          isReady: false,
+                          isHost: true,
+                          isReady: true,
                         ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Column(
-                            children: [
-                              buttonColumn(
-                                buttonImage: 'assets/icons/setting_button.png',
-                                label: '환경설정',
-                                onTap: () {
-                                  final roomId = Get.arguments;
-
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return SettingDialog(
-                                        roomID: roomId,
-                                        savingRate:
-                                            roomData!.savingsInterestRate,
-                                        loanRate: roomData.loanInterestRate,
-                                        changeRate:
-                                            roomData.investmentChangeRate,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 10.0),
-                              buttonColumn(
-                                buttonImage: 'assets/icons/qr_button.png',
-                                label: '코드공유',
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return ShareCodeDialog(
-                                        roomCode: roomData!.roomCode,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 53.0),
-                        ],
-                      ),
+                      if (roomData?.hostId ==
+                          FirebaseAuth.instance.currentUser?.uid)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Column(
+                              children: [
+                                buttonColumn(
+                                  buttonImage:
+                                      'assets/icons/setting_button.png',
+                                  label: '환경설정',
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return SettingDialog(
+                                          roomID: roomID,
+                                          savingRate:
+                                              roomData!.savingsInterestRate,
+                                          loanRate: roomData.loanInterestRate,
+                                          changeRate:
+                                              roomData.investmentChangeRate,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 10.0),
+                                buttonColumn(
+                                  buttonImage: 'assets/icons/qr_button.png',
+                                  label: '코드공유',
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return ShareCodeDialog(
+                                          roomCode: roomData!.roomCode,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 53.0),
+                          ],
+                        ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -272,14 +295,27 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                         ),
                         const Spacer(),
                         Bounceable(
-                          onTap: (roomData.participants.keys.length > 1 &&
-                                  !roomData.participants.containsValue(false))
+                          onTap: (roomData.hostId !=
+                                  FirebaseAuth.instance.currentUser?.uid)
                               ? () {
-                                  //TODO: 게임 시작
+                                  toggleReady(
+                                    roomData: roomData,
+                                    current: roomData.participants[
+                                        FirebaseAuth.instance.currentUser?.uid],
+                                  );
                                 }
-                              : null,
+                              : (roomData.participants.keys.length > 1 &&
+                                      !roomData.participants
+                                          .containsValue(false))
+                                  ? () {
+                                      //TODO: 게임 시작
+                                    }
+                                  : null,
                           child: Image.asset(
-                            'assets/components/game_start_button${(roomData.participants.keys.length == 1 || roomData.participants.containsValue(false)) ? '_inactive' : ''}.png',
+                            (roomData.hostId !=
+                                    FirebaseAuth.instance.currentUser?.uid)
+                                ? 'assets/components/game_ready_button${roomData.participants[FirebaseAuth.instance.currentUser?.uid] ? '_already' : ''}.png'
+                                : 'assets/components/game_start_button${(roomData.participants.keys.length == 1 || roomData.participants.containsValue(false)) ? '_inactive' : ''}.png',
                             width: 230,
                             height: 50,
                           ),
@@ -449,8 +485,10 @@ class _PlayerCardState extends State<PlayerCard> {
                       decoration: ShapeDecoration(
                         color: isLoading
                             ? Colors.grey
-                            : ProfileImage
-                                .titleColors[userData.profileImageIndex],
+                            : widget.isReady
+                                ? ProfileImage
+                                    .titleColors[userData.profileImageIndex]
+                                : const Color(0xFFA5A5A5),
                         shape: const RoundedRectangleBorder(
                           side: BorderSide(
                             width: 2,
@@ -469,7 +507,9 @@ class _PlayerCardState extends State<PlayerCard> {
                               ? '준비전'
                               : widget.isHost
                                   ? '방장'
-                                  : '준비',
+                                  : widget.isReady
+                                      ? '준비'
+                                      : '준비전',
                           style:
                               Constants.defaultTextStyle.copyWith(fontSize: 18),
                         ),

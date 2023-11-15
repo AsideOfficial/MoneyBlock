@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanner extends StatefulWidget {
@@ -20,8 +21,13 @@ class _QRScannerState extends State<QRScanner> {
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
+  bool isLoading = true;
+
+  void ready() async {
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() => isLoading = false);
+  }
+
   @override
   void reassemble() {
     super.reassemble();
@@ -109,26 +115,29 @@ class _QRScannerState extends State<QRScanner> {
                 ],
               ),
               const Spacer(),
-              Bounceable(
-                onTap: widget.onTap,
-                child: Container(
-                  width: 128,
-                  height: 36,
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.all(16.0),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFDFDFD),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+              if (!isLoading)
+                Bounceable(
+                  onTap: widget.onTap,
+                  child: Container(
+                    width: 128,
+                    height: 36,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.all(16.0),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFFDFDFD),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      '코드입력 입장',
+                      style: Constants.defaultTextStyle
+                          .copyWith(color: Colors.black, fontSize: 14),
                     ),
                   ),
-                  child: Text(
-                    '코드입력 입장',
-                    style: Constants.defaultTextStyle
-                        .copyWith(color: Colors.black, fontSize: 14),
-                  ),
-                ),
-              ),
+                )
+              else
+                const SizedBox(height: 36),
               const SizedBox(height: 4.0),
             ],
           ),
@@ -137,16 +146,68 @@ class _QRScannerState extends State<QRScanner> {
     );
   }
 
+  void showSnackBar() {
+    Get.snackbar(
+      '',
+      '',
+      duration: const Duration(seconds: 2),
+      animationDuration: const Duration(milliseconds: 400),
+      maxWidth: 230,
+      titleText: Container(
+        width: 230,
+        height: 50,
+        alignment: Alignment.center,
+        decoration: ShapeDecoration(
+          color: const Color(0xFF696969),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Text(
+          '해당 방을 찾을 수 없어요.',
+          style: Constants.defaultTextStyle.copyWith(fontSize: 14.0),
+        ),
+      ),
+      borderRadius: 50,
+      barBlur: 0,
+      backgroundColor: Colors.transparent,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
+  void participateRoom({required String roomCode}) async {
+    final result = await FirebaseService.participateRoom(roomCode: roomCode);
+
+    if (result.$1) {
+      Get.offAndToNamed('/waiting_room', arguments: result.$2);
+    } else {
+      showSnackBar();
+    }
+  }
+
   void _onQRViewCreated(QRViewController controller) {
     setState(() => this.controller = controller);
     controller.scannedDataStream.listen((scanData) {
       setState(() => result = scanData);
-      print(result?.code);
+
+      if (result?.code?.length == 6) {
+        controller.dispose();
+        participateRoom(roomCode: result?.code ?? '');
+      }
     });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     debugPrint('${DateTime.now().toIso8601String()}_onPermissionSet $p');
+    ready();
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('no Permission')),

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
@@ -75,5 +76,26 @@ class FirebaseService {
 
   static Future<void> removeRoom({required String roomID}) async {
     await roomRef.doc(roomID).delete();
+  }
+
+  static Future<(bool, String)> participateRoom(
+      {required String roomCode}) async {
+    try {
+      final roomId = await getRoomId(code: int.parse(roomCode));
+      final roomData = await roomRef.doc(roomId).get();
+      var currentParticipants = roomData.data()?.participants;
+      final newParticipant = <String, bool>{
+        FirebaseAuth.instance.currentUser!.uid: false
+      };
+      currentParticipants?.addAll(newParticipant);
+
+      await updateRoom(
+          roomId: roomId, key: 'participants', value: currentParticipants);
+
+      return (true, roomId);
+    } catch (e) {
+      debugPrint('participate failed: $e');
+      return (false, '');
+    }
   }
 }

@@ -323,8 +323,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                 };
 
                                 final roomData = MCRoom(
-                                  roomName:
-                                      "'${Get.find<MCUserController>().user!.value.nickNm}'의 방",
+                                  roomName: roomCode.toString(),
                                   hostId: Get.find<MCUserController>()
                                       .user!
                                       .value
