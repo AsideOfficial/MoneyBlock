@@ -9,7 +9,8 @@ class MCRoom {
   final double savingsInterestRate;
   final double loanInterestRate;
   final double investmentChangeRate;
-  final List<String> participantsIds;
+  final Map<String, dynamic> participants;
+  final bool isPlaying;
 
   MCRoom({
     required this.roomName,
@@ -20,7 +21,8 @@ class MCRoom {
     required this.savingsInterestRate,
     required this.loanInterestRate,
     required this.investmentChangeRate,
-    required this.participantsIds,
+    required this.participants,
+    required this.isPlaying,
   });
 
   factory MCRoom.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -35,7 +37,8 @@ class MCRoom {
       savingsInterestRate: data?['savingsInterestRate'] as double,
       loanInterestRate: data?['loanInterestRate'] as double,
       investmentChangeRate: data?['investmentChangeRate'] as double,
-      participantsIds: List<String>.from(data?['participantsIds']),
+      participants: data?['participants'] as Map<String, dynamic>,
+      isPlaying: data?['isPlaying'] as bool,
     );
   }
 
@@ -49,7 +52,8 @@ class MCRoom {
       'savingsInterestRate': savingsInterestRate,
       'loanInterestRate': loanInterestRate,
       'investmentChangeRate': investmentChangeRate,
-      'participantsIds': participantsIds,
+      'participants': participants,
+      'isPlaying': isPlaying,
     };
   }
 }

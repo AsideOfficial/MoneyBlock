@@ -55,7 +55,7 @@ class MCContainer extends StatelessWidget {
             gradient: gradient,
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 2, color: Colors.white),
-              borderRadius: BorderRadius.circular(borderRadius),
+              borderRadius: BorderRadius.circular(borderRadius - 4),
             ),
           ),
           child: child,

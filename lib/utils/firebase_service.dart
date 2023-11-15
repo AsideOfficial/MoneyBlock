@@ -56,10 +56,24 @@ class FirebaseService {
     return randomInt;
   }
 
+  static Future<void> updateRoom({
+    required String roomId,
+    required String key,
+    required dynamic value,
+  }) async {
+    roomRef.doc(roomId).update({key: value}).then(
+        (value) => debugPrint("DocumentSnapshot successfully updated!"),
+        onError: (e) => debugPrint("Error updating document $e"));
+  }
+
   static Future<String> getRoomId({required int code}) async {
     final snapshot = await roomRef.where('roomCode', isEqualTo: code).get();
     final id = snapshot.docs[0].id;
 
     return id;
+  }
+
+  static Future<void> removeRoom({required String roomID}) async {
+    await roomRef.doc(roomID).delete();
   }
 }
