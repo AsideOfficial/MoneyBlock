@@ -63,46 +63,47 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                 padding: const EdgeInsets.only(
                     left: 20, top: 20, bottom: 17, right: 20),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("지난 뉴스",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 24, color: Constants.dark100)),
-                      const SizedBox(height: 15),
-                      Text("한국은행 기준금이 0.5% 인상",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.dark100)),
-                      const SizedBox(height: 23),
-                      Container(
-                        height: 1,
-                        color: Constants.grey100,
-                      ),
-                      const SizedBox(height: 10),
-                      Text("금리 증감 결과",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 24, color: Constants.dark100)),
-                      const SizedBox(height: 8),
-                      Text("저축금리",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardGreen)),
-                      const SizedBox(height: 2),
-                      const RateVariationTile(before: 3, after: 5),
-                      const SizedBox(height: 10),
-                      Text("저축금리",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardOrange)),
-                      const SizedBox(height: 2),
-                      const RateVariationTile(before: 5, after: 4),
-                      const SizedBox(height: 10),
-                      Text("저축금리",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardRed)),
-                      const SizedBox(height: 2),
-                      const RateVariationTile(
-                        before: 10,
-                        after: -10,
-                      ),
-                    ]),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("지난 뉴스",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 24, color: Constants.dark100)),
+                    const SizedBox(height: 15),
+                    Text("한국은행 기준금이 0.5% 인상",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 16, color: Constants.dark100)),
+                    const SizedBox(height: 23),
+                    Container(
+                      height: 1,
+                      color: Constants.grey100,
+                    ),
+                    const SizedBox(height: 10),
+                    Text("금리 증감 결과",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 24, color: Constants.dark100)),
+                    const SizedBox(height: 8),
+                    Text("저축금리",
+                        style: Constants.defaultTextStyle.copyWith(
+                            fontSize: 16, color: Constants.cardGreen)),
+                    const SizedBox(height: 2),
+                    const RateVariationTile(before: 3, after: 5),
+                    const SizedBox(height: 10),
+                    Text("저축금리",
+                        style: Constants.defaultTextStyle.copyWith(
+                            fontSize: 16, color: Constants.cardOrange)),
+                    const SizedBox(height: 2),
+                    const RateVariationTile(before: 5, after: 4),
+                    const SizedBox(height: 10),
+                    Text("저축금리",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 16, color: Constants.cardRed)),
+                    const SizedBox(height: 2),
+                    const RateVariationTile(
+                      before: 10,
+                      after: -10,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -113,14 +114,74 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                 gradient: Constants.grey00Gradient,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.only(
+                    left: 20, top: 20, bottom: 23, right: 20),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("지난 뉴스",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 22)),
-                    ]),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("라운드 정산",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 24, color: Constants.dark100)),
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Text("지난 총 잔액",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 14, color: Constants.dark100)),
+                        const Spacer(),
+                        Text("1000000원",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 14, color: Constants.dark100)),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 20),
+                    const AssetVariationListTile(
+                        title: "현금", variation: 100000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 4),
+                    const AssetVariationListTile(
+                        title: "저축", variation: 300000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 4),
+                    const AssetVariationListTile(
+                        title: "투자", variation: 500000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 4),
+                    const AssetVariationListTile(
+                        title: "대출", variation: -500000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 4),
+                    const AssetVariationListTile(
+                        title: "세금", variation: -200000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const SizedBox(height: 4),
+                    const AssetVariationListTile(
+                        title: "인센티브", variation: 400000),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Text("현재 총 잔액",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 14, color: Constants.dark100)),
+                        const Spacer(),
+                        Text("1000000원",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 14, color: Constants.dark100)),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Container(height: 1, color: Constants.grey100),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -154,6 +215,34 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AssetVariationListTile extends StatelessWidget {
+  final String title;
+  final int variation;
+  const AssetVariationListTile({
+    super.key,
+    required this.title,
+    required this.variation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(title,
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 14, color: Constants.dark100)),
+        const Spacer(),
+        Text("${(variation >= 0) ? "+" : ""}${variation.commaString}원",
+            style: Constants.defaultTextStyle.copyWith(
+                fontSize: 14,
+                color: (variation < 0)
+                    ? Constants.accentRed
+                    : Constants.accentBlue)),
+      ],
     );
   }
 }
