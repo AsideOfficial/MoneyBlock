@@ -31,6 +31,10 @@ class GameController extends GetxController {
     isActionChoicing = true;
   }
 
+  void bindRoomStream() {
+    // TODO - 게임 방 내부 데이터 STREAM 연동
+  }
+
   GameAction get currentActionTypeModel {
     switch (_curretnActionType.value) {
       case GameActionType.saving:

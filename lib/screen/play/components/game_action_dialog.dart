@@ -221,12 +221,14 @@ class GameActionDialog extends StatelessWidget {
                   children: [
                     Text(specificActionModel?.title ?? "",
                         style: Constants.titleTextStyle),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 6),
                     Text("어떤 ${specificActionModel?.title}를 하시겠습니까?",
                         style:
                             Constants.defaultTextStyle.copyWith(fontSize: 16)),
                     const SizedBox(height: 8),
-                    Expanded(
+                    SizedBox(
+                      height: 140,
+                      width: 600,
                       child: ListView.builder(
                           controller: ScrollController(initialScrollOffset: 58),
                           scrollDirection: Axis.horizontal,

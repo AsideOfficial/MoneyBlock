@@ -6,6 +6,7 @@ import 'package:get/route_manager.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/screen/play/components/game_action_container.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
@@ -223,12 +224,18 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             ],
           ),
           //MARK : - Middle Layer (게임 액션)
-          if (gameController.isActionChoicing)
+          if (gameController.isActionChoicing &&
+              (gameController.currentActionType == GameActionType.expend ||
+                  gameController.currentActionType ==
+                      GameActionType.investment))
             GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.3)),
               onTap: () => gameController.isActionChoicing = false,
             ),
-          if (gameController.isActionChoicing)
+          if (gameController.isActionChoicing &&
+              (gameController.currentActionType == GameActionType.expend ||
+                  gameController.currentActionType ==
+                      GameActionType.investment))
             const Column(
               children: [
                 SizedBox(
@@ -237,7 +244,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 // showActtionDialog()
                 GameActionDialog(),
               ],
-            ),
+            )
+          else if (gameController.isActionChoicing &&
+              (gameController.currentActionType == GameActionType.saving ||
+                  gameController.currentActionType == GameActionType.loan))
+            const GameActionContainer(),
+
           //MARK : - Top Layer (나의 자산 현황 테이블)
           AnimatedPositioned(
               curve: Curves.decelerate,

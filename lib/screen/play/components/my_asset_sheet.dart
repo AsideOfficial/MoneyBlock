@@ -25,17 +25,17 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
       return Container(
           height: size.height * 2,
           width: size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: Constants.purpleGradient,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0x4C000000),
-                  blurRadius: widget.isSwipeUp ? 4 : 24,
-                  // offset: const Offset(3, 0),
-                  spreadRadius: widget.isSwipeUp ? 4 : 24,
-                )
-              ],
-              borderRadius: const BorderRadius.only(
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: const Color(0x4C000000),
+              //     blurRadius: widget.isSwipeUp ? 4 : 24,
+              //     // offset: const Offset(3, 0),
+              //     spreadRadius: widget.isSwipeUp ? 4 : 24,
+              //   )
+              // ],
+              borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: Stack(
             children: [
@@ -366,8 +366,8 @@ class AssetBar extends StatelessWidget {
                   ],
                 ),
               )),
-          fadeInDuration: const Duration(seconds: 1),
-          fadeOutDuration: const Duration(seconds: 1),
+          fadeInDuration: const Duration(milliseconds: 300),
+          fadeOutDuration: const Duration(microseconds: 500),
           showDuration: const Duration(seconds: 2),
           triggerMode: TooltipTriggerMode.tap,
           backgroundColor: const Color(0xFFF2F2F2),
