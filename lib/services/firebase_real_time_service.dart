@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
@@ -11,7 +10,7 @@ class FirebaseRealTimeService {
 
   //MARK: -
 
-  //MARK: - Room 데이터 CRUD 예제
+  // TODO - [베테브] Room 데이터 CRUD 예제 확인 - 정상 동작 확인 완료
   // CREATE
   static Future<void> createRoom({
     required String roomId,
@@ -67,7 +66,7 @@ class FirebaseRealTimeService {
   }
 }
 
-// 데이터 모델 예시
+// TODO - [베테브] 데이터 모델 예시 -> models 폴더에 구성할 것
 class Room {
   final String? id;
   final String? title;

@@ -10,7 +10,6 @@ import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
-import 'package:money_cycle/utils/firebase_service.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});

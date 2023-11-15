@@ -4,7 +4,6 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
-import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 
