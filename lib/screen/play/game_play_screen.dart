@@ -9,6 +9,8 @@ import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
+import 'package:money_cycle/services/firebase_real_time_service.dart';
+import 'package:money_cycle/utils/firebase_service.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -199,7 +201,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         backgroundColor: Constants.cardPink,
                         titleColor: const Color(0xFFA90054),
                         assetPath: "assets/icons/random_game.png",
-                        onPressed: () {
+                        onPressed: () async {
+                          debugPrint("hello");
+                          final room = Room(id: "123", title: "업데이트", count: 0);
+                          FirebaseRealTimeService.updateRoom(
+                              roomId: room.id!, roomData: room);
                           // setState(() => isActionChoicing = true);
                         },
                       ),

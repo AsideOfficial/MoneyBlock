@@ -9,9 +9,12 @@ import 'package:money_cycle/firebase_options.dart';
 import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/screen/lobby/screens/lobby_screen.dart';
 
+FirebaseApp? firebaseApp;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+  firebaseApp = await Firebase.initializeApp(
+    name: "MoneyCycle",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 

@@ -48,6 +48,7 @@ dependencies:
   syncfusion_flutter_sliders: ^23.1.44
   syncfusion_flutter_core: ^23.1.44
   just_the_tooltip: ^0.0.12
+  firebase_database: ^10.3.4
 
 dev_dependencies:
   flutter_test:
