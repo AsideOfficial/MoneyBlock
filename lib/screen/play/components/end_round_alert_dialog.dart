@@ -24,7 +24,7 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
       acionButtonTitle: "결과보기",
       onPressed: () {
         Get.back();
-        Get.dialog(const EconomicNewsDialog());
+        Get.dialog(const EconomicNewsDialog(), useSafeArea: false);
       },
     );
   }
@@ -49,54 +49,146 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
       shadowColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
-      content: Row(
-        children: [
-          const SizedBox(width: 50),
-          Container(
-            width: 230,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: Constants.grey00Gradient,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            width: 230,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: Constants.grey00Gradient,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Bounceable(
-                duration: const Duration(seconds: 1),
-                onTap: () {
-                  Get.back();
-                  Get.dialog(const RoundCalculateDialog());
-                },
-                child: SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: Stack(
-                    alignment: Alignment.center,
+      content: SizedBox(
+        height: 310,
+        child: Row(
+          children: [
+            Container(
+              width: 230,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: Constants.grey00Gradient,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, top: 20, bottom: 17, right: 20),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset("assets/components/confirm_button.png"),
-                      Text(
-                        "확인",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 20),
-                      )
-                    ],
+                      Text("지난 뉴스",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 24, color: Constants.dark100)),
+                      const SizedBox(height: 15),
+                      Text("한국은행 기준금이 0.5% 인상",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.dark100)),
+                      const SizedBox(height: 23),
+                      Container(
+                        height: 1,
+                        color: Constants.grey100,
+                      ),
+                      const SizedBox(height: 10),
+                      Text("금리 증감 결과",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 24, color: Constants.dark100)),
+                      const SizedBox(height: 8),
+                      Text("저축금리",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardGreen)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(before: 3, after: 5),
+                      const SizedBox(height: 10),
+                      Text("저축금리",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardOrange)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(before: 5, after: 4),
+                      const SizedBox(height: 10),
+                      Text("저축금리",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardRed)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(
+                        before: 10,
+                        after: -10,
+                      ),
+                    ]),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              width: 230,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: Constants.grey00Gradient,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("지난 뉴스",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 22)),
+                    ]),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Container(
+                  width: 210,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: Constants.grey00Gradient,
                   ),
                 ),
-              ),
-            ],
-          )
-        ],
+                Transform.translate(
+                  offset: const Offset(14, -14),
+                  child: Bounceable(
+                    scaleFactor: 0.8,
+                    onTap: () {
+                      Get.back();
+                      Get.dialog(const NewRoundDialog());
+                    },
+                    child: Image.asset(
+                      "assets/icons/button_forward.png",
+                      width: 46.0,
+                      height: 46.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class RateVariationTile extends StatelessWidget {
+  final double before;
+  final double after;
+  const RateVariationTile({
+    super.key,
+    required this.before,
+    required this.after,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 64,
+          child: Text("$before%",
+              style: Constants.defaultTextStyle
+                  .copyWith(fontSize: 20, color: Constants.grey100)),
+        ),
+        SizedBox(
+            width: 14,
+            height: 14,
+            child: Image.asset("assets/icons/arrow_forward.png")),
+        const SizedBox(width: 14),
+        Text("$after%",
+            style: Constants.defaultTextStyle.copyWith(
+                fontSize: 20,
+                color: (before < after)
+                    ? Constants.accentRed
+                    : Constants.accentBlue)),
+      ],
     );
   }
 }

@@ -10,6 +10,9 @@ class Constants {
   static Color greenNeon = const Color(0xFF00D4A1);
   static Color blueNeon = const Color(0xFF34B5FF);
 
+  static Color accentRed = const Color(0xFFE32222);
+  static Color accentBlue = const Color(0xFF272EDB);
+
   // 카드 배경 (7가지 액션)
   static Color cardGreen = const Color(0xFF70C14A);
   static Color cardRed = const Color(0xFFF2515D);
