@@ -59,43 +59,40 @@ final investmentModel = GameAction(
   actions: [
     SpecifitGameAction(title: '주식', items: [
       GameActionItem(
-          title: "주식1", description: "주식 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
-          title: "주식2", description: "주식 상품 1에 대한 설명", price: 300000),
-      GameActionItem(
-          title: "주식3", description: "주식 상품 1에 대한 설명", price: 500000),
-      GameActionItem(
-          title: "주식4", description: "주식 상품 1에 대한 설명", price: 1000000),
+          title: "전기전자", description: "주식 상품 1에 대한 설명", price: 1000000),
+      GameActionItem(title: "금융", description: "주식 상품 1에 대한 설명", price: 100000),
+      GameActionItem(title: "철강", description: "주식 상품 1에 대한 설명", price: 300000),
+      GameActionItem(title: "제약", description: "주식 상품 1에 대한 설명", price: 70000),
     ]),
     SpecifitGameAction(title: '실물자산', items: [
       GameActionItem(
-          title: "실물자산1", description: "실물자산 상품 1에 대한 설명", price: 100000),
+          title: "금", description: "실물자산 상품 1에 대한 설명", price: 200000),
       GameActionItem(
-          title: "실물자산2", description: "실물자산 상품 2에 대한 설명", price: 300000),
+          title: "미술품", description: "실물자산 상품 2에 대한 설명", price: 500000),
       GameActionItem(
-          title: "실물자산3", description: "실물자산 상품 3에 대한 설명", price: 500000),
+          title: "다이아몬드", description: "실물자산 상품 3에 대한 설명", price: 700000),
       GameActionItem(
-          title: "실물자산4", description: "실물자산 상품 4에 대한 설명", price: 1000000),
+          title: "기념주화", description: "실물자산 상품 4에 대한 설명", price: 50000),
     ]),
     SpecifitGameAction(title: '부동산', items: [
       GameActionItem(
-          title: "부동산1", description: "부동산 상품 1에 대한 설명", price: 100000),
+          title: "서울", description: "부동산 상품 1에 대한 설명", price: 3000000),
       GameActionItem(
-          title: "부동산2", description: "부동산 상품 2에 대한 설명", price: 300000),
+          title: "대전", description: "부동산 상품 2에 대한 설명", price: 4300000),
       GameActionItem(
-          title: "부동산3", description: "부동산 상품 3에 대한 설명", price: 500000),
+          title: "광주", description: "부동산 상품 3에 대한 설명", price: 1200000),
       GameActionItem(
-          title: "부동산4", description: "부동산 상품 4에 대한 설명", price: 1000000),
+          title: "부산", description: "부동산 상품 4에 대한 설명", price: 650000),
     ]),
     SpecifitGameAction(title: '펀드', items: [
       GameActionItem(
-          title: "펀드1", description: "펀드 상품 1에 대한 설명", price: 100000),
+          title: "카이마루\n부자시리즈", description: "펀드 상품 1에 대한 설명", price: 100000),
       GameActionItem(
-          title: "펀드2", description: "펀드 상품 2에 대한 설명", price: 300000),
+          title: "안전에셋\n더드림", description: "펀드 상품 2에 대한 설명", price: 300000),
       GameActionItem(
-          title: "펀드3", description: "펀드 상품 3에 대한 설명", price: 500000),
+          title: "탁월해\n투자신탁", description: "펀드 상품 3에 대한 설명", price: 500000),
       GameActionItem(
-          title: "펀드4", description: "펀드 상품 4에 대한 설명", price: 1000000),
+          title: "글로벌\n베스트", description: "펀드 상품 4에 대한 설명", price: 1000000),
     ]),
   ],
 );
@@ -106,33 +103,33 @@ final expendModel = GameAction(
   actions: [
     SpecifitGameAction(title: '소비', items: [
       GameActionItem(
-          title: "소비1", description: "소비 상품 1에 대한 설명", price: 100000),
+          title: "저축관리\n어드바이저", description: "소비 상품 1에 대한 설명", price: 100000),
       GameActionItem(
-          title: "소비2", description: "소비 상품 1에 대한 설명", price: 300000),
+          title: "투자관리\n어드바이저", description: "소비 상품 1에 대한 설명", price: 300000),
       GameActionItem(
-          title: "소비3", description: "소비 상품 1에 대한 설명", price: 500000),
+          title: "주사위\n특권", description: "소비 상품 1에 대한 설명", price: 500000),
       GameActionItem(
-          title: "소비4", description: "소비 상품 1에 대한 설명", price: 1000000),
+          title: "주사위\n1회권", description: "소비 상품 1에 대한 설명", price: 1000000),
     ]),
     SpecifitGameAction(title: '적금', items: [
       GameActionItem(
-          title: "보험1", description: "보험 상품 1에 대한 설명", price: 100000),
+          title: "민영보험1", description: "보험 상품 1에 대한 설명", price: 100000),
       GameActionItem(
-          title: "보험2", description: "보험 상품 2에 대한 설명", price: 300000),
+          title: "민영보험2", description: "보험 상품 2에 대한 설명", price: 300000),
       GameActionItem(
-          title: "보험3", description: "보험 상품 3에 대한 설명", price: 500000),
+          title: "사회보장보험1", description: "보험 상품 3에 대한 설명", price: 70000),
       GameActionItem(
-          title: "보험4", description: "보험 상품 4에 대한 설명", price: 1000000),
+          title: "사회보장보험2", description: "보험 상품 4에 대한 설명", price: 300000),
     ]),
     SpecifitGameAction(title: '기부', items: [
       GameActionItem(
-          title: "기부1", description: "기부 상품 1에 대한 설명", price: 100000),
+          title: "기부공재1", description: "기부 상품 1에 대한 설명", price: 100000),
       GameActionItem(
-          title: "기부2", description: "기부 상품 2에 대한 설명", price: 300000),
+          title: "기부공재2", description: "기부 상품 2에 대한 설명", price: 300000),
       GameActionItem(
-          title: "기부3", description: "기부 상품 3에 대한 설명", price: 500000),
+          title: "기부공재3", description: "기부 상품 3에 대한 설명", price: 100000),
       GameActionItem(
-          title: "기부4", description: "기부 상품 4에 대한 설명", price: 1000000),
+          title: "기부공재4", description: "기부 상품 4에 대한 설명", price: 300000),
     ]),
   ],
 );
