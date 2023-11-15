@@ -194,6 +194,55 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                     borderRadius: BorderRadius.circular(20),
                     gradient: Constants.grey00Gradient,
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, top: 20, bottom: 23, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("현재 순위",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 24, color: Constants.dark100)),
+                        const SizedBox(height: 15),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: 4,
+                            itemBuilder: (context, index) {
+                              //TODO - 순위 데이터 리스트 연동 및 정렬
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      child: Text("${index + 1}.",
+                                          style: Constants.defaultTextStyle
+                                              .copyWith(
+                                                  fontSize: 20,
+                                                  color: Constants.dark100)),
+                                    ),
+                                    const SizedBox(width: 13),
+                                    SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: Image.asset(
+                                            "assets/images/profile_cow.png")),
+                                    const SizedBox(width: 10),
+                                    Text("닉네임",
+                                        style: Constants.defaultTextStyle
+                                            .copyWith(
+                                                fontSize: 20,
+                                                color: Constants.dark100)),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
                 Transform.translate(
                   offset: const Offset(14, -14),
