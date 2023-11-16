@@ -129,7 +129,7 @@ class _SignInDialogState extends State<SignInDialog> {
                             children: [
                               MCBounceableButton(
                                 height: 44,
-                                title: "비밀번호를 잊어버리셧나요?",
+                                title: "비밀번호를 잊어버렸나요?",
                                 onPressed: () {
                                   Get.back();
                                   showDialog(
@@ -146,7 +146,7 @@ class _SignInDialogState extends State<SignInDialog> {
                               ),
                               MCBounceableButton(
                                 height: 44,
-                                title: "회원가입하기?",
+                                title: "회원가입하기",
                                 onPressed: () {
                                   Get.back();
                                   showDialog(
