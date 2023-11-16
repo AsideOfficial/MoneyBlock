@@ -266,7 +266,10 @@ class _GameActionDialogState extends State<GameActionDialog> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text("예금", style: Constants.titleTextStyle),
+                        Text(
+                            gameController.curretnSpecificActionModel?.title ??
+                                "",
+                            style: Constants.titleTextStyle),
                         const SizedBox(width: 12),
                         Text("금리: 4%",
                             style: Constants.defaultTextStyle
@@ -278,7 +281,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(
-                          width: 220,
+                          width: 230,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -288,7 +291,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               const SizedBox(height: 4),
                               amountTile(amount: cash),
                               const SizedBox(height: 10),
-                              Text("예금금액",
+                              Text(
+                                  "${gameController.curretnSpecificActionModel?.title}금액",
                                   style: Constants.defaultTextStyle
                                       .copyWith(fontSize: 16)),
                               const SizedBox(height: 4),
@@ -372,7 +376,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 26),
+                        const SizedBox(width: 20),
                         Container(
                           width: 1,
                           height: 150,
@@ -383,13 +387,48 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text("예상이자", style: Constants.defaultTextStyle),
-                                const SizedBox(width: 8),
-                                amountTile(amount: currentAmount, width: 100),
-                              ],
-                            ),
+                            if (gameController
+                                    .curretnSpecificActionModel?.title ==
+                                "적금")
+                              SizedBox(
+                                width: 190,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text("턴당 이자",
+                                            style: Constants.defaultTextStyle),
+                                        const Spacer(),
+                                        amountTile(
+                                            amount: currentAmount * 0.04,
+                                            width: 100),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("총 이자",
+                                            style: Constants.defaultTextStyle),
+                                        amountTile(
+                                            amount: currentAmount * 0.04 * 3,
+                                            width: 100),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              Row(
+                                children: [
+                                  Text("예상 이자",
+                                      style: Constants.defaultTextStyle),
+                                  const SizedBox(width: 8),
+                                  amountTile(
+                                      amount: currentAmount * 0.04, width: 100),
+                                ],
+                              ),
                             const SizedBox(height: 2),
                             const Text(
                               "※다음 턴에 주어지는 이자입니다.",
