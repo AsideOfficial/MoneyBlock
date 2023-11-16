@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -21,10 +22,10 @@ class FindPasswordDialog extends StatefulWidget {
 class _FindPasswordDialogState extends State<FindPasswordDialog> {
   bool isLoading = false;
 
-  Future<void> sendChangePasswordEmail() async {
-    await Future.delayed(const Duration(seconds: 3)); // 3초 동안 대기
-    // 여기에서 가짜 비동기 작업 수행
-    print("가짜 비동기 작업이 완료되었습니다.");
+  final emailController = TextEditingController();
+
+  Future<void> sendChangePasswordEmail({required String email}) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
   void showSignInAlert({required String message}) {
@@ -52,7 +53,10 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
       message: message,
       secondaryMessage: secondaryMessage,
       primaryActionTitle: "확인",
-      primaryAction: () => Get.back(),
+      primaryAction: () {
+        Get.back();
+        Get.back();
+      },
       secondaryActionTitle: "로그인하러 가기",
       secondaryAction: () {
         Get.back();
@@ -95,6 +99,7 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
                             textAlign: TextAlign.center,
                           ),
                           MCTextField(
+                            controller: emailController,
                             hintText: "이메일",
                             textInputAction: TextInputAction.next,
                           ),
@@ -109,14 +114,16 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
                                 isLoading = true;
                               });
                               try {
-                                await sendChangePasswordEmail();
-                              } catch (error) {
-                                //TODO - Firebase 에러 핸들링
-                              }
+                                await sendChangePasswordEmail(
+                                    email: emailController.text);
 
-                              showMessageSendAlert(
-                                  message: "luke@sini.com",
-                                  secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.");
+                                showMessageSendAlert(
+                                  message: emailController.text,
+                                  secondaryMessage: "비밀번호 재설정 메일이 발송되었습니다.",
+                                );
+                              } catch (e) {
+                                debugPrint('$e');
+                              }
                               setState(() {
                                 isLoading = false;
                               });

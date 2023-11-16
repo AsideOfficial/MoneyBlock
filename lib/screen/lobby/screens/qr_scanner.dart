@@ -183,6 +183,44 @@ class _QRScannerState extends State<QRScanner> {
     );
   }
 
+  void showNoPermissionSnackBar() {
+    Get.snackbar(
+      '',
+      '',
+      duration: const Duration(seconds: 4),
+      animationDuration: const Duration(milliseconds: 400),
+      maxWidth: 300,
+      titleText: Container(
+        width: 300,
+        height: 80,
+        alignment: Alignment.center,
+        decoration: ShapeDecoration(
+          color: const Color(0xFF696969),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Text(
+          '카메라 권한이 없습니다.\n설정에서 카메라 권한을 허용해주세요.',
+          style: Constants.defaultTextStyle.copyWith(fontSize: 14.0),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      borderRadius: 50,
+      barBlur: 0,
+      backgroundColor: Colors.transparent,
+      snackPosition: SnackPosition.TOP,
+    );
+  }
+
   void participateRoom({required String roomCode}) async {
     final result = await FirebaseService.participateRoom(roomCode: roomCode);
 
@@ -209,9 +247,7 @@ class _QRScannerState extends State<QRScanner> {
     debugPrint('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     ready();
     if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
+      showNoPermissionSnackBar();
     }
   }
 }

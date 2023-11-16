@@ -52,6 +52,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
       if (user != null) {
         Get.put(MCUserController());
         MCUserController.to.login(userData: user);
+        setState(() => hasUserData = true);
       } else {
         setState(() => hasUserData = false);
         debugPrint('require user data');
