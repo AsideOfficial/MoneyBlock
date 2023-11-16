@@ -88,85 +88,127 @@ class _GameActionDialogState extends State<GameActionDialog> {
               height: 250,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 18, left: 16, right: 16, bottom: 5),
+                    top: 18, left: 10, right: 10, bottom: 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("현재 금리",
+                    Text("저축금리",
                         style: Constants.titleTextStyle
                             .copyWith(color: Constants.dark100)),
                     const SizedBox(height: 18),
-                    Text("현재 금리는\n이러이러합니다.",
+                    Text("저축금리란?",
                         style: Constants.defaultTextStyle
                             .copyWith(fontSize: 16, color: Constants.dark100)),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
+                    Text("맡긴 돈에 대한 이자",
+                        style: Constants.defaultTextStyle
+                            .copyWith(fontSize: 16, color: Constants.dark100)),
+                    const SizedBox(height: 14),
                     Row(
                       children: [
-                        Text("기간 및 금액",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100)),
-                        const Spacer(),
-                        Text("금리(연)",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100))
+                        Expanded(
+                          flex: 90,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text("지난 라운드",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      fontSize: 10, color: Constants.dark100)),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Container(
+                              width: 1, height: 16, color: Constants.dark100),
+                        ),
+                        Expanded(
+                          flex: 60,
+                          child: Text("이번 라운드",
+                              style: Constants.defaultTextStyle.copyWith(
+                                  fontSize: 10, color: Constants.dark100)),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text("3개월이상~6개월미만",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100)),
-                        const Spacer(),
-                        Text("2.0",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100))
+                        Expanded(
+                          flex: 90,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("예금금리",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      fontSize: 10, color: Constants.dark100)),
+                              Text("2%",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      fontSize: 10, color: Constants.dark100)),
+                              const SizedBox(width: 0),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Container(
+                              width: 1, height: 16, color: Constants.dark100),
+                        ),
+                        Expanded(
+                          flex: 60,
+                          child: Center(
+                            child: SizedBox(
+                              width: 12,
+                              height: 12,
+                              child:
+                                  Image.asset("assets/icons/arrow_up_red.png"),
+                            ),
+                          ),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text("6개월이상~1년미만",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100)),
-                        const Spacer(),
-                        Text("2.5",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100))
+                        Expanded(
+                          flex: 90,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("저축금리",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      fontSize: 10, color: Constants.dark100)),
+                              Text("4%",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      fontSize: 10, color: Constants.dark100)),
+                              const SizedBox(width: 0),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Container(
+                              width: 1, height: 16, color: Constants.dark100),
+                        ),
+                        Expanded(
+                          flex: 60,
+                          child: Center(
+                            child: SizedBox(
+                              width: 12,
+                              height: 12,
+                              child: Image.asset(
+                                  "assets/icons/arrow_down_blue.png"),
+                            ),
+                          ),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Text("1년이상~3년미만",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100)),
-                        const Spacer(),
-                        Text("2.5",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100))
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Text("1년이상~3년미만",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100)),
-                        const Spacer(),
-                        Text("2.5",
-                            style: Constants.defaultTextStyle.copyWith(
-                                fontSize: 10, color: Constants.dark100))
-                      ],
-                    ),
+                    const SizedBox(height: 4),
                   ],
                 ),
               ),
