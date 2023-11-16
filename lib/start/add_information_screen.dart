@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
-import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
@@ -9,7 +8,9 @@ import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:money_cycle/utils/text_validator.dart';
 
 class AddInformationScreen extends StatefulWidget {
-  const AddInformationScreen({super.key});
+  const AddInformationScreen({super.key, required this.tapComplete});
+
+  final Function() tapComplete;
 
   @override
   State<AddInformationScreen> createState() => _AddInformationScreenState();
@@ -33,6 +34,15 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
         phoneNumberController.text.isNotEmpty &&
         birthdayController.text.isNotEmpty &&
         genderController.text.isNotEmpty;
+
+    isNameError = !TextValidator.isNameFormat(nameController.text);
+    isPhoneNumberError =
+        !TextValidator.isPhoneNumberFormat(phoneNumberController.text);
+    isBirthdayError = !TextValidator.isDateFormat(birthdayController.text);
+    isGenderError = !TextValidator.isGenderFormat(genderController.text);
+    isLocationError = !(locationController.text.isNotEmpty
+        ? TextValidator.isLocationFormat(locationController.text)
+        : true);
 
     bool isValid = TextValidator.isNameFormat(nameController.text) &&
         TextValidator.isPhoneNumberFormat(phoneNumberController.text) &&
@@ -200,7 +210,8 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                                   location: locationController.text,
                                 ),
                               );
-                              Get.back();
+
+                              widget.tapComplete();
                             }
                           : null,
                       child: Image.asset(

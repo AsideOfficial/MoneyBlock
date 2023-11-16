@@ -180,7 +180,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const Spacer(),
                   Stack(
                     alignment: Alignment.topCenter,
                     children: [
@@ -256,7 +256,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const Spacer(),
                   Container(
                     height: 13,
                     decoration: BoxDecoration(
@@ -272,57 +272,62 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                   ),
                   const SizedBox(height: 8.0),
                   if (roomData != null)
-                    Row(
-                      children: [
-                        const SizedBox(width: 120.0),
-                        variableColumn(
-                          rateType: 'assets/components/saving_rate_box.png',
-                          label: '저축금리',
-                          value: roomData.savingsInterestRate,
-                        ),
-                        const SizedBox(width: 10.0),
-                        variableColumn(
-                          rateType: 'assets/components/loan_rate_box.png',
-                          label: '대출금리',
-                          value: roomData.loanInterestRate,
-                        ),
-                        const SizedBox(width: 10.0),
-                        variableColumn(
-                          rateType:
-                              'assets/components/investment_change_rate_box.png',
-                          label: '투자변동률',
-                          value: roomData.investmentChangeRate,
-                        ),
-                        const Spacer(),
-                        Bounceable(
-                          onTap: (roomData.hostId !=
-                                  FirebaseAuth.instance.currentUser?.uid)
-                              ? () {
-                                  toggleReady(
-                                    roomData: roomData,
-                                    current: roomData.participants[
-                                        FirebaseAuth.instance.currentUser?.uid],
-                                  );
-                                }
-                              : (roomData.participants.keys.length > 1 &&
-                                      !roomData.participants
-                                          .containsValue(false))
-                                  ? () {
-                                      //TODO: 게임 시작
-                                    }
-                                  : null,
-                          child: Image.asset(
-                            (roomData.hostId !=
-                                    FirebaseAuth.instance.currentUser?.uid)
-                                ? 'assets/components/game_ready_button${roomData.participants[FirebaseAuth.instance.currentUser?.uid] ? '_already' : ''}.png'
-                                : 'assets/components/game_start_button${(roomData.participants.keys.length == 1 || roomData.participants.containsValue(false)) ? '_inactive' : ''}.png',
-                            width: 230,
-                            height: 50,
+                    SafeArea(
+                      left: false,
+                      right: false,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 120.0),
+                          variableColumn(
+                            rateType: 'assets/components/saving_rate_box.png',
+                            label: '저축금리',
+                            value: roomData.savingsInterestRate,
                           ),
-                        ),
-                        const SizedBox(width: 80.0),
-                      ],
-                    )
+                          const SizedBox(width: 10.0),
+                          variableColumn(
+                            rateType: 'assets/components/loan_rate_box.png',
+                            label: '대출금리',
+                            value: roomData.loanInterestRate,
+                          ),
+                          const SizedBox(width: 10.0),
+                          variableColumn(
+                            rateType:
+                                'assets/components/investment_change_rate_box.png',
+                            label: '투자변동률',
+                            value: roomData.investmentChangeRate,
+                          ),
+                          const Spacer(),
+                          Bounceable(
+                            onTap: (roomData.hostId !=
+                                    FirebaseAuth.instance.currentUser?.uid)
+                                ? () {
+                                    toggleReady(
+                                      roomData: roomData,
+                                      current: roomData.participants[
+                                          FirebaseAuth
+                                              .instance.currentUser?.uid],
+                                    );
+                                  }
+                                : (roomData.participants.keys.length > 1 &&
+                                        !roomData.participants
+                                            .containsValue(false))
+                                    ? () {
+                                        //TODO: 게임 시작
+                                      }
+                                    : null,
+                            child: Image.asset(
+                              (roomData.hostId !=
+                                      FirebaseAuth.instance.currentUser?.uid)
+                                  ? 'assets/components/game_ready_button${roomData.participants[FirebaseAuth.instance.currentUser?.uid] ? '_already' : ''}.png'
+                                  : 'assets/components/game_start_button${(roomData.participants.keys.length == 1 || roomData.participants.containsValue(false)) ? '_inactive' : ''}.png',
+                              width: 230,
+                              height: 50,
+                            ),
+                          ),
+                          const SizedBox(width: 80.0),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ],

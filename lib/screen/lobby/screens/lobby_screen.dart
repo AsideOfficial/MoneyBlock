@@ -76,7 +76,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
         children: [
           Image.asset(
             'assets/images/main_illustration.png',
-            fit: BoxFit.cover,
+            width: double.infinity,
+            fit: BoxFit.fitWidth,
           ),
           if (isFetching)
             SafeArea(
@@ -103,7 +104,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
               ),
             )
           else if (!isFetching && !hasUserData)
-            const AddInformationScreen()
+            AddInformationScreen(
+              tapComplete: () => getUserData(),
+            )
           else
             Center(
               child: MCContainer(
