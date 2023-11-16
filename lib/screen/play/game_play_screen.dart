@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_action_container.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
@@ -202,7 +203,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
                           Get.dialog(
-                            const EndRoundAlertDialog(),
+                            const EndGameAlertDialog(),
                           );
                         },
                       ),

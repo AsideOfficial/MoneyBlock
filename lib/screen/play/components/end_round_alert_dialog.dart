@@ -88,13 +88,13 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                     const SizedBox(height: 2),
                     const RateVariationTile(before: 3, after: 5),
                     const SizedBox(height: 10),
-                    Text("저축금리",
+                    Text("대출금리",
                         style: Constants.defaultTextStyle.copyWith(
                             fontSize: 16, color: Constants.cardOrange)),
                     const SizedBox(height: 2),
                     const RateVariationTile(before: 5, after: 4),
                     const SizedBox(height: 10),
-                    Text("저축금리",
+                    Text("투자변동률",
                         style: Constants.defaultTextStyle
                             .copyWith(fontSize: 16, color: Constants.cardRed)),
                     const SizedBox(height: 2),

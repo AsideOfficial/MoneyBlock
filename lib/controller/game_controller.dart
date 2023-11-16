@@ -26,6 +26,7 @@ class GameController extends GetxController {
   void actionButtonTap(GameActionType type) {
     _curretnActionType.value = type;
     _curretnSpecificActionModel.value = null;
+    debugPrint(_curretnActionType.value.name);
 
     // _curretnSpecificActionModel.value = currentActionTypeModel.actions[0];
     isActionChoicing = true;

@@ -393,6 +393,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               SizedBox(
                                 width: 190,
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
@@ -416,25 +417,37 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             width: 100),
                                       ],
                                     ),
+                                    const SizedBox(height: 2),
+                                    const Text(
+                                      "※다음 라운드에 주어지는 이자입니다.",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
                                   ],
                                 ),
                               )
                             else
-                              Row(
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("예상 이자",
-                                      style: Constants.defaultTextStyle),
-                                  const SizedBox(width: 8),
-                                  amountTile(
-                                      amount: currentAmount * 0.04, width: 100),
+                                  Row(
+                                    children: [
+                                      Text("예상 이자",
+                                          style: Constants.defaultTextStyle),
+                                      const SizedBox(width: 8),
+                                      amountTile(
+                                          amount: currentAmount * 0.04,
+                                          width: 100),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    "※다음 턴에 주어지는 이자입니다.",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
                                 ],
                               ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              "※다음 턴에 주어지는 이자입니다.",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
                             const SizedBox(height: 32),
                             Bounceable(
                                 onTap: () {},
@@ -460,6 +473,229 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 ),
               ),
             )
+          else if (gameController.currentActionType == GameActionType.loan)
+            MCContainer(
+              borderRadius: 20,
+              gradient: gameController.currentBackgroundGradient,
+              strokePadding: const EdgeInsets.all(5),
+              width: 530,
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 24, left: 30, right: 10, bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                            gameController.curretnSpecificActionModel?.title ??
+                                "",
+                            style: Constants.titleTextStyle),
+                        const SizedBox(width: 12),
+                        Text("금리: 4%",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 18)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 230,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("보유현금",
+                                  style: Constants.defaultTextStyle
+                                      .copyWith(fontSize: 16)),
+                              const SizedBox(height: 4),
+                              amountTile(amount: cash),
+                              const SizedBox(height: 10),
+                              Text(
+                                  "${gameController.curretnSpecificActionModel?.title}금액",
+                                  style: Constants.defaultTextStyle
+                                      .copyWith(fontSize: 16)),
+                              const SizedBox(height: 4),
+                              amountTile(amount: currentAmount),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 180,
+                                    child: Column(
+                                      children: [
+                                        SfSliderTheme(
+                                          data: SfSliderThemeData(
+                                            activeTrackHeight: 3,
+                                            inactiveTrackHeight: 3,
+                                            trackCornerRadius: 2,
+                                            activeTrackColor:
+                                                Colors.white.withOpacity(0.8),
+                                            inactiveTrackColor:
+                                                const Color(0xFF257300),
+                                          ),
+                                          child: SfSlider(
+                                            value: currentAmount,
+                                            min: 0,
+                                            max: cash,
+                                            stepSize: 10000,
+                                            enableTooltip: false,
+                                            showLabels: false,
+                                            showTicks: false,
+                                            thumbIcon: Container(
+                                              width: 18,
+                                              height: 18,
+                                              decoration: const ShapeDecoration(
+                                                gradient:
+                                                    Constants.greenGradient,
+                                                shape: OvalBorder(
+                                                  side: BorderSide(
+                                                      width: 0.5,
+                                                      color: Colors.white),
+                                                ),
+                                                shadows: [
+                                                  BoxShadow(
+                                                    color: Color(0x3F000000),
+                                                    blurRadius: 1,
+                                                    offset: Offset(0, 1),
+                                                    spreadRadius: 0,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                currentAmount = value;
+                                              });
+
+                                              debugPrint(value.toString());
+                                            },
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("0%",
+                                                style: Constants
+                                                    .defaultTextStyle
+                                                    .copyWith(fontSize: 10)),
+                                            const Spacer(),
+                                            Text("100%",
+                                                style: Constants
+                                                    .defaultTextStyle
+                                                    .copyWith(fontSize: 10)),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                      "${((currentAmount / cash) * 100).toInt()}%",
+                                      style: Constants.defaultTextStyle
+                                          .copyWith(fontSize: 18)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Container(
+                          width: 1,
+                          height: 150,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 26),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (gameController
+                                    .curretnSpecificActionModel?.title ==
+                                "적금")
+                              SizedBox(
+                                width: 190,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text("턴당 이자",
+                                            style: Constants.defaultTextStyle),
+                                        const Spacer(),
+                                        amountTile(
+                                            amount: currentAmount * 0.04,
+                                            width: 100),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("총 이자",
+                                            style: Constants.defaultTextStyle),
+                                        amountTile(
+                                            amount: currentAmount * 0.04 * 3,
+                                            width: 100),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 2),
+                                    const Text(
+                                      "※다음 라운드에 주어지는 이자입니다.",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text("예상 이자",
+                                          style: Constants.defaultTextStyle),
+                                      const SizedBox(width: 8),
+                                      amountTile(
+                                          amount: currentAmount * 0.04,
+                                          width: 100),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    "※다음 턴에 주어지는 이자입니다.",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            const SizedBox(height: 32),
+                            Bounceable(
+                                onTap: () {},
+                                child: SizedBox(
+                                  width: 184,
+                                  height: 50,
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                          "assets/icons/button_long_green.png"),
+                                      Center(
+                                        child: Text("예금하기",
+                                            style: Constants.largeTextStyle),
+                                      )
+                                    ],
+                                  ),
+                                ))
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       );
     });

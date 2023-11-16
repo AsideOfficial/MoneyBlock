@@ -33,12 +33,12 @@ class CustomAlertDialog extends StatelessWidget {
           padding: const EdgeInsets.only(top: 24, bottom: 22),
           child: Column(
             children: [
-              Text("1라운드 종료!", style: Constants.titleTextStyle),
+              Text(title, style: Constants.titleTextStyle),
               const SizedBox(height: 30),
-              Text("1라운드가 종료되었습니다.",
+              Text(description,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const SizedBox(height: 10),
-              Text("게임의 결과를 확인해보세요.",
+              Text(instruction,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const Spacer(),
               SizedBox(
