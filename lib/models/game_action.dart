@@ -1,26 +1,39 @@
 class GameAction {
-  final String title;
-  final String description;
-  final List<SpecifitGameAction> actions;
+  final String title; // 예: 저축, 지출, 대출
+  final String description; // 예 : 예금: 은행에 자유롭게 맡기는 돈\n적금: 은행에 라운드마다 정기적으로 맡기는 돈
+  final String? rateTitle; // 예: 저축금리, 투자변동률, 대출금리
+  final String? rateDescription; // 예: {rateTitle}란? "맡긴 돈에 대한 이자"
+  final List<Rate>? rates; // 금리 콘텐츠
+  final List<SpecifitGameAction> actions; // 세부적인 액션들 예 : 예금, 적금
 
   GameAction({
     required this.title,
     required this.description,
     required this.actions,
+    this.rateTitle,
+    this.rateDescription,
+    this.rates,
   });
 }
 
+class Rate {
+  final String title; // 금리의 이름 예 : 예금금리, 적금금리, 투자변동률
+  final List<double> rateFluctuation; // 금리 변동 추이 예 : [2, 3, 4, 2]
+
+  Rate({required this.title, required this.rateFluctuation});
+}
+
 class SpecifitGameAction {
-  final String title;
-  final List<GameActionItem> items;
+  final String title; // 예 : 예금, 적금, 주식, 실물자산, 부동산
+  final List<GameActionItem> items; // 저축, 대출은 필요 X
 
   SpecifitGameAction({required this.title, required this.items});
 }
 
 class GameActionItem {
   final String title;
-  final String description;
   final int price;
+  final String? description;
 
   GameActionItem(
       {required this.title, required this.description, required this.price});
@@ -28,7 +41,10 @@ class GameActionItem {
 
 final savingModel = GameAction(
   title: "저축",
-  description: "저축에 대한 설명 ~~~",
+  description: """
+예금: 은행에 자유롭게 1번 맡기는 돈
+적금: 은행에 라운드마다 정기적으로 맡기는 돈
+""",
   actions: [
     SpecifitGameAction(title: '예금', items: [
       GameActionItem(

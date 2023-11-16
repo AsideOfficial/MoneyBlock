@@ -222,17 +222,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           ),
           //MARK : - Middle Layer (게임 액션)
           if (gameController.isActionChoicing &&
-              (gameController.currentActionType == GameActionType.expend ||
-                  gameController.currentActionType ==
-                      GameActionType.investment))
+              gameController.currentActionType != GameActionType.loan)
             GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.3)),
               onTap: () => gameController.isActionChoicing = false,
             ),
           if (gameController.isActionChoicing &&
-              (gameController.currentActionType == GameActionType.expend ||
-                  gameController.currentActionType ==
-                      GameActionType.investment))
+              gameController.currentActionType != GameActionType.loan)
             const Column(
               children: [
                 SizedBox(
@@ -241,11 +237,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 // showActtionDialog()
                 GameActionDialog(),
               ],
-            )
-          else if (gameController.isActionChoicing &&
-              (gameController.currentActionType == GameActionType.saving ||
-                  gameController.currentActionType == GameActionType.loan))
-            const GameActionContainer(),
+            ),
+          // else if (gameController.isActionChoicing &&
+          //     (gameController.currentActionType == GameActionType.saving ||
+          //         gameController.currentActionType == GameActionType.loan))
+          //   const GameActionContainer(),
 
           //MARK : - Top Layer (나의 자산 현황 테이블)
           AnimatedPositioned(

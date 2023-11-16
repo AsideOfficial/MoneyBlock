@@ -196,7 +196,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 20, top: 20, bottom: 23, right: 20),
+                        left: 20, top: 20, bottom: 23, right: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -222,18 +222,23 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                                   fontSize: 20,
                                                   color: Constants.dark100)),
                                     ),
-                                    const SizedBox(width: 13),
+                                    const SizedBox(width: 6),
                                     SizedBox(
                                         width: 50,
                                         height: 50,
                                         child: Image.asset(
                                             "assets/images/profile_cow.png")),
                                     const SizedBox(width: 10),
-                                    Text("닉네임",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(
-                                                fontSize: 20,
-                                                color: Constants.dark100)),
+                                    SizedBox(
+                                      width: 86,
+                                      child: Text("닉네임이다",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: Constants.defaultTextStyle
+                                              .copyWith(
+                                                  fontSize: 20,
+                                                  color: Constants.dark100)),
+                                    ),
                                   ],
                                 ),
                               );
@@ -331,77 +336,6 @@ class RateVariationTile extends StatelessWidget {
   }
 }
 
-class RoundCalculateDialog extends StatefulWidget {
-  const RoundCalculateDialog({
-    super.key,
-  });
-
-  @override
-  State<RoundCalculateDialog> createState() => _RoundCalculateDialogState();
-}
-
-class _RoundCalculateDialogState extends State<RoundCalculateDialog> {
-  bool isVacation = false;
-  bool isVacationFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shadowColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      content: Row(
-        children: [
-          const SizedBox(width: 50),
-          Container(
-            width: 230,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: Constants.grey00Gradient,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            width: 230,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: Constants.grey00Gradient,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Bounceable(
-                duration: const Duration(seconds: 1),
-                onTap: () {
-                  Get.back();
-                  Get.dialog(const NewRoundDialog());
-                },
-                child: SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset("assets/components/confirm_button.png"),
-                      Text(
-                        "확인",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 20),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
 class NewRoundDialog extends StatefulWidget {
   const NewRoundDialog({
     super.key,
@@ -447,10 +381,115 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                   backgroundColor: Constants.blueNeon,
                   onPressed: () {
                     Get.back();
+                    Get.dialog(const NewsDialog(),
+                        useSafeArea: false, name: "뉴스");
                   },
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NewsDialog extends StatefulWidget {
+  const NewsDialog({
+    super.key,
+  });
+
+  @override
+  State<NewsDialog> createState() => _NewsDialogState();
+}
+
+class _NewsDialogState extends State<NewsDialog> {
+  bool isVacation = false;
+  bool isVacationFinished = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      insetPadding: EdgeInsets.zero,
+      shadowColor: Colors.transparent,
+      contentPadding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 50),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 750),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: Constants.grey00Gradient,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 20, left: 30, right: 30, bottom: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("뉴스",
+                      style: Constants.titleTextStyle
+                          .copyWith(color: Constants.dark100)),
+                  const SizedBox(height: 24),
+                  Text('"한국은행 기준금리 0.5% 인상"',
+                      style: Constants.defaultTextStyle
+                          .copyWith(color: Constants.dark100, fontSize: 18)),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                            "한국의 중앙은행인 한국은행이 오늘 기준금리를 인상한다고 발표했다. 물가 상승률이 높다는 판단으로 기준금리를 올린 것으로 보인다.",
+                            style: Constants.defaultTextStyle.copyWith(
+                                color: Constants.dark100, fontSize: 14)),
+                      ),
+                      const SizedBox(width: 30),
+                      Expanded(
+                        child: Text(
+                            "지난분기 0.5% 인상에 이어 이번 분기에도 0.5%를 인상하였다. 이에 따라 작년부터 지난분기까지 기존 1%대를 유지했던 기준금리는 2%대로 상승하게 되었다. 한국은행은 “앞으로도 경제 지표에 따라 금리를 올리거나 내리도록 결정하겠다”며 추가 인상도 할 수 있음을 암시했다",
+                            style: Constants.defaultTextStyle.copyWith(
+                                color: Constants.dark100, fontSize: 14)),
+                      ),
+                      const SizedBox(width: 30),
+                      Expanded(
+                        child: Text(
+                            "한국은행의 기준금리 인상에 따라, 시장의 저축금리와 대출금리를 포함한 전반적인 금리가 더욱 상승할 것으로 예상된다.",
+                            style: Constants.defaultTextStyle.copyWith(
+                                color: Constants.dark100, fontSize: 14)),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      Bounceable(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                                width: 230,
+                                height: 50,
+                                child: Image.asset(
+                                    "assets/components/continue_button.png")),
+                            Text("이어서 플레이",
+                                style: Constants.titleTextStyle
+                                    .copyWith(fontSize: 22)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
