@@ -8,6 +8,7 @@ import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/action_choice_button.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
+import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -282,9 +283,42 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           itemBuilder: (context, index) {
                             final item = gameController
                                 .curretnSpecificActionModel?.items[index];
-                            return GameItemCard(
-                              item: item,
-                              accentColor: gameController.currentCardColor,
+                            return Bounceable(
+                              onTap: () {
+                                if (gameController.currentActionType ==
+                                    GameActionType.investment) {
+                                  Get.dialog(PurchaseAlertDialog(
+                                    isMultiple: (gameController
+                                                .curretnSpecificActionModel
+                                                ?.title ==
+                                            "부동산")
+                                        ? false
+                                        : true,
+                                    title:
+                                        "${gameController.curretnSpecificActionModel?.title} 매수",
+                                    subTitle: item?.title ?? "",
+                                    perPrice: item?.price ?? 0,
+                                    actionTitle: "매수",
+                                    onPurchase: (count) {
+                                      //TODO - 투자 API 연동 필요
+                                    },
+                                  ));
+                                } else {
+                                  Get.dialog(PurchaseAlertDialog(
+                                    title: "구입",
+                                    subTitle: item?.title ?? "",
+                                    perPrice: item?.price ?? 0,
+                                    actionTitle: "구입",
+                                    onPurchase: (count) {
+                                      //TODO - 지출 API 연동 필요
+                                    },
+                                  ));
+                                }
+                              },
+                              child: GameItemCard(
+                                item: item,
+                                accentColor: gameController.currentCardColor,
+                              ),
                             );
                           }),
                     ),
@@ -313,6 +347,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                 "",
                             style: Constants.titleTextStyle),
                         const SizedBox(width: 12),
+                        // TODO - API - 금리 연동
                         Text("금리: 4%",
                             style: Constants.defaultTextStyle
                                 .copyWith(fontSize: 18)),
@@ -492,7 +527,23 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               ),
                             const SizedBox(height: 32),
                             Bounceable(
-                                onTap: () {},
+                                onTap: () {
+                                  Get.dialog(PurchaseAlertDialog(
+                                    title: gameController
+                                            .curretnSpecificActionModel
+                                            ?.title ??
+                                        "",
+                                    subTitle:
+                                        "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                    perPrice: currentAmount.toInt(),
+                                    primaryActionColor: Constants.cardGreen,
+                                    actionTitle:
+                                        "${gameController.curretnSpecificActionModel?.title}하기",
+                                    onPurchase: (count) {
+                                      // TODO - 예금, 적금 API 연동 필요 금액 = currentAmout
+                                    },
+                                  ));
+                                },
                                 child: SizedBox(
                                   width: 184,
                                   height: 50,
@@ -501,7 +552,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       Image.asset(
                                           "assets/icons/button_long_green.png"),
                                       Center(
-                                        child: Text("예금하기",
+                                        child: Text(
+                                            "${gameController.curretnSpecificActionModel?.title}하기",
                                             style: Constants.largeTextStyle),
                                       )
                                     ],

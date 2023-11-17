@@ -204,7 +204,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
                           Get.dialog(
-                            PurchaseAlertDialog(),
+                            PurchaseAlertDialog(
+                              title: '주식 매수',
+                              perPrice: 30000,
+                              actionTitle: '매수',
+                              isMultiple: true,
+                              subTitle: '전기 전자',
+                              onPurchase: (count) {},
+                            ),
                           );
                         },
                       ),

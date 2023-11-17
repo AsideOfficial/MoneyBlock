@@ -9,23 +9,37 @@ import '../../../components/mc_button.dart';
 import '../../../components/mc_container.dart';
 
 class PurchaseAlertDialog extends StatefulWidget {
-  final title = "주식 매수";
-  final itemTitle = "전기전자";
-  final int perPrice = 50000;
-  final actionTitle = "매수";
+  final String title;
+  final String subTitle;
+  final int perPrice;
+  final String actionTitle;
   final bool? isMultiple;
-  final onPrimaryAction = () {
-    debugPrint("wow");
-  };
-  PurchaseAlertDialog({super.key, this.isMultiple = true});
+  final Color? primaryActionColor;
+  final Function(int count)? onPurchase;
+  const PurchaseAlertDialog({
+    super.key,
+    this.isMultiple = false,
+    this.primaryActionColor = Constants.accentRed,
+    required this.title,
+    required this.subTitle,
+    required this.perPrice,
+    required this.actionTitle,
+    this.onPurchase,
+  });
 
   @override
   State<PurchaseAlertDialog> createState() => _PurchaseAlertDialogState();
 }
 
 class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
-  int count = 0;
+  int count = 1;
   int totalAmount = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    totalAmount = widget.perPrice;
+  }
 
   void calculate() {
     setState(() {
@@ -52,7 +66,9 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                   style:
                       Constants.titleTextStyle.copyWith(color: Colors.black)),
               const SizedBox(height: 10),
-              Text(widget.itemTitle,
+              Text(widget.subTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Constants.defaultTextStyle
                       .copyWith(fontSize: 18, color: Colors.black)),
               const SizedBox(height: 10),
@@ -64,7 +80,7 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                     children: [
                       Bounceable(
                         onTap: () {
-                          if (count > 0) {
+                          if (count > 1) {
                             setState(() {
                               count--;
                             });
@@ -126,14 +142,19 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: MCButton(
-                          fontSize: 20,
-                          title: widget.actionTitle,
-                          backgroundColor: Constants.accentRed,
-                          shadows: const [Constants.buttonShadow],
-                          onPressed:
-                              (count == 0) ? null : widget.onPrimaryAction),
-                    ),
+                        child: MCButton(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 6),
+                      fontSize: 20,
+                      title: widget.actionTitle,
+                      backgroundColor: widget.primaryActionColor,
+                      shadows: const [Constants.buttonShadow],
+                      onPressed: () {
+                        if (widget.onPurchase != null) {
+                          widget.onPurchase!(count);
+                        }
+                      },
+                    )),
                   ],
                 ),
               ),
