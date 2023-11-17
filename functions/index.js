@@ -101,7 +101,7 @@ exports.createRoom = onRequest((req, res) => {
     }
 });
 
-exports.enterRoom = onRequest((req, res) => {
+exports.enterRoom = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
@@ -115,16 +115,18 @@ exports.enterRoom = onRequest((req, res) => {
             return res.status(400).json({ ValueError: 'user' });
         }
 
-        const room_ref = db.ref('Room').child('roomId');
+        const room_ref = db.ref('Room').child(roomId);
 
         // 입장 가능 확인
-        const room_is_full = room_ref.child('isFull').val();
-        if (room_is_full) {
+        const isFull = await room_ref.child('isFull').once('value');
+        const roomIsFull = isFull.val();
+        if (roomIsFull) {
             return res.status(400).json({ Error: 'room_is_full' });
         }
 
         // 유저 인덱스
-        const user_idx = Object.keys(room_ref.child('player').val()).length;
+        const playerList = await room_ref.child('player').once('value');
+        const user_idx = Object.keys(playerList.val()).length;
         if (user_idx >= 3) {
             room_ref.child('isFull').set(true);
         }
@@ -134,10 +136,10 @@ exports.enterRoom = onRequest((req, res) => {
         user.isReady = false;
 
         // 유저 입장
-        db.ref('Room').child(`${roomId}`).child('player').child(`${user_idx}`).set(user);
-        const room_data = room_ref.val();
+        db.ref('Room').child(roomId).child('player').child(`${user_idx}`).set(user);
+        const room_data = await room_ref.once('value');
 
-        return res.status(200).json({ roomId, data: room_data });
+        return res.status(200).json({ roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
