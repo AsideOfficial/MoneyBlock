@@ -79,7 +79,7 @@ class _SettingDialogState extends State<SettingDialog> {
             variable: GameVariable.investmentChangeRate,
             value: changeRate,
             min: -20.0,
-            max: 100.0,
+            max: 30.0,
             onChange: (newValue) {
               setState(() => changeRate = newValue);
             },

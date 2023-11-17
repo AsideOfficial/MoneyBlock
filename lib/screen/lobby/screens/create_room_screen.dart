@@ -148,7 +148,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
             variable: GameVariable.investmentChangeRate,
             value: changeRate,
             min: -20.0,
-            max: 100.0,
+            max: 30.0,
             onChange: (newValue) {
               setState(() => changeRate = newValue);
             },
@@ -337,6 +337,8 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                   participants: host,
                                   isPlaying: false,
                                 );
+
+
 
                                 await FirebaseService.createRoom(
                                     roomData: roomData);
