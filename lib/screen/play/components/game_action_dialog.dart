@@ -93,15 +93,18 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("저축금리",
+                    Text(gameController.currentActionTypeModel.rateTitle ?? "",
                         style: Constants.titleTextStyle
                             .copyWith(color: Constants.dark100)),
                     const SizedBox(height: 18),
-                    Text("저축금리란?",
+                    Text(
+                        "${gameController.currentActionTypeModel.rateTitle ?? ""}란?",
                         style: Constants.defaultTextStyle
                             .copyWith(fontSize: 16, color: Constants.dark100)),
                     const SizedBox(height: 8),
-                    Text("맡긴 돈에 대한 이자",
+                    Text(
+                        gameController.currentActionTypeModel.rateDescription ??
+                            "",
                         style: Constants.defaultTextStyle
                             .copyWith(fontSize: 16, color: Constants.dark100)),
                     const SizedBox(height: 14),
@@ -567,7 +570,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 ),
               ),
             )
-          else if (gameController.currentActionType == GameActionType.loan)
+          else
             MCContainer(
               borderRadius: 20,
               gradient: gameController.currentBackgroundGradient,
@@ -608,12 +611,6 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               const SizedBox(height: 4),
                               amountTile(amount: cash),
                               const SizedBox(height: 10),
-                              Text(
-                                  "${gameController.curretnSpecificActionModel?.title}금액",
-                                  style: Constants.defaultTextStyle
-                                      .copyWith(fontSize: 16)),
-                              const SizedBox(height: 4),
-                              amountTile(amount: currentAmount),
                               Row(
                                 children: [
                                   SizedBox(
@@ -628,12 +625,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             activeTrackColor:
                                                 Colors.white.withOpacity(0.8),
                                             inactiveTrackColor:
-                                                const Color(0xFF257300),
+                                                const Color(0xFF8A3200),
                                           ),
                                           child: SfSlider(
                                             value: currentAmount,
-                                            min: 0,
-                                            max: cash,
+                                            min: cash / 2,
+                                            max: cash * 2,
                                             stepSize: 10000,
                                             enableTooltip: false,
                                             showLabels: false,
@@ -643,7 +640,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                               height: 18,
                                               decoration: const ShapeDecoration(
                                                 gradient:
-                                                    Constants.greenGradient,
+                                                    Constants.orangeGradient,
                                                 shape: OvalBorder(
                                                   side: BorderSide(
                                                       width: 0.5,
@@ -670,12 +667,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         ),
                                         Row(
                                           children: [
-                                            Text("0%",
+                                            Text("0.5배",
                                                 style: Constants
                                                     .defaultTextStyle
                                                     .copyWith(fontSize: 10)),
                                             const Spacer(),
-                                            Text("100%",
+                                            Text("2배",
                                                 style: Constants
                                                     .defaultTextStyle
                                                     .copyWith(fontSize: 10)),
@@ -684,8 +681,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       ],
                                     ),
                                   ),
-                                  Text(
-                                      "${((currentAmount / cash) * 100).toInt()}%",
+                                  Text("${((currentAmount / cash))}배",
                                       style: Constants.defaultTextStyle
                                           .copyWith(fontSize: 18)),
                                 ],
@@ -704,79 +700,51 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (gameController
-                                    .curretnSpecificActionModel?.title ==
-                                "적금")
-                              SizedBox(
-                                width: 190,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text("턴당 이자",
-                                            style: Constants.defaultTextStyle),
-                                        const Spacer(),
-                                        amountTile(
-                                            amount: currentAmount * 0.04,
-                                            width: 100),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("총 이자",
-                                            style: Constants.defaultTextStyle),
-                                        amountTile(
-                                            amount: currentAmount * 0.04 * 3,
-                                            width: 100),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 2),
-                                    const Text(
-                                      "※다음 라운드에 주어지는 이자입니다.",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    ),
+                                    Text("대출금액",
+                                        style: Constants.defaultTextStyle),
+                                    const SizedBox(width: 8),
+                                    amountTile(
+                                        amount: currentAmount, width: 100),
                                   ],
                                 ),
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text("예상 이자",
-                                          style: Constants.defaultTextStyle),
-                                      const SizedBox(width: 8),
-                                      amountTile(
-                                          amount: currentAmount * 0.04,
-                                          width: 100),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  const Text(
-                                    "※다음 턴에 주어지는 이자입니다.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  ),
-                                ],
-                              ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  "※다음 턴에 주어지는 이자입니다.",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 32),
                             Bounceable(
-                                onTap: () {},
+                                onTap: () {
+                                  Get.dialog(PurchaseAlertDialog(
+                                    title:
+                                        "${gameController.curretnSpecificActionModel?.title}",
+                                    subTitle:
+                                        "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                    perPrice: currentAmount.toInt(),
+                                    actionTitle: "대출하기",
+                                    primaryActionColor: Constants.cardOrange,
+                                    onPurchase: (count) {
+                                      //TODO - API - 대출 실행 금액 = currentAmount
+                                    },
+                                  ));
+                                },
                                 child: SizedBox(
                                   width: 184,
                                   height: 50,
                                   child: Stack(
                                     children: [
                                       Image.asset(
-                                          "assets/icons/button_long_green.png"),
+                                          "assets/icons/button_long_orange.png"),
                                       Center(
-                                        child: Text("예금하기",
+                                        child: Text("대출하기",
                                             style: Constants.largeTextStyle),
                                       )
                                     ],

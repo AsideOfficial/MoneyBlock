@@ -230,14 +230,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             ],
           ),
           //MARK : - Middle Layer (게임 액션)
-          if (gameController.isActionChoicing &&
-              gameController.currentActionType != GameActionType.loan)
+          if (gameController.isActionChoicing)
             GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.3)),
               onTap: () => gameController.isActionChoicing = false,
             ),
-          if (gameController.isActionChoicing &&
-              gameController.currentActionType != GameActionType.loan)
+          if (gameController.isActionChoicing)
             const Column(
               children: [
                 SizedBox(
