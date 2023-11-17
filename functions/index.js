@@ -168,6 +168,13 @@ exports.readyToggle = onRequest(async (req, res) => {
 
         const roomRef = db.ref('Room').child(roomId);
 
+        // 게임 시작 여부 확인
+        const isPlaying = await roomRef.child('isPlaying').once('value');
+        const roomIsPlaying = isPlaying.val();
+        if (roomIsPlaying) {
+            return res.status(400).json({ Error: 'room_is_playing' });
+        }
+
         // 준비 상태 토글
         const userIsReady = await roomRef.child('player').child(`${playerIndex}`).child('isReady').once('value');
         if (userIsReady.val() === true) {
