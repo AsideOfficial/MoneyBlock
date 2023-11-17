@@ -203,16 +203,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         titleColor: const Color(0xFFA90054),
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
-                          Get.dialog(
-                            PurchaseAlertDialog(
-                              title: '주식 매수',
-                              perPrice: 30000,
-                              actionTitle: '매수',
-                              isMultiple: true,
-                              subTitle: '전기 전자',
-                              onPurchase: (count) {},
-                            ),
-                          );
+                          Get.dialog(const EndRoundAlertDialog());
                         },
                       ),
                       const SizedBox(
