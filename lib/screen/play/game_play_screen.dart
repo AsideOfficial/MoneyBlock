@@ -11,6 +11,7 @@ import 'package:money_cycle/screen/play/components/game_action_container.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
+import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -203,7 +204,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
                           Get.dialog(
-                            const EndGameAlertDialog(),
+                            PurchaseAlertDialog(),
                           );
                         },
                       ),
