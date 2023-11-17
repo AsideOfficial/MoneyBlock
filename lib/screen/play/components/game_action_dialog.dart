@@ -137,82 +137,31 @@ class _GameActionDialogState extends State<GameActionDialog> {
                     const SizedBox(height: 4),
                     Container(height: 1, color: const Color(0xFFABABAB)),
                     const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("예금금리",
-                                  style: Constants.defaultTextStyle.copyWith(
-                                      fontSize: 10, color: Constants.dark100)),
-                              Text("2%",
-                                  style: Constants.defaultTextStyle.copyWith(
-                                      fontSize: 10, color: Constants.dark100)),
-                              const SizedBox(width: 0),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Container(
-                              width: 1, height: 16, color: Constants.dark100),
-                        ),
-                        Expanded(
-                          flex: 60,
-                          child: Center(
-                            child: SizedBox(
-                              width: 12,
-                              height: 12,
-                              child:
-                                  Image.asset("assets/icons/arrow_up_red.png"),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("저축금리",
-                                  style: Constants.defaultTextStyle.copyWith(
-                                      fontSize: 10, color: Constants.dark100)),
-                              Text("4%",
-                                  style: Constants.defaultTextStyle.copyWith(
-                                      fontSize: 10, color: Constants.dark100)),
-                              const SizedBox(width: 0),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Container(
-                              width: 1, height: 16, color: Constants.dark100),
-                        ),
-                        Expanded(
-                          flex: 60,
-                          child: Center(
-                            child: SizedBox(
-                              width: 12,
-                              height: 12,
-                              child: Image.asset(
-                                  "assets/icons/arrow_down_blue.png"),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 4),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: gameController
+                                .currentActionTypeModel.rates?.length ??
+                            0,
+                        itemBuilder: (context, index) {
+                          final rate = gameController
+                              .currentActionTypeModel.rates?[index];
+                          final bool isHigherThanBefore;
+                          if (rate != null) {
+                            if (rate.rateFluctuation.length >= 2) {
+                              isHigherThanBefore = true;
+                            } else {
+                              isHigherThanBefore = false;
+                            }
+                          } else {
+                            isHigherThanBefore = false;
+                          }
+
+                          return RateListTile2(
+                              title: rate?.title ?? "",
+                              rate: rate?.rateFluctuation.first ?? 0,
+                              isHigherThanBefore: isHigherThanBefore);
+                        }),
                   ],
                 ),
               ),
@@ -614,7 +563,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: 180,
+                                    width: 170,
                                     child: Column(
                                       children: [
                                         SfSliderTheme(
@@ -787,6 +736,115 @@ class _GameActionDialogState extends State<GameActionDialog> {
         ),
         const SizedBox(width: 8),
         Text("원", style: Constants.defaultTextStyle),
+      ],
+    );
+  }
+}
+
+class RateListTile2 extends StatelessWidget {
+  final String title;
+  final double rate;
+  final bool isHigherThanBefore;
+  const RateListTile2({
+    super.key,
+    required this.title,
+    required this.rate,
+    required this.isHigherThanBefore,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(title,
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 10, color: Constants.dark100)),
+                  Text("$rate%",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 10, color: Constants.dark100)),
+                  const SizedBox(width: 0),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Container(width: 1, height: 16, color: Constants.dark100),
+            ),
+            Expanded(
+              flex: 60,
+              child: Center(
+                child: SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: Image.asset(isHigherThanBefore
+                      ? "assets/icons/arrow_up_red.png"
+                      : "assets/icons/arrow_down_blue.png"),
+                ),
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 4),
+        Container(height: 1, color: const Color(0xFFABABAB)),
+        const SizedBox(height: 4),
+      ],
+    );
+  }
+}
+
+class RateListTile extends StatelessWidget {
+  final String title;
+  final double rate;
+  final bool isHigherThanBefore;
+  const RateListTile({
+    super.key,
+    required this.title,
+    required this.rate,
+    required this.isHigherThanBefore,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 90,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title,
+                  style: Constants.defaultTextStyle
+                      .copyWith(fontSize: 10, color: Constants.dark100)),
+              Text("$rate%",
+                  style: Constants.defaultTextStyle
+                      .copyWith(fontSize: 10, color: Constants.dark100)),
+              const SizedBox(width: 0),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Container(width: 1, height: 16, color: Constants.dark100),
+        ),
+        Expanded(
+          flex: 60,
+          child: Center(
+            child: SizedBox(
+              width: 12,
+              height: 12,
+              child: Image.asset(isHigherThanBefore
+                  ? "assets/icons/arrow_up_red.png"
+                  : "assets/icons/arrow_down_blue.png"),
+            ),
+          ),
+        )
       ],
     );
   }
