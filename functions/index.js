@@ -117,7 +117,14 @@ exports.enterRoom = onRequest(async (req, res) => {
 
         const room_ref = db.ref('Room').child(roomId);
 
-        // 입장 가능 확인
+        // 입장 가능 여부 확인
+        const isPlaying = await room_ref.child('isPlaying').once('value');
+        const roomIsPlaying = isPlaying.val();
+        if (roomIsPlaying) {
+            return res.status(400).json({ Error: 'room_is_playing' });
+        }
+
+        // 입장 정원 확인
         const isFull = await room_ref.child('isFull').once('value');
         const roomIsFull = isFull.val();
         if (roomIsFull) {
@@ -139,6 +146,68 @@ exports.enterRoom = onRequest(async (req, res) => {
         db.ref('Room').child(roomId).child('player').child(`${user_idx}`).set(user);
         const room_data = await room_ref.once('value');
 
+        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.readyToggle = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId, playerIndex } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        if (playerIndex === undefined || typeof playerIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'playerIndex' });
+        }
+
+        const roomRef = db.ref('Room').child(roomId);
+
+        // 준비 상태 토글
+        const userIsReady = await roomRef.child('player').child(`${playerIndex}`).child('isReady').once('value');
+        if (userIsReady.val() === true) {
+            roomRef.child('player').child(`${playerIndex}`).child('isReady').set(false);
+        } else {
+            roomRef.child('player').child(`${playerIndex}`).child('isReady').set(true);
+        }
+
+        const room_data = await roomRef.once('value');
+
+        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.gameStart = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+
+        const roomRef = db.ref('Room').child(roomId);
+
+        // 준비 상태 확인
+        const playerList = await roomRef.child('player').once('value');
+        const allPlayersReady = playerList.val().every(player => player.isReady);
+        if (!allPlayersReady) {
+            return res.status(400).json({ Error: 'all_players_not_ready' });
+        } 
+
+        // 게임 시작
+        roomRef.child('isPlaying').set(true);
+
+        const room_data = await roomRef.once('value');
         return res.status(200).json({ roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
