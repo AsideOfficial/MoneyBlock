@@ -5,12 +5,13 @@ class Constants {
 
   //MARK: - Color
   static Color grey100 = const Color(0xFF8C8C8C);
-  static Color dark100 = const Color(0xFF303030);
+  static Color grey03 = const Color(0xFF8C8C8C);
+  static Color dark100 = const Color(0xFF6A6A6A);
 
   static Color greenNeon = const Color(0xFF00D4A1);
   static Color blueNeon = const Color(0xFF34B5FF);
 
-  static Color accentRed = const Color(0xFFE32222);
+  static const Color accentRed = Color(0xFFE32222);
   static Color accentBlue = const Color(0xFF272EDB);
 
   // 카드 배경 (7가지 액션)
@@ -97,12 +98,31 @@ class Constants {
     colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
   );
 
+  static const LinearGradient grey01Gradient = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
+    colors: [Color(0xFFEAE8EC), Color(0xFFD4DAE2)],
+  );
+
+  static const LinearGradient grey02Gradient = LinearGradient(
+    begin: Alignment(0, 1),
+    end: Alignment(0.00, -1.00),
+    colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
+  );
+
   //MARK: - Shadow
 
   static BoxShadow defaultShadow = const BoxShadow(
     color: Color(0x3F000000),
     blurRadius: 4,
     offset: Offset(0, 4),
+  );
+
+  static const BoxShadow buttonShadow = BoxShadow(
+    color: Color(0x26000000),
+    blurRadius: 4,
+    offset: Offset(0, 2),
+    spreadRadius: 0,
   );
 
   // MARK: - Text Styles

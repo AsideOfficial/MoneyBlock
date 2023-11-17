@@ -45,6 +45,12 @@ final savingModel = GameAction(
 예금: 은행에 자유롭게 1번 맡기는 돈
 적금: 은행에 라운드마다 정기적으로 맡기는 돈
 """,
+  rateTitle: "저축금리",
+  rateDescription: "맡긴 돈에 대한 이자",
+  rates: [
+    Rate(title: "예금금리", rateFluctuation: [2, 4]),
+    Rate(title: "저축금리", rateFluctuation: [4, 6])
+  ],
   actions: [
     SpecifitGameAction(title: '예금', items: [
       GameActionItem(
@@ -77,6 +83,11 @@ final investmentModel = GameAction(
 부동산: 땅, 건물에 돈을 투자하는 것.
 펀드: 전문가를 통해 돈을 투자하는 것.
 """,
+  rateTitle: "투자변동률",
+  rateDescription: "투자한 돈이 오르거나 내려가는 변동률",
+  rates: [
+    Rate(title: "변동률", rateFluctuation: [10])
+  ],
   actions: [
     SpecifitGameAction(title: '주식', items: [
       GameActionItem(
@@ -161,7 +172,16 @@ final expendModel = GameAction(
 
 final loanModel = GameAction(
   title: "대출",
-  description: "대출에 대한 설명 ~~~",
+  description: """
+신용대출: 자신의 신용을 바탕으로 빌려주는 돈(보유 현금대비)
+담보대출: 보유한 자산을 기준으로 빌려주는 돈(보유자산대비)
+""",
+  rateTitle: "대출금리",
+  rateDescription: "빌린돈에 대한 이자",
+  rates: [
+    Rate(title: "신용대출", rateFluctuation: [8, 10]),
+    Rate(title: "담보대출", rateFluctuation: [7, 5])
+  ],
   actions: [
     SpecifitGameAction(title: '신용대출', items: [
       GameActionItem(

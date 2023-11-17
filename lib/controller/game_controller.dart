@@ -26,8 +26,6 @@ class GameController extends GetxController {
   void actionButtonTap(GameActionType type) {
     _curretnActionType.value = type;
     _curretnSpecificActionModel.value = null;
-    debugPrint(_curretnActionType.value.name);
-
     // _curretnSpecificActionModel.value = currentActionTypeModel.actions[0];
     isActionChoicing = true;
   }
@@ -78,13 +76,13 @@ class GameController extends GetxController {
   String get currentAssetString {
     switch (_curretnActionType.value) {
       case GameActionType.saving:
-        return "assets/icons/green_button.png";
+        return "assets/components/button_square_green.png";
       case GameActionType.investment:
         return "assets/icons/red_button.png";
       case GameActionType.expend:
         return "assets/icons/blue_button.png";
       case GameActionType.loan:
-        return "assets/icons/blue_button.png";
+        return "assets/components/button_square_orange.png";
     }
   }
 

@@ -11,6 +11,7 @@ import 'package:money_cycle/screen/play/components/game_action_container.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
+import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -202,9 +203,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         titleColor: const Color(0xFFA90054),
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
-                          Get.dialog(
-                            const EndGameAlertDialog(),
-                          );
+                          Get.dialog(const EndRoundAlertDialog());
                         },
                       ),
                       const SizedBox(
@@ -222,14 +221,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             ],
           ),
           //MARK : - Middle Layer (게임 액션)
-          if (gameController.isActionChoicing &&
-              gameController.currentActionType != GameActionType.loan)
+          if (gameController.isActionChoicing)
             GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.3)),
               onTap: () => gameController.isActionChoicing = false,
             ),
-          if (gameController.isActionChoicing &&
-              gameController.currentActionType != GameActionType.loan)
+          if (gameController.isActionChoicing)
             const Column(
               children: [
                 SizedBox(
