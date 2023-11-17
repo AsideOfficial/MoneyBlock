@@ -220,3 +220,37 @@ exports.gameStart = onRequest(async (req, res) => {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
 });
+
+exports.updateRateSetting = onRequest(async(req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { savingRate, loanRate, investmentRate, roomId } = request_data;
+
+        // 데이터 유효성 체크
+        if (savingRate === undefined || typeof savingRate !== 'number') {
+            return res.status(400).json({ ValueError: 'savingRate' });
+        }
+        if (loanRate === undefined || typeof loanRate !== 'number') {
+            return res.status(400).json({ ValueError: 'loanRate' });
+        }
+        if (investmentRate === undefined || typeof investmentRate !== 'number') {
+            return res.status(400).json({ ValueError: 'investmentRate' });
+        }
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+
+        roomRef = db.ref('Room').child(roomId);
+
+        roomRef.child('savingRate').set(savingRate);
+        roomRef.child('loanRate').set(loanRate);
+        roomRef.child('investmentRate').set(investmentRate);
+
+        const room_data = await roomRef.once('value');
+
+        return res.status(200).json({ roomId: roomId, data: room_data });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
