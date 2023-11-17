@@ -214,6 +214,13 @@ exports.gameStart = onRequest(async (req, res) => {
         // 게임 시작
         roomRef.child('isPlaying').set(true);
 
+        // 월급 지급
+        playerList.forEach(player => {
+            roomRef.child('player').child(`${player.key}`).child('cash').set(2000000);
+            roomRef.child('player').child(`${player.key}`).child('asset').set(0);
+            roomRef.child('player').child(`${player.key}`).child('loan').set(0);
+        });
+
         const room_data = await roomRef.once('value');
         return res.status(200).json({ roomId: roomId, data: room_data.val() });
     } catch (error) {
@@ -254,3 +261,4 @@ exports.updateRateSetting = onRequest(async(req, res) => {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
 });
+
