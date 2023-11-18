@@ -48,7 +48,7 @@ exports.createCustomToken = onRequest(async (request, response) => {
     response.send(token);
 });
 
-exports.createRoom = onRequest((req, res) => {
+exports.createRoom = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
@@ -75,6 +75,19 @@ exports.createRoom = onRequest((req, res) => {
         // 방장 정보 입력
         owner.isReady = true;
 
+        // 금리 및 뉴스 데이터 받아오기
+        const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
+        const newsData = newsRef.val();
+
+        var savingRateInfo = [savingRate];
+        var loanRateInfo = [loanRate];
+        var investmentRateInfo = [investmentRate];
+        for (news of newsData) {
+            savingRateInfo.push(news.savingsInterest);
+            loanRateInfo.push(news.loanInterest);
+            investmentRateInfo.push(news.investmentVolatility);
+        }
+
         // 룸 데이터 생성 (방장이 첫번째)
         const room_data = {
             isPlaying: false,
@@ -82,15 +95,16 @@ exports.createRoom = onRequest((req, res) => {
             isEnd: false,
             roundIndex: 0,
             turnIndex: 0,
-            savingRate,
-            loanRate,
-            investmentRate,
             player: {
                 0: owner
             },
             theme: 'worker',
             type: 'solo',
-            max: 4
+            max: 4,
+            news: newsData,
+            savingRateInfo: savingRateInfo,
+            loanRateInfo: loanRateInfo,
+            investmentRateInfo: investmentRateInfo
         };
 
         // 데이터 저장
@@ -247,12 +261,12 @@ exports.gameStart = onRequest(async (req, res) => {
             return res.status(400).json({ Error: 'all_players_not_ready' });
         } 
 
-        // 게임 시작
-        roomRef.child('isPlaying').set(true);
-
         // 라운드 턴 세팅
         roomRef.child('turnIndex').set(0);
         roomRef.child('roundIndex').set(0);
+
+        // 게임 시작
+        roomRef.child('isPlaying').set(true);
 
         const room_data = await roomRef.once('value');
         return res.status(200).json({ roomId: roomId, data: room_data.val() });
@@ -283,9 +297,9 @@ exports.updateRateSetting = onRequest(async(req, res) => {
 
         roomRef = db.ref('Room').child(roomId);
 
-        roomRef.child('savingRate').set(savingRate);
-        roomRef.child('loanRate').set(loanRate);
-        roomRef.child('investmentRate').set(investmentRate);
+        roomRef.child('savingRateInfo').child(0).set(savingRate);
+        roomRef.child('loanRateInfo').child(0).set(loanRate);
+        roomRef.child('investmentRateInfo').child(0).set(investmentRate);
 
         const room_data = await roomRef.once('value');
 
@@ -345,11 +359,11 @@ exports.turnEnded = onRequest(async(req, res) => {
     }
 });
 
-exports.userAction = onRequest(async(req, res) => {
+exports.userAction = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
-        const { roomId, playerIndex, userAction } = request_data;
+        const { roomId, playerIndex, userActions } = request_data;
 
         // 데이터 유효성 체크
         if (roomId === undefined || typeof roomId !== 'string') {
@@ -358,19 +372,93 @@ exports.userAction = onRequest(async(req, res) => {
         if (playerIndex === undefined || typeof playerIndex !== 'number') {
             return res.status(400).json({ ValueError: 'playerIndex' });
         }
-        if (userAction === undefined || typeof userAction !== 'object') {
-            return res.status(400).json({ ValueError: 'userAction' });
-        }
-        if ("type" in userAction === false || typeof userAction.type !== 'string') {
-            return res.status(400).json({ ValueError: 'userAction.type' });
+        if (userActions === undefined || !Array.isArray(userActions)) {
+            return res.status(400).json({ ValueError: 'userActions should be an array' });
         }
 
         const roomRef = db.ref('Room').child(roomId);
 
-        // 유저 액션 추가
-        roomRef.child('player').child(`${playerIndex}`).child(userAction.type).push(userAction);
+        // 유저 액션 배열을 반복하여 추가
+        for (const userAction of userActions) {
+            if (!userAction || typeof userAction !== 'object' || !("type" in userAction) || typeof userAction.type !== 'string') {
+                return res.status(400).json({ ValueError: 'Invalid userAction in the array' });
+            }
+
+            // 유저 액션 추가
+            roomRef.child('player').child(`${playerIndex}`).child(userAction.type).push(userAction);
+        }
 
         const room_data = await roomRef.once('value');
+        return res.status(200).json({ roomId: roomId, data: room_data });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.startVacation = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId, playerIndex } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        if (playerIndex === undefined || typeof playerIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'playerIndex' });
+        }
+
+        const roomRef = db.ref('Room').child(roomId);
+        const userRef = db.ref('Room').child(roomId).child('player').child(`${playerIndex}`);
+
+        // 유저 휴가 상태로 변경
+        userRef.child('isVacation').set(true);
+
+        // 라운드 확인(마지막 라운드만 1회 휴가)
+        const roundIndexRef = await roomRef.child('roundIndex').once('value');
+        var roundIndex = roundIndexRef.val();
+        if (roundIndex === 3) {
+            userRef.child('vacationCount').set(1);
+        } else {
+            userRef.child('vacationCount').set(2);
+        }
+
+        const room_data = await roomRef.once('value');
+        return res.status(200).json({ roomId: roomId, data: room_data });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.useVacation = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId, playerIndex } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        if (playerIndex === undefined || typeof playerIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'playerIndex' });
+        }
+
+        const userRef = db.ref('Room').child(roomId).child('player').child(`${playerIndex}`);
+
+        // 유저 휴가 횟수 차감
+        const vacationCountRef = await userRef.child('vacationCount').once('value');
+        var vacationCount = vacationCountRef.val();
+        vacationCount -= 1;
+        userRef.child('vacationCount').set(vacationCount);
+
+        // 휴가 종료
+        if (vacationCount === 0) {
+            userRef.child('isVacation').set(false);
+        }
+
+        const room_data = await db.ref('Room').child(roomId).once('value');
         return res.status(200).json({ roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
