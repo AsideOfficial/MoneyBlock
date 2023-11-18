@@ -81,35 +81,40 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   const SizedBox(width: 22),
                   Expanded(
                     flex: 530,
-                    child: Container(
-                      height: 60,
-                      decoration: ShapeDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [Color(0xFFE6E7E8), Color(0xFFB6BCC2)],
-                        ),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(20)),
-                        ),
-                        shadows: [Constants.defaultShadow],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Row(children: [
-                          Text(
-                            "뉴스",
-                            style: Constants.largeTextStyle
-                                .copyWith(color: Constants.dark100),
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.dialog(const NewsDialog());
+                      },
+                      child: Container(
+                        height: 60,
+                        decoration: ShapeDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [Color(0xFFE6E7E8), Color(0xFFB6BCC2)],
                           ),
-                          const SizedBox(width: 25),
-                          Text(
-                            '"한국 은행이 기준 금리를 0.5%p 추가 인상했습니다."', // TODO - 지난 뉴스 연동
-                            style: Constants.defaultTextStyle.copyWith(
-                                color: Constants.dark100, fontSize: 16),
-                          )
-                        ]),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20)),
+                          ),
+                          shadows: [Constants.defaultShadow],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 40),
+                          child: Row(children: [
+                            Text(
+                              "뉴스",
+                              style: Constants.largeTextStyle
+                                  .copyWith(color: Constants.dark100),
+                            ),
+                            const SizedBox(width: 25),
+                            Text(
+                              '"한국 은행이 기준 금리를 0.5%p 추가 인상했습니다."', // TODO - 지난 뉴스 연동
+                              style: Constants.defaultTextStyle.copyWith(
+                                  color: Constants.dark100, fontSize: 16),
+                            )
+                          ]),
+                        ),
                       ),
                     ),
                   )
@@ -203,7 +208,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         titleColor: const Color(0xFFA90054),
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () {
-                          Get.dialog(const EndRoundAlertDialog());
+                          Get.dialog(const FinalResultDialog());
                         },
                       ),
                       const SizedBox(
