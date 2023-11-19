@@ -14,6 +14,16 @@ import 'package:money_cycle/services/firebase_real_time_service.dart';
 import '../constants.dart';
 
 class GameController extends GetxController {
+  GameController({required this.roomId, required this.myIndex});
+  final String roomId;
+  final int myIndex;
+
+  @override
+  void onInit() {
+    super.onInit();
+    bindRoomStream();
+  }
+
   final _curretnActionType = GameActionType.expend.obs;
   GameActionType get currentActionType => _curretnActionType.value;
 
@@ -39,8 +49,6 @@ class GameController extends GetxController {
   }
 
   //MARK: - <게임 플레이 리스너
-  final roomId = "722903";
-  final myIndex = 0;
 
   final Rx<int?> _currenTurnIndex = Rx<int?>(null);
   final Rx<int?> _currenRoundIndex = Rx<int?>(null);
@@ -56,15 +64,15 @@ class GameController extends GetxController {
 
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
   GameDataDetails? get currentRoomData => _currentRoom.value;
-  Future<void> bindRoomStream() async {
-    _currentRoom.bindStream(
-        FirebaseRealTimeService.getRoomDataStream(roomId: "722903"));
-    _currenTurnIndex.bindStream(
-        FirebaseRealTimeService.getTurnIndexStream(roomId: "722903"));
+  Future<void> bindRoomStream(String roomId) async {
+    _currentRoom
+        .bindStream(FirebaseRealTimeService.getRoomDataStream(roomId: roomId));
+    _currenTurnIndex
+        .bindStream(FirebaseRealTimeService.getTurnIndexStream(roomId: roomId));
     _currenRoundIndex.bindStream(
-        FirebaseRealTimeService.getRoundIndexStream(roomId: "722903"));
+        FirebaseRealTimeService.getRoundIndexStream(roomId: roomId));
     _isGameEnded.bindStream(
-        FirebaseRealTimeService.getIsGameEndedStream(roomId: "722903"));
+        FirebaseRealTimeService.getIsGameEndedStream(roomId: roomId));
     ever(_currentRoom, _roomDataHandler);
     ever(_currenTurnIndex, _turnIndexHandler);
     ever(_currenRoundIndex, _roundIndexHandler);
@@ -507,7 +515,13 @@ class GameController extends GetxController {
         // 3. 대출
         // loan sum * 이번 라운드 이자 -> cash ++
         // TODO - 담보 신용 대출 금리 따로 적용
-        UserAction(type: "cash", title: "대출 이자", price: -loanInterest, qty: 1),
+        UserAction(
+            type: "cash", title: "신용대출 이자", price: -creditLoanInterest, qty: 1),
+        UserAction(
+            type: "cash",
+            title: "담보대출 이자",
+            price: -mortgagesLoanInterest,
+            qty: 1),
 
         // 4. 세금 씨발
         //

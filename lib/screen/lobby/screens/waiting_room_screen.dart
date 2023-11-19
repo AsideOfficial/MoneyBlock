@@ -5,10 +5,13 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/main.dart';
 import 'package:money_cycle/screen/lobby/components/setting_dialog.dart';
 import 'package:money_cycle/screen/lobby/components/share_code_dialog.dart';
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
+import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
 import 'package:money_cycle/start/model/profile_image.dart';
 import 'package:money_cycle/utils/firebase_service.dart';
@@ -317,13 +320,17 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                                         //TODO: 게임 시작
                                         final myIndex = participantsState.keys
                                             .toList()
-                                            .where((id) =>
-                                                id ==
-                                                FirebaseAuth
-                                                    .instance.currentUser!.uid);
+                                            .indexOf(FirebaseAuth
+                                                .instance.currentUser!.uid);
 
                                         await FirebaseService.startGame(
                                             roomId: roomID);
+                                        Get.to(const GamePlayScreen(),
+                                            binding: BindingsBuilder(() {
+                                          Get.put(GameController(
+                                              roomId: 'roomId',
+                                              myIndex: myIndex));
+                                        }));
                                       }
                                     : null,
                             child: Image.asset(

@@ -5,14 +5,10 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
-import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
-import 'package:money_cycle/screen/play/components/game_action_container.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
-import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
-import 'package:money_cycle/services/cloud_fuction_service.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -22,7 +18,6 @@ class GamePlayScreen extends StatefulWidget {
 }
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
-  final GameController gameController = Get.put(GameController());
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
   // bool isActionChoicing = true;
@@ -226,7 +221,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           //           price: -50000,
                           //           qty: 1),
                           //     ]));
-                          gameController.bindRoomStream();
                         },
                       ),
                       const SizedBox(
