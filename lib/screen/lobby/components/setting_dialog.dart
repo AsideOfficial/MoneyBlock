@@ -182,20 +182,11 @@ class _SettingDialogState extends State<SettingDialog> {
                 title: "확인",
                 backgroundColor: Constants.blueNeon,
                 onPressed: () async {
-                  await FirebaseService.updateRoom(
+                  await FirebaseService.updateRateSetting(
                     roomId: widget.roomID,
-                    key: 'savingsInterestRate',
-                    value: savingRate,
-                  );
-                  await FirebaseService.updateRoom(
-                    roomId: widget.roomID,
-                    key: 'loanInterestRate',
-                    value: loanRate,
-                  );
-                  await FirebaseService.updateRoom(
-                    roomId: widget.roomID,
-                    key: 'investmentChangeRate',
-                    value: changeRate,
+                    savigRate: savingRate,
+                    loanRate: loanRate,
+                    investmentRate: changeRate,
                   );
                   Get.back();
                 },

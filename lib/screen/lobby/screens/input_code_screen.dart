@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -138,13 +139,15 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                       if (codeController.text.length == 6)
                         Bounceable(
                           onTap: () async {
-                            final result =
-                                await FirebaseService.participateRoom(
-                                    roomCode: codeController.text);
+                            final result = await FirebaseService.enterRoom(
+                              roomId: codeController.text,
+                              uid: FirebaseAuth.instance.currentUser!.uid,
+                              characterIndex: 3,
+                            );
 
-                            if (result.$1) {
+                            if (result != null) {
                               Get.offAndToNamed('/waiting_room',
-                                  arguments: result.$2);
+                                  arguments: result.roomId);
                             } else {
                               showSnackBar();
                             }

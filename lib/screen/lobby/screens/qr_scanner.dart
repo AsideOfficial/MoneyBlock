@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -222,10 +223,14 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   void participateRoom({required String roomCode}) async {
-    final result = await FirebaseService.participateRoom(roomCode: roomCode);
+    final result = await FirebaseService.enterRoom(
+      roomId: roomCode,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+      characterIndex: 3,
+    );
 
-    if (result.$1) {
-      Get.offAndToNamed('/waiting_room', arguments: result.$2);
+    if (result != null) {
+      Get.offAndToNamed('/waiting_room', arguments: result.roomId);
     } else {
       showSnackBar();
     }

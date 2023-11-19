@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -7,7 +8,6 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/user_controller.dart';
 import 'package:money_cycle/screen/lobby/model/game_mode.dart';
 import 'package:money_cycle/screen/lobby/model/game_variable.dart';
-import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -315,38 +315,24 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                         onTap: (gameMode == GameMode.officeWorker &&
                                 teamMode == TeamMode.solo)
                             ? () async {
-                                final roomCode =
-                                    await FirebaseService.createUniqueCode();
-                                final Map<String, bool> host = {
-                                  Get.find<MCUserController>().user!.value.uid:
-                                      true,
-                                };
-
-                                final roomData = MCRoom(
-                                  roomName: roomCode.toString(),
-                                  hostId: Get.find<MCUserController>()
+                                final roomData =
+                                    await FirebaseService.createRoom(
+                                  savingRate: savingRate,
+                                  loanRate: loanRate,
+                                  investmentRate: changeRate,
+                                  uid: FirebaseAuth.instance.currentUser!.uid,
+                                  characterIndex: Get.find<MCUserController>()
                                       .user!
                                       .value
-                                      .uid,
-                                  roomCode: roomCode,
-                                  gameMode: gameMode.convertToString,
-                                  isTeamMode: teamMode == TeamMode.team,
-                                  savingsInterestRate: savingRate,
-                                  loanInterestRate: loanRate,
-                                  investmentChangeRate: changeRate,
-                                  participants: host,
-                                  isPlaying: false,
+                                      .profileImageIndex,
                                 );
 
-
-
-                                await FirebaseService.createRoom(
-                                    roomData: roomData);
-                                final roomId = await FirebaseService.getRoomId(
-                                    code: roomCode);
-
-                                Get.offAndToNamed('/waiting_room',
-                                    arguments: roomId);
+                                if (roomData != null) {
+                                  Get.offAndToNamed(
+                                    '/waiting_room',
+                                    arguments: roomData.roomId,
+                                  );
+                                }
                               }
                             : null,
                         child: Image.asset(
