@@ -1,19 +1,13 @@
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 import 'package:money_cycle/start/model/mc_user.dart';
 
 class FirebaseService {
   static final db = FirebaseFirestore.instance;
-
-  static final roomRef =
-      FirebaseFirestore.instance.collection('Room').withConverter(
-            fromFirestore: MCRoom.fromFirestore,
-            toFirestore: (MCRoom room, _) => room.toFirestore(),
-          );
 
   static Future<MCUser?> getUserData({required String userID}) async {
     final userRef =
@@ -40,62 +34,207 @@ class FirebaseService {
         .onError((e, _) => debugPrint("Error writing document: $e"));
   }
 
-  static Future<void> createRoom({required MCRoom roomData}) async {
-    await roomRef.add(roomData);
+  static String defaultUrl({required String method}) {
+    return 'https://$method-nq7btx6efq-du.a.run.app';
   }
 
-  static Future<int> createUniqueCode() async {
-    Random random = Random();
-    int randomInt = random.nextInt(900000) + 100000;
-    var result = await roomRef.where('roomCode', isEqualTo: randomInt).get();
-
-    while (result.docs.isNotEmpty) {
-      randomInt = random.nextInt(900000) + 100000;
-      result = await roomRef.where('roomCode', isEqualTo: randomInt).get();
-    }
-
-    return randomInt;
-  }
-
-  static Future<void> updateRoom({
-    required String roomId,
-    required String key,
-    required dynamic value,
+  static Future<WaitingRoom?> createRoom({
+    required double savingRate,
+    required double loanRate,
+    required double investmentRate,
+    required String uid,
+    required int characterIndex,
   }) async {
-    roomRef.doc(roomId).update({key: value}).then(
-        (value) => debugPrint("DocumentSnapshot successfully updated!"),
-        onError: (e) => debugPrint("Error updating document $e"));
-  }
+    final uri = defaultUrl(method: 'createroom');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'savingRate': savingRate,
+      'loanRate': loanRate,
+      'investmentRate': investmentRate,
+      'owner': {
+        'uid': uid,
+        'characterIndex': characterIndex,
+      }
+    });
 
-  static Future<String> getRoomId({required int code}) async {
-    final snapshot = await roomRef.where('roomCode', isEqualTo: code).get();
-    final id = snapshot.docs[0].id;
-
-    return id;
-  }
-
-  static Future<void> removeRoom({required String roomID}) async {
-    await roomRef.doc(roomID).delete();
-  }
-
-  static Future<(bool, String)> participateRoom(
-      {required String roomCode}) async {
     try {
-      final roomId = await getRoomId(code: int.parse(roomCode));
-      final roomData = await roomRef.doc(roomId).get();
-      var currentParticipants = roomData.data()?.participants;
-      final newParticipant = <String, bool>{
-        FirebaseAuth.instance.currentUser!.uid: false
-      };
-      currentParticipants?.addAll(newParticipant);
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
 
-      await updateRoom(
-          roomId: roomId, key: 'participants', value: currentParticipants);
-
-      return (true, roomId);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Create Room Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
     } catch (e) {
-      debugPrint('participate failed: $e');
-      return (false, '');
+      debugPrint('Failed to Create Room: $e');
     }
+
+    return null;
+  }
+
+  static Future<WaitingRoom?> enterRoom({
+    required String roomId,
+    required String uid,
+    required int characterIndex,
+  }) async {
+    final uri = defaultUrl(method: 'enterroom');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'roomId': roomId,
+      'user': {
+        'uid': uid,
+        'characterIndex': characterIndex,
+      }
+    });
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Enter Room Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint('Failed to Enter Room: $e');
+    }
+
+    return null;
+  }
+
+  static Future<WaitingRoom?> updateRateSetting({
+    required double savigRate,
+    loanRate,
+    investmentRate,
+    required String roomId,
+  }) async {
+    final uri = defaultUrl(method: 'updateratesetting');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'savingRate': savigRate,
+      'loanRate': loanRate,
+      'investmentRate': investmentRate,
+      'roomId': roomId,
+    });
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Update Rate Setting Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint('Failed to Update Rate Setting: $e');
+    }
+
+    return null;
+  }
+
+  static Future<WaitingRoom?> readyToggle({
+    required String roomId,
+    required String uid,
+  }) async {
+    final uri = defaultUrl(method: 'readytoggle');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'roomId': roomId,
+      'uid': uid,
+    });
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Ready Toggle Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint('Failed to Toggle Ready: $e');
+    }
+
+    return null;
+  }
+
+  static Future<WaitingRoom?> startGame({
+    required String roomId,
+  }) async {
+    final uri = defaultUrl(method: 'gamestart');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'roomId': roomId,
+    });
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Start Game Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint('Failed to Start Game: $e');
+    }
+
+    return null;
+  }
+
+  static Future<WaitingRoom?> exitRoom({
+    required String roomId,
+    required String uid,
+  }) async {
+    final uri = defaultUrl(method: 'exitroom');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'roomId': roomId,
+      'uid': uid,
+    });
+
+    try {
+      http.Response response =
+          await http.post(Uri.parse(uri), headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        final result = WaitingRoom.fromJson(data);
+        debugPrint('Exit Room Succeed: ${result.toString()}');
+        return result;
+      } else {
+        debugPrint("Error: ${response.statusCode}");
+        debugPrint("Response: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint('Failed to Exit Room: $e');
+    }
+
+    return null;
   }
 }
