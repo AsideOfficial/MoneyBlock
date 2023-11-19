@@ -223,12 +223,73 @@ class GameController extends GetxController {
     return total;
   }
 
+  int? get totalShortSaving {
+    // 리스트를 순회하면서 price 합산
+    final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
+    int total = 0;
+
+    if (myshortSavingList != null) {
+      for (UserAction cashData in myshortSavingList) {
+        total += cashData.price!;
+      }
+    }
+    return total;
+  }
+
+  int? get totalLongSaving {
+    // 리스트를 순회하면서 price 합산
+    final myshortSavingList = _currentRoom.value?.player?[myIndex].longSaving;
+    int total = 0;
+
+    if (myshortSavingList != null) {
+      for (UserAction cashData in myshortSavingList) {
+        total += cashData.price!;
+      }
+    }
+    return total;
+  }
+
+  int? get totalCreditLoan {
+    // 리스트를 순회하면서 price 합산
+    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
+    int total = 0;
+
+    if (myCreditLoanList != null) {
+      for (UserAction cashData in myCreditLoanList) {
+        total += cashData.price!;
+      }
+    }
+    return total;
+  }
+
+  int? get totalMortgagesLoan {
+    // 리스트를 순회하면서 price 합산
+    final myLongMortgagesList =
+        _currentRoom.value?.player?[myIndex].mortgagesLoan;
+    int total = 0;
+
+    if (myLongMortgagesList != null) {
+      for (UserAction cashData in myLongMortgagesList) {
+        total += cashData.price!;
+      }
+    }
+    return total;
+  }
+
   int? get totalLoan {
     // 리스트를 순회하면서 price 합산
-    final myLoanList = _currentRoom.value?.player?[myIndex].loan;
+    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
+    final myMortgagesLoanList =
+        _currentRoom.value?.player?[myIndex].mortgagesLoan;
     int total = 0;
-    if (myLoanList != null) {
-      for (UserAction cashData in myLoanList) {
+    if (myCreditLoanList != null) {
+      for (UserAction cashData in myCreditLoanList) {
+        total += cashData.price!;
+      }
+    }
+
+    if (myMortgagesLoanList != null) {
+      for (UserAction cashData in myMortgagesLoanList) {
         total += cashData.price!;
       }
     }
@@ -243,7 +304,8 @@ class GameController extends GetxController {
     final myCashList = _currentRoom.value?.player?[myIndex].cash;
     final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
     final myLongSavingList = _currentRoom.value?.player?[myIndex].longSaving;
-    final myLoanList = _currentRoom.value?.player?[myIndex].loan;
+    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
+    final myMortgagesList = _currentRoom.value?.player?[myIndex].mortgagesLoan;
     final myInvestList = currentRoomData?.player?[myIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
@@ -258,8 +320,14 @@ class GameController extends GetxController {
       }
     }
 
-    if (myLoanList != null) {
-      for (UserAction cashData in myLoanList) {
+    if (myCreditLoanList != null) {
+      for (UserAction cashData in myCreditLoanList) {
+        total -= cashData.price!;
+      }
+    }
+
+    if (myMortgagesList != null) {
+      for (UserAction cashData in myMortgagesList) {
         total -= cashData.price!;
       }
     }
@@ -318,7 +386,7 @@ class GameController extends GetxController {
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  Future<void> loanAction({
+  Future<void> creditLoanAction({
     required String title,
     required int price,
   }) async {
@@ -329,7 +397,23 @@ class GameController extends GetxController {
       userActions: [
         // cash ++ loan ++
         UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "loan", title: "대출 실행", price: price, qty: 1),
+        UserAction(type: "creditLoan", title: "대출 실행", price: price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> mortgagesLoanAction({
+    required String title,
+    required int price,
+  }) async {
+    CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash ++ loan ++
+        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
+        UserAction(type: "mortgagesLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -388,7 +472,15 @@ class GameController extends GetxController {
   }
 
   Future<void> calcutateAll(int price) async {
-    CloudFunctionService.userAction(
+    final int shortSavingInterest =
+        totalShortSaving! * (previousSavingInterest ?? 0).toInt();
+    final int longSavingInterest =
+        (totalLongSaving! * (previousSavingInterest! + 2)).toInt();
+    final int creditLoanInterest =
+        (totalCreditLoan! * previousLoanInterest!).toInt();
+    final int mortgagesLoanInterest =
+        (totalMortgagesLoan! * (previousLoanInterest!) - 1).toInt();
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -398,12 +490,24 @@ class GameController extends GetxController {
         // 1. 예금
         // shortSaving sum -> shortSaving -- cash ++
         // shortSaving sum * 이번 라운드 이자 -> cash ++
+        UserAction(type: "cash", title: "예금", price: totalShortSaving!, qty: 1),
+        UserAction(
+            type: "cash", title: "예금 이자", price: shortSavingInterest, qty: 1),
+        UserAction(
+            type: "shortSaving",
+            title: "출금",
+            price: -totalShortSaving!,
+            qty: 1),
 
         // 2. 적금
         // longSaving sum * 이번 라운드 이자 -> longSaving ++
+        UserAction(
+            type: "longSaving", title: "이자", price: longSavingInterest, qty: 1),
 
         // 3. 대출
         // loan sum * 이번 라운드 이자 -> cash ++
+        // TODO - 담보 신용 대출 금리 따로 적용
+        UserAction(type: "cash", title: "대출 이자", price: -loanInterest, qty: 1),
 
         // 4. 세금 씨발
         //

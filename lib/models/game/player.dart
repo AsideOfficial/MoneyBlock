@@ -7,7 +7,8 @@ class Player {
   List<UserAction>? longSaving; // 적금
   List<UserAction>? investment; // 투자
   List<UserAction>? expend; // 지출
-  List<UserAction>? loan; // 저축
+  List<UserAction>? creditLoan; // 신용대출
+  List<UserAction>? mortgagesLoan; // 담보대출
 
   bool? isReady;
   String? name;
@@ -20,7 +21,8 @@ class Player {
     this.longSaving,
     this.investment,
     this.expend,
-    this.loan,
+    this.creditLoan,
+    this.mortgagesLoan,
   });
 
   factory Player.fromJson(Map<String, dynamic> json) {
@@ -52,7 +54,12 @@ class Player {
           .map((data) => Map<String, dynamic>.from(data))
           .map((json) => UserAction.fromJson(json))
           .toList(),
-      loan: (json['loan'] as List<dynamic>?)
+      creditLoan: (json['creditLoan'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      mortgagesLoan: (json['creditLoan'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
           .map((json) => UserAction.fromJson(json))
