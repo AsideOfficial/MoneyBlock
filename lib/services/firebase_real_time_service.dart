@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
+import 'package:money_cycle/models/game/game_data_detail.dart';
 
 class FirebaseRealTimeService {
   static final FirebaseDatabase _rdb = FirebaseDatabase.instanceFor(
@@ -8,48 +9,24 @@ class FirebaseRealTimeService {
       databaseURL:
           "https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
-  //MARK: -
-
-  // TODO - [베테브] Room 데이터 CRUD 예제 확인 - 정상 동작 확인 완료
-  // CREATE
-  static Future<void> createRoom({
-    required String roomId,
-    required Room roomData,
-  }) async {
-    // 지정한 path 에 데이터 저장
-    debugPrint("Firebase called");
-    try {
-      await _rdb.ref('room/$roomId').set(roomData.toJson());
-      debugPrint("Firebase called complete");
-    } catch (error) {
-      debugPrint("Firebase Error - $error");
-    }
-  }
-
-  //UPDATE
-  static Future<void> updateRoom({
-    required String roomId,
-    required Room roomData,
-  }) async {
-    await _rdb.ref('room/$roomId').update({
-      'title': roomData.title,
-    });
-  }
-
-  // GET STREAM (리스너)
-  static Stream<Room?> getRoomDataStream({
+  // MARK: - GET STREAM (리스너)
+  static Stream<GameDataDetails?> getRoomDataStream({
     required String roomId,
   }) {
     // 참조할 데이터의 Path 와 함께 레퍼런스 생성
-    final DatabaseReference roomRef = _rdb.ref('room/$roomId');
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
     // 커스텀 객체를 담고 있는 Stream 으로 변환
-    final Stream<Room?> customObjectStream = roomRef.onValue.map((event) {
+    final Stream<GameDataDetails?> customObjectStream =
+        roomRef.onValue.map((event) {
       // 커스텀 객체로 파싱 (Ex. fromJson)
-      final data = event.snapshot.value;
+      final Map<dynamic, dynamic>? data =
+          event.snapshot.value as Map<dynamic, dynamic>?;
+      debugPrint("Data type: ${data?.runtimeType}");
+
       if (data != null) {
         //데이터 존재
-        final json = data as Map<String, dynamic>;
-        return Room.fromJson(json);
+        final Map<String, dynamic> json = Map<String, dynamic>.from(data);
+        return GameDataDetails.fromJson(json);
       } else {
         return null;
       }
@@ -57,40 +34,51 @@ class FirebaseRealTimeService {
     return customObjectStream;
   }
 
-  //DELETE
-  static Future<void> deleteRoom({
+  // GET STREAM (리스너)
+  static Stream<int?> getTurnIndexStream({
     required String roomId,
-  }) async {
-    await _rdb.ref('room/$roomId').remove();
-    debugPrint("hi");
-  }
-}
-
-// TODO - [베테브] 데이터 모델 예시 -> models 폴더에 구성할 것
-class Room {
-  final String? id;
-  final String? title;
-  final int? count;
-
-  Room({
-    required this.id,
-    required this.title,
-    required this.count,
-  });
-
-  factory Room.fromJson(Map<String, dynamic> json) {
-    return Room(
-      id: json['id'],
-      title: json['title'],
-      count: json['count'],
-    );
+  }) {
+    // 참조할 데이터의 Path 와 함께 레퍼런스 생성
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId/turnIndex');
+    // 커스텀 객체를 담고 있는 Stream 으로 변환
+    final Stream<int?> customObjectStream = roomRef.onValue.map((event) {
+      // 커스텀 객체로 파싱 (Ex. fromJson)
+      final int? turnIndex = event.snapshot.value as int?;
+      debugPrint("Data type: ${turnIndex?.runtimeType}");
+      return turnIndex;
+    });
+    return customObjectStream;
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'count': count,
-    };
+  // GET STREAM (리스너)
+  static Stream<int?> getRoundIndexStream({
+    required String roomId,
+  }) {
+    // 참조할 데이터의 Path 와 함께 레퍼런스 생성
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId/roundIndex');
+    // 커스텀 객체를 담고 있는 Stream 으로 변환
+    final Stream<int?> customObjectStream = roomRef.onValue.map((event) {
+      // 커스텀 객체로 파싱 (Ex. fromJson)
+      final int? turnIndex = event.snapshot.value as int?;
+      debugPrint("Data type: ${turnIndex?.runtimeType}");
+      return turnIndex;
+    });
+    return customObjectStream;
+  }
+
+  // GET STREAM (리스너)
+  static Stream<bool?> getIsGameEndedStream({
+    required String roomId,
+  }) {
+    // 참조할 데이터의 Path 와 함께 레퍼런스 생성
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId/isEnd');
+    // 커스텀 객체를 담고 있는 Stream 으로 변환
+    final Stream<bool?> customObjectStream = roomRef.onValue.map((event) {
+      // 커스텀 객체로 파싱 (Ex. fromJson)
+      final bool? isEnd = event.snapshot.value as bool?;
+      debugPrint("Data type: ${isEnd?.runtimeType}");
+      return isEnd;
+    });
+    return customObjectStream;
   }
 }

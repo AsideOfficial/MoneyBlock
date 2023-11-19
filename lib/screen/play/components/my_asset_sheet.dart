@@ -6,6 +6,7 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
+import 'package:money_cycle/utils/extension/int.dart';
 
 class MyAssetSheet extends StatefulWidget {
   const MyAssetSheet({Key? key, required this.isSwipeUp}) : super(key: key);
@@ -51,15 +52,24 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                               .copyWith(color: Colors.white),
                         ),
                         const Spacer(),
-                        const AssetBar(assetType: AssetType.cash),
+                        AssetBar(
+                          assetType: AssetType.cash,
+                          amount: gameController.totalCash ?? 0,
+                        ),
                         const SizedBox(
                           width: 6,
                         ),
-                        const AssetBar(assetType: AssetType.saving),
+                        AssetBar(
+                          assetType: AssetType.saving,
+                          amount: gameController.totalSaving ?? 0,
+                        ),
                         const SizedBox(
                           width: 6,
                         ),
-                        const AssetBar(assetType: AssetType.loan),
+                        AssetBar(
+                          assetType: AssetType.loan,
+                          amount: gameController.totalLoan ?? 0,
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -86,32 +96,37 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                     style: Constants.titleTextStyle
                                         .copyWith(color: Constants.dark100)),
                                 const Spacer(),
-                                const AssetListTile(
-                                    title: "현금", price: 5000000),
+                                AssetListTile(
+                                    title: "현금",
+                                    price: gameController.totalCash),
                                 const SizedBox(height: 10),
                                 Container(
                                     height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 10),
-                                const AssetListTile(
-                                    title: "투자", price: 2340000),
+                                AssetListTile(
+                                    title: "투자",
+                                    price: gameController.totalInvestment),
                                 const SizedBox(height: 10),
                                 Container(
                                     height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 10),
-                                const AssetListTile(
-                                    title: "저축", price: 2400000),
+                                AssetListTile(
+                                    title: "저축",
+                                    price: gameController.totalSaving),
                                 const SizedBox(height: 10),
                                 Container(
                                     height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 10),
-                                const AssetListTile(
-                                    title: "대출", price: -3000000),
+                                AssetListTile(
+                                    title: "대출",
+                                    price: -(gameController.totalLoan ?? 0)),
                                 const SizedBox(height: 10),
                                 Container(
                                     height: 1, color: const Color(0xFFD9D9D9)),
                                 const SizedBox(height: 10),
-                                const AssetListTile(
-                                    title: "총", price: 1000000000),
+                                AssetListTile(
+                                    title: "총",
+                                    price: gameController.totalAsset),
                                 const SizedBox(height: 10),
                                 Container(
                                     height: 1, color: const Color(0xFFD9D9D9)),
@@ -312,9 +327,11 @@ extension AssetTypeExtension on AssetType {
 
 class AssetBar extends StatelessWidget {
   final AssetType assetType;
+  final int amount;
   const AssetBar({
     super.key,
     required this.assetType,
+    required this.amount,
   });
 
   @override
@@ -335,7 +352,7 @@ class AssetBar extends StatelessWidget {
               child: Row(
                 children: [
                   const Spacer(),
-                  Text("3,000,000",
+                  Text(amount.commaString,
                       style: Constants.defaultTextStyle
                           .copyWith(fontSize: 12)), // TODO - 자산 현황 연동
                   const SizedBox(width: 11)
@@ -397,7 +414,7 @@ class AssetListTile extends StatelessWidget {
             style: Constants.defaultTextStyle
                 .copyWith(fontSize: 14, color: Constants.dark100)),
         const Spacer(),
-        Text("${price ?? 0}원",
+        Text("${(price ?? 0).commaString}원",
             style: Constants.defaultTextStyle
                 .copyWith(fontSize: 14, color: Constants.dark100))
       ],

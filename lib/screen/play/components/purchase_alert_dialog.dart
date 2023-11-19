@@ -15,7 +15,8 @@ class PurchaseAlertDialog extends StatefulWidget {
   final String actionTitle;
   final bool? isMultiple;
   final Color? primaryActionColor;
-  final Function(int count)? onPurchase;
+  final Future<void> Function(int count)? onPurchase;
+
   const PurchaseAlertDialog({
     super.key,
     this.isMultiple = false,
@@ -32,6 +33,7 @@ class PurchaseAlertDialog extends StatefulWidget {
 }
 
 class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
+  bool isLoading = false;
   int count = 1;
   int totalAmount = 0;
   @override
@@ -143,17 +145,27 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                     const SizedBox(width: 10),
                     Expanded(
                         child: MCButton(
+                      isLoading: isLoading,
                       padding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 6),
                       fontSize: 20,
                       title: widget.actionTitle,
                       backgroundColor: widget.primaryActionColor,
                       shadows: const [Constants.buttonShadow],
-                      onPressed: () {
-                        if (widget.onPurchase != null) {
-                          widget.onPurchase!(count);
-                        }
-                      },
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              if (widget.onPurchase != null) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                await widget.onPurchase!(count);
+                                Get.back();
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
+                            },
                     )),
                   ],
                 ),

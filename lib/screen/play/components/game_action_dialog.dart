@@ -251,8 +251,16 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     subTitle: item?.title ?? "",
                                     perPrice: item?.price ?? 0,
                                     actionTitle: "매수",
-                                    onPurchase: (count) {
-                                      //TODO - 투자 API 연동 필요
+                                    onPurchase: (count) async {
+                                      //TODO - 투자 API 연동 필요 ✅
+
+                                      if (item == null) return;
+                                      await gameController.investAction(
+                                          title: item.title,
+                                          price: item.price,
+                                          qty: count);
+
+                                      gameController.isActionChoicing = false;
                                     },
                                   ));
                                 } else {
@@ -261,8 +269,15 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     subTitle: item?.title ?? "",
                                     perPrice: item?.price ?? 0,
                                     actionTitle: "구입",
-                                    onPurchase: (count) {
-                                      //TODO - 지출 API 연동 필요
+                                    onPurchase: (count) async {
+                                      //TODO - 지출 API 연동 필요 ✅
+                                      if (item == null) return;
+                                      await gameController.expendAction(
+                                        title: item.title,
+                                        price: item.price,
+                                      );
+
+                                      gameController.isActionChoicing = false;
                                     },
                                   ));
                                 }
@@ -491,8 +506,26 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     primaryActionColor: Constants.cardGreen,
                                     actionTitle:
                                         "${gameController.curretnSpecificActionModel?.title}하기",
-                                    onPurchase: (count) {
+                                    onPurchase: (count) async {
                                       // TODO - 예금, 적금 API 연동 필요 금액 = currentAmout
+                                      final item = gameController
+                                          .curretnSpecificActionModel;
+                                      if (item == null) return;
+                                      if (item.title == "예금") {
+                                        await gameController.shortSavingAction(
+                                          title: item.title,
+                                          price: currentAmount.toInt(),
+                                        );
+
+                                        gameController.isActionChoicing = false;
+                                      } else if (item.title == "적금") {
+                                        await gameController.longSavingAction(
+                                          title: item.title,
+                                          price: currentAmount.toInt(),
+                                        );
+
+                                        gameController.isActionChoicing = false;
+                                      }
                                     },
                                   ));
                                 },
@@ -680,8 +713,17 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     perPrice: currentAmount.toInt(),
                                     actionTitle: "대출하기",
                                     primaryActionColor: Constants.cardOrange,
-                                    onPurchase: (count) {
+                                    onPurchase: (count) async {
                                       //TODO - API - 대출 실행 금액 = currentAmount
+                                      final item = gameController
+                                          .curretnSpecificActionModel;
+                                      if (item == null) return;
+                                      await gameController.investAction(
+                                          title: item.title,
+                                          price: currentAmount.toInt(),
+                                          qty: count);
+
+                                      gameController.isActionChoicing = false;
                                     },
                                   ));
                                 },
