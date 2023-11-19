@@ -21,8 +21,8 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (controller) {
       return CustomAlertDialog(
-        title: "${controller.currentRoundIndex} 종료!",
-        description: "${controller.currentRoundIndex}라운드가 종료되었습니다.",
+        title: "라운드${controller.currentRound - 1} 종료!",
+        description: "${controller.currentRound - 1}라운드가 종료되었습니다.",
         instruction: "게임의 결과를 확인해보세요.",
         acionButtonTitle: "결과보기",
         onPressed: () {
@@ -88,22 +88,25 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardGreen)),
                       const SizedBox(height: 2),
-                      const RateVariationTile(before: 3, after: 5),
+                      RateVariationTile(
+                          before: controller.previousSavingInterest ?? 0.0,
+                          after: controller.currentSavingInterest ?? 0.0),
                       const SizedBox(height: 10),
                       Text("대출금리",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardOrange)),
                       const SizedBox(height: 2),
-                      const RateVariationTile(before: 5, after: 4),
+                      RateVariationTile(
+                          before: controller.previousLoanInterest ?? 0.0,
+                          after: controller.currentLoanInterest ?? 0.0),
                       const SizedBox(height: 10),
                       Text("투자변동률",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardRed)),
                       const SizedBox(height: 2),
-                      const RateVariationTile(
-                        before: 10,
-                        after: -10,
-                      ),
+                      RateVariationTile(
+                          before: controller.previousInvestInterest ?? 0.0,
+                          after: controller.currentInvestInterest ?? 0.0),
                     ],
                   ),
                 ),
@@ -175,7 +178,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                           const Spacer(),
-                          Text("1000000원",
+                          Text("${controller.totalCash?.commaString}원",
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                         ],
@@ -209,9 +212,13 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: 4,
+                              itemCount:
+                                  controller.currentRoomData?.player?.length ??
+                                      0,
                               itemBuilder: (context, index) {
                                 //TODO - 순위 데이터 리스트 연동 및 정렬
+                                final player =
+                                    controller.currentRoomData!.player![index];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Row(
@@ -229,11 +236,11 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                           width: 50,
                                           height: 50,
                                           child: Image.asset(
-                                              "assets/images/profile_cow.png")),
+                                              "assets/images/profile_cow.png")), // TODO - 캐릭터 인덱스 연결
                                       const SizedBox(width: 10),
                                       SizedBox(
                                         width: 86,
-                                        child: Text("닉네임이다",
+                                        child: Text(player.name ?? "",
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                             style: Constants.defaultTextStyle
@@ -363,21 +370,21 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
         height: 256,
         child: Padding(
           padding: const EdgeInsets.only(top: 24, bottom: 22),
-          child: Column(
-            children: [
-              Text("새로운 라운드", style: Constants.titleTextStyle),
-              const SizedBox(height: 14),
-              Text("라운드 2가 시작됩니다.",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
-              const SizedBox(height: 10),
-              Text("+ ${incentive.commaString} 원",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
-              const SizedBox(height: 10),
-              Text("플레이어는 월급과 인센티브를 받습니다.",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
-              const Spacer(),
-              GetX<GameController>(builder: (gameController) {
-                return SizedBox(
+          child: GetX<GameController>(builder: (controller) {
+            return Column(
+              children: [
+                Text("새로운 라운드", style: Constants.titleTextStyle),
+                const SizedBox(height: 14),
+                Text("라운드 ${controller.currentRound}가 시작됩니다.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
+                const SizedBox(height: 10),
+                Text("+ ${incentive.commaString} 원",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
+                const SizedBox(height: 10),
+                Text("플레이어는 월급과 인센티브를 받습니다.",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
+                const Spacer(),
+                SizedBox(
                   width: 184,
                   height: 44,
                   child: MCButton(
@@ -385,18 +392,14 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                     backgroundColor: Constants.blueNeon,
                     onPressed: () {
                       Get.back();
-                      Get.dialog(
-                          NewsDialog(
-                            newsArticle: gameController.currentNews,
-                          ),
-                          useSafeArea: false,
-                          name: "뉴스");
+                      Get.dialog(const NewsDialog(),
+                          useSafeArea: false, name: "뉴스");
                     },
                   ),
-                );
-              }),
-            ],
-          ),
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -404,10 +407,8 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
 }
 
 class NewsDialog extends StatefulWidget {
-  final NewsArticle? newsArticle;
   const NewsDialog({
     super.key,
-    required this.newsArticle,
   });
 
   @override
@@ -438,71 +439,73 @@ class _NewsDialogState extends State<NewsDialog> {
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 20, left: 30, right: 30, bottom: 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("뉴스",
-                      style: Constants.titleTextStyle
-                          .copyWith(color: Colors.black)),
-                  const SizedBox(height: 24),
-                  Text('"${widget.newsArticle?.headline}"',
-                      style: Constants.defaultTextStyle
-                          .copyWith(color: Colors.black, fontSize: 18)),
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(widget.newsArticle?.article1 ?? "",
-                            style: Constants.defaultTextStyle.copyWith(
-                                color: Colors.black,
-                                fontSize: 14,
-                                height: 1.25)),
-                      ),
-                      const SizedBox(width: 30),
-                      Expanded(
-                        child: Text(widget.newsArticle?.article2 ?? '',
-                            style: Constants.defaultTextStyle.copyWith(
-                                color: Colors.black,
-                                fontSize: 14,
-                                height: 1.25)),
-                      ),
-                      const SizedBox(width: 30),
-                      Expanded(
-                        child: Text(widget.newsArticle?.article3 ?? "",
-                            style: Constants.defaultTextStyle.copyWith(
-                                color: Colors.black,
-                                fontSize: 14,
-                                height: 1.25)),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      Bounceable(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                                width: 230,
-                                height: 50,
-                                child: Image.asset(
-                                    "assets/components/continue_button.png")),
-                            Text("이어서 플레이",
-                                style: Constants.titleTextStyle
-                                    .copyWith(fontSize: 22)),
-                          ],
+              child: GetX<GameController>(builder: (controller) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("뉴스",
+                        style: Constants.titleTextStyle
+                            .copyWith(color: Colors.black)),
+                    const SizedBox(height: 24),
+                    Text('"${controller.currentNews?.headline}"',
+                        style: Constants.defaultTextStyle
+                            .copyWith(color: Colors.black, fontSize: 18)),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(controller.currentNews?.article1 ?? "",
+                              style: Constants.defaultTextStyle.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  height: 1.25)),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                        const SizedBox(width: 30),
+                        Expanded(
+                          child: Text(controller.currentNews?.article2 ?? '',
+                              style: Constants.defaultTextStyle.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  height: 1.25)),
+                        ),
+                        const SizedBox(width: 30),
+                        Expanded(
+                          child: Text(controller.currentNews?.article3 ?? "",
+                              style: Constants.defaultTextStyle.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  height: 1.25)),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        const Spacer(),
+                        Bounceable(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 230,
+                                  height: 50,
+                                  child: Image.asset(
+                                      "assets/components/continue_button.png")),
+                              Text("이어서 플레이",
+                                  style: Constants.titleTextStyle
+                                      .copyWith(fontSize: 22)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ),

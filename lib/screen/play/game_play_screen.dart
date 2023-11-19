@@ -72,7 +72,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         padding: const EdgeInsets.only(left: 40),
                         child: Row(children: [
                           Text(
-                            "라운드1 '${gameController.isMyTurn ? "나" : "닉네임"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
+                            "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : "${gameController.currentTurnPlayer?.name}"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
                             style: Constants.largeTextStyle,
                           )
                         ]),
@@ -84,9 +84,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     flex: 530,
                     child: GestureDetector(
                       onTap: () {
-                        Get.dialog(NewsDialog(
-                          newsArticle: gameController.currentNews,
-                        ));
+                        Get.dialog(const NewsDialog(), useSafeArea: false);
                       },
                       child: Container(
                         height: 60,

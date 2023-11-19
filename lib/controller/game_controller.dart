@@ -6,6 +6,7 @@ import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
@@ -38,12 +39,12 @@ class GameController extends GetxController {
   }
 
   //MARK: - <게임 플레이 리스너
-  final roomId = "130922";
+  final roomId = "907973";
   final myIndex = 0;
 
   final Rx<int?> _currenTurnIndex = Rx<int?>(null);
   final Rx<int?> _currenRoundIndex = Rx<int?>(null);
-  int get currentRoundIndex {
+  int get currentRound {
     if (_currenRoundIndex.value != null) {
       return (_currenRoundIndex.value!) + 1;
     } else {
@@ -54,15 +55,16 @@ class GameController extends GetxController {
   final Rx<bool?> _isGameEnded = Rx<bool?>(false);
 
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
+  GameDataDetails? get currentRoomData => _currentRoom.value;
   Future<void> bindRoomStream() async {
     _currentRoom.bindStream(
-        FirebaseRealTimeService.getRoomDataStream(roomId: "130922"));
+        FirebaseRealTimeService.getRoomDataStream(roomId: "907973"));
     _currenTurnIndex.bindStream(
-        FirebaseRealTimeService.getTurnIndexStream(roomId: "130922"));
+        FirebaseRealTimeService.getTurnIndexStream(roomId: "907973"));
     _currenRoundIndex.bindStream(
-        FirebaseRealTimeService.getRoundIndexStream(roomId: "130922"));
+        FirebaseRealTimeService.getRoundIndexStream(roomId: "907973"));
     _isGameEnded.bindStream(
-        FirebaseRealTimeService.getIsGameEndedStream(roomId: "130922"));
+        FirebaseRealTimeService.getIsGameEndedStream(roomId: "907973"));
     ever(_currentRoom, _roomDataHandler);
     ever(_currenTurnIndex, _turnIndexHandler);
     ever(_currenRoundIndex, _roundIndexHandler);
@@ -88,7 +90,8 @@ class GameController extends GetxController {
   _roundIndexHandler(int? index) {
     //라운드 인덱스 핸들러 - 동작 검수 완료 ✅
     debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
-    if ((index ?? -0) >= 1) {
+    if (index == null) return;
+    if (index >= 1 && index < 3) {
       Get.dialog(const EndRoundAlertDialog());
     }
   }
@@ -97,7 +100,7 @@ class GameController extends GetxController {
     // 게임 종료 핸들러
     if (isEnd == true) {
       //TODO - 게임 종료 로직 실행
-      debugPrint("게임 끝!!!!!!!!");
+      Get.dialog(const EndGameAlertDialog());
     } else {}
     debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
   }
@@ -105,6 +108,44 @@ class GameController extends GetxController {
   //MARK: - </게임 플레이 리스너>
 
   //MARK: - UI 비즈니스 로직
+
+  Player? get currentTurnPlayer {
+    if (_currenTurnIndex.value == null) return null;
+    int turn = 0;
+    if (_currenTurnIndex.value != 0) {
+      turn =
+          (_currenTurnIndex.value! % (_currentRoom.value!.player?.length ?? 2));
+    }
+    return currentRoomData?.player?[turn];
+  }
+
+  double? get currentSavingInterest {
+    return _currentRoom.value?.savingRateInfo?[_currenRoundIndex.value ?? 0];
+  }
+
+  double? get previousSavingInterest {
+    return _currentRoom
+        .value?.savingRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
+  }
+
+  double? get currentInvestInterest {
+    return _currentRoom
+        .value?.investmentRateInfo?[_currenRoundIndex.value ?? 0];
+  }
+
+  double? get previousInvestInterest {
+    return _currentRoom
+        .value?.investmentRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
+  }
+
+  double? get currentLoanInterest {
+    return _currentRoom.value?.loanRateInfo?[_currenRoundIndex.value ?? 0];
+  }
+
+  double? get previousLoanInterest {
+    return _currentRoom
+        .value?.loanRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
+  }
 
   bool get isMyTurn {
     if (_currenTurnIndex.value == null) return false;
@@ -119,7 +160,11 @@ class GameController extends GetxController {
 
   // 뉴스 콘텐츠
   NewsArticle? get currentNews {
-    return _currentRoom.value?.news?[_currenRoundIndex.value ?? 0];
+    if (_currenRoundIndex.value == null) return null;
+    if (_currenRoundIndex.value! < 3) {
+      return _currentRoom.value?.news?[_currenRoundIndex.value!];
+    }
+    return null;
   }
 
   NewsArticle? get previousNews {
@@ -130,7 +175,7 @@ class GameController extends GetxController {
     }
   }
 
-  // 합산 액
+  // MARK: - 계산 비즈니스 로직
   int? get totalCash {
     // 리스트를 순회하면서 price 합산
     final myCashList = _currentRoom.value?.player?[myIndex].cash;
@@ -150,7 +195,7 @@ class GameController extends GetxController {
     int total = 0;
     if (myCashList != null) {
       for (UserAction cashData in myCashList) {
-        total += cashData.price!;
+        total += (cashData.price! * cashData.qty!);
       }
     }
     return total;
@@ -199,6 +244,7 @@ class GameController extends GetxController {
     final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
     final myLongSavingList = _currentRoom.value?.player?[myIndex].longSaving;
     final myLoanList = _currentRoom.value?.player?[myIndex].loan;
+    final myInvestList = currentRoomData?.player?[myIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -218,12 +264,17 @@ class GameController extends GetxController {
       }
     }
 
+    if (myInvestList != null) {
+      for (UserAction cashData in myInvestList) {
+        total += (cashData.price! * cashData.qty!);
+      }
+    }
+
     if (myCashList != null) {
       for (UserAction cashData in myCashList) {
         total += cashData.price!;
       }
     }
-
     return total;
   }
 
