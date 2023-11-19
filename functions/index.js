@@ -67,6 +67,12 @@ exports.createRoom = onRequest(async (req, res) => {
         if (owner === undefined || typeof owner !== 'object') {
             return res.status(400).json({ ValueError: 'owner' });
         }
+        if (owner.uid === undefined || typeof owner.uid !== 'string') {
+            return res.status(400).json({ ValueError: 'uid' });
+        }
+        if (owner.characterIndex === undefined || typeof owner.characterIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'characterIndex' });
+        }
 
         // 룸 아이디 생성
         const now = Date.now();
@@ -136,6 +142,9 @@ exports.enterRoom = onRequest(async (req, res) => {
         if (user.characterIndex === undefined || typeof user.characterIndex !== 'number') {
             return res.status(400).json({ ValueError: 'characterIndex' });
         }
+        if (user.uid === undefined || typeof user.uid !== 'string') {
+            return res.status(400).json({ ValueError: 'uid' });
+        }
 
         const room_ref = db.ref('Room').child(roomId);
 
@@ -165,7 +174,6 @@ exports.enterRoom = onRequest(async (req, res) => {
         const availableCharacterIndex = [0, 1, 2, 3];
         const takenCharacterIndexes = playerList.map(player => player.characterIndex);
         if (takenCharacterIndexes.includes(user.characterIndex)) {
-            // If character index is taken, find the first available index
             user.characterIndex = availableCharacterIndex.find(index => !takenCharacterIndexes.includes(index));
         }
 
@@ -194,14 +202,14 @@ exports.exitRoom = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
-        const { roomId, playerIndex } = request_data;
+        const { roomId, uid } = request_data;
 
         // 데이터 유효성 체크
         if (roomId === undefined || typeof roomId !== 'string') {
             return res.status(400).json({ ValueError: 'roomId' });
         }
-        if (playerIndex === undefined || typeof playerIndex !== 'number') {
-            return res.status(400).json({ ValueError: 'playerIndex' });
+        if (uid === undefined || typeof uid !== 'string') {
+            return res.status(400).json({ ValueError: 'uid' });
         }
 
         const room_ref = db.ref('Room').child(roomId);
@@ -209,6 +217,7 @@ exports.exitRoom = onRequest(async (req, res) => {
         // 유저 퇴장
         const playerListRef = await room_ref.child('player').once('value');
         var playerList = playerListRef.val();
+        const playerIndex = playerList.findIndex(player => player.uid === uid);
 
         playerList.splice(playerIndex, 1);
 
@@ -230,14 +239,14 @@ exports.readyToggle = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
-        const { roomId, playerIndex } = request_data;
+        const { roomId, uid } = request_data;
 
         // 데이터 유효성 체크
         if (roomId === undefined || typeof roomId !== 'string') {
             return res.status(400).json({ ValueError: 'roomId' });
         }
-        if (playerIndex === undefined || typeof playerIndex !== 'number') {
-            return res.status(400).json({ ValueError: 'playerIndex' });
+        if (uid === undefined || typeof uid !== 'string') {
+            return res.status(400).json({ ValueError: 'uid' });
         }
 
         const roomRef = db.ref('Room').child(roomId);
@@ -248,6 +257,11 @@ exports.readyToggle = onRequest(async (req, res) => {
         if (roomIsPlaying) {
             return res.status(400).json({ Error: 'room_is_playing' });
         }
+
+        // 유저 인덱스 조회
+        const playerListRef = await roomRef.child('player').once('value');
+        const playerList = playerListRef.val();
+        const playerIndex = playerList.findIndex(player => player.uid === uid);
 
         // 준비 상태 토글
         const userIsReady = await roomRef.child('player').child(`${playerIndex}`).child('isReady').once('value');
