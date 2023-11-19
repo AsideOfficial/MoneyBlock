@@ -74,6 +74,12 @@ exports.createRoom = onRequest(async (req, res) => {
 
         // 방장 정보 입력
         owner.isReady = true;
+        owner.cash = [0];
+        owner.shortSaving = [0];
+        owner.longSaving = [0];
+        owner.loan = [0];
+        owner.expend = [0];
+        owner.investment = [0];
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
@@ -95,9 +101,7 @@ exports.createRoom = onRequest(async (req, res) => {
             isEnd: false,
             roundIndex: 0,
             turnIndex: 0,
-            player: {
-                0: owner
-            },
+            player: [owner],
             theme: 'worker',
             type: 'solo',
             max: 4,
@@ -129,6 +133,9 @@ exports.enterRoom = onRequest(async (req, res) => {
         if (user === undefined || typeof user !== 'object') {
             return res.status(400).json({ ValueError: 'user' });
         }
+        if (user.characterIndex === undefined || typeof user.characterIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'characterIndex' });
+        }
 
         const room_ref = db.ref('Room').child(roomId);
 
@@ -147,17 +154,34 @@ exports.enterRoom = onRequest(async (req, res) => {
         }
 
         // 유저 인덱스
-        const playerList = await room_ref.child('player').once('value');
-        const user_idx = Object.keys(playerList.val()).length;
-        if (user_idx >= 3) {
+        const playerListRef = await room_ref.child('player').once('value');
+        var playerList = playerListRef.val();
+
+        if (playerList.length >= 3) {
             room_ref.child('isFull').set(true);
+        }
+
+        // 캐릭터 인덱스 증복 확인
+        const availableCharacterIndex = [0, 1, 2, 3];
+        const takenCharacterIndexes = playerList.map(player => player.characterIndex);
+        if (takenCharacterIndexes.includes(user.characterIndex)) {
+            // If character index is taken, find the first available index
+            user.characterIndex = availableCharacterIndex.find(index => !takenCharacterIndexes.includes(index));
         }
 
         // 유저 정보 정보입력
         user.isReady = false;
+        user.cash = [0];
+        user.shortSaving = [0];
+        user.longSaving = [0];
+        user.loan = [0];
+        user.expend = [0];
+        user.investment = [0];
+
+        playerList.push(user);
 
         // 유저 입장
-        db.ref('Room').child(roomId).child('player').child(`${user_idx}`).set(user);
+        db.ref('Room').child(roomId).child('player').set(playerList);
         const room_data = await room_ref.once('value');
 
         return res.status(200).json({ roomId: roomId, data: room_data.val() });
@@ -384,8 +408,14 @@ exports.userAction = onRequest(async (req, res) => {
                 return res.status(400).json({ ValueError: 'Invalid userAction in the array' });
             }
 
+            // 해당 타입 불러오기
+            const typeRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
+            const type = typeRef.val();
+
+            type.push(userAction);
+
             // 유저 액션 추가
-            roomRef.child('player').child(`${playerIndex}`).child(userAction.type).push(userAction);
+            roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
         }
 
         const room_data = await roomRef.once('value');
