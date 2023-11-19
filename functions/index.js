@@ -345,7 +345,7 @@ exports.turnEnded = onRequest(async(req, res) => {
         }
 
         // 게임 종료
-        if (roundIndex >= 4) {
+        if (roundIndex >= 3) {
             roomRef.child('isEnd').set(true);
         }
 
