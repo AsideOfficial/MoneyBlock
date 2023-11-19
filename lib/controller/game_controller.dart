@@ -21,7 +21,7 @@ class GameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    bindRoomStream();
+    bindRoomStream(roomId);
   }
 
   final _curretnActionType = GameActionType.expend.obs;
