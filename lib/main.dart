@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const LobbyScreen();
             } else {
-              return const GamePlayScreen();
+              return const StartScreen();
             }
           }),
         ),
