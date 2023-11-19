@@ -39,7 +39,7 @@ class GameController extends GetxController {
   }
 
   //MARK: - <게임 플레이 리스너
-  final roomId = "907973";
+  final roomId = "722903";
   final myIndex = 0;
 
   final Rx<int?> _currenTurnIndex = Rx<int?>(null);
@@ -58,13 +58,13 @@ class GameController extends GetxController {
   GameDataDetails? get currentRoomData => _currentRoom.value;
   Future<void> bindRoomStream() async {
     _currentRoom.bindStream(
-        FirebaseRealTimeService.getRoomDataStream(roomId: "907973"));
+        FirebaseRealTimeService.getRoomDataStream(roomId: "722903"));
     _currenTurnIndex.bindStream(
-        FirebaseRealTimeService.getTurnIndexStream(roomId: "907973"));
+        FirebaseRealTimeService.getTurnIndexStream(roomId: "722903"));
     _currenRoundIndex.bindStream(
-        FirebaseRealTimeService.getRoundIndexStream(roomId: "907973"));
+        FirebaseRealTimeService.getRoundIndexStream(roomId: "722903"));
     _isGameEnded.bindStream(
-        FirebaseRealTimeService.getIsGameEndedStream(roomId: "907973"));
+        FirebaseRealTimeService.getIsGameEndedStream(roomId: "722903"));
     ever(_currentRoom, _roomDataHandler);
     ever(_currenTurnIndex, _turnIndexHandler);
     ever(_currenRoundIndex, _roundIndexHandler);

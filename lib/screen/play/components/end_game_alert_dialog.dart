@@ -81,7 +81,7 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                       const SizedBox(height: 2),
                       Text(controller.totalCash?.commaString ?? "",
                           style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardYellow)),
+                              fontSize: 16, color: const Color(0xFFEA8C00))),
                       const SizedBox(height: 8),
                       Text("저축자산",
                           style: Constants.defaultTextStyle.copyWith(
@@ -95,7 +95,7 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.dark100)),
                       const SizedBox(height: 2),
-                      Text("+${controller.totalAsset?.commaString}",
+                      Text("+${controller.totalInvestment?.commaString}",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.accentRed)),
                       const SizedBox(height: 8),
@@ -112,6 +112,7 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                       // const RateVariationTile(before: 5, after: 4),
                       const SizedBox(height: 10),
                       Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Text("총",
