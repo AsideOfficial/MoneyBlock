@@ -321,9 +321,23 @@ class GameController extends GetxController {
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
-        // cash -- shortSaving ++
-        UserAction(type: "cash", title: "예금", price: -price, qty: 1),
-        UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
+        //TODO - 정산 로직
+
+        // 1. 예금
+        // shortSaving sum -> shortSaving -- cash ++
+        // shortSaving sum * 이번 라운드 이자 -> cash ++
+
+        // 2. 적금
+        // longSaving sum * 이번 라운드 이자 -> longSaving ++
+
+        // 3. 대출
+        // loan sum * 이번 라운드 이자 -> cash ++
+
+        // 4. 세금 씨발
+        //
+
+        // UserAction(type: "cash", title: "예금", price: -price, qty: 1),
+        // UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
