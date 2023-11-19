@@ -8,40 +8,12 @@ class FirebaseRealTimeService {
       databaseURL:
           "https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
-  //MARK: -
-
-  // TODO - [베테브] Room 데이터 CRUD 예제 확인 - 정상 동작 확인 완료
-  // CREATE
-  static Future<void> createRoom({
-    required String roomId,
-    required Room roomData,
-  }) async {
-    // 지정한 path 에 데이터 저장
-    debugPrint("Firebase called");
-    try {
-      await _rdb.ref('room/$roomId').set(roomData.toJson());
-      debugPrint("Firebase called complete");
-    } catch (error) {
-      debugPrint("Firebase Error - $error");
-    }
-  }
-
-  //UPDATE
-  static Future<void> updateRoom({
-    required String roomId,
-    required Room roomData,
-  }) async {
-    await _rdb.ref('room/$roomId').update({
-      'title': roomData.title,
-    });
-  }
-
   // GET STREAM (리스너)
   static Stream<Room?> getRoomDataStream({
     required String roomId,
   }) {
     // 참조할 데이터의 Path 와 함께 레퍼런스 생성
-    final DatabaseReference roomRef = _rdb.ref('room/$roomId');
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
     // 커스텀 객체를 담고 있는 Stream 으로 변환
     final Stream<Room?> customObjectStream = roomRef.onValue.map((event) {
       // 커스텀 객체로 파싱 (Ex. fromJson)
@@ -49,20 +21,13 @@ class FirebaseRealTimeService {
       if (data != null) {
         //데이터 존재
         final json = data as Map<String, dynamic>;
+        debugPrint(json.toString());
         return Room.fromJson(json);
       } else {
         return null;
       }
     });
     return customObjectStream;
-  }
-
-  //DELETE
-  static Future<void> deleteRoom({
-    required String roomId,
-  }) async {
-    await _rdb.ref('room/$roomId').remove();
-    debugPrint("hi");
   }
 }
 

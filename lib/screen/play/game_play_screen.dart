@@ -12,6 +12,7 @@ import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
 import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
+import 'package:money_cycle/services/cloud_fuction_service.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -207,8 +208,24 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         backgroundColor: Constants.cardPink,
                         titleColor: const Color(0xFFA90054),
                         assetPath: "assets/icons/random_game.png",
-                        onPressed: () {
-                          Get.dialog(const FinalResultDialog());
+                        onPressed: () async {
+                          // Get.dialog(const FinalResultDialog());
+                          await CloudFunctionService.userAction(
+                              roomData: RoomData(
+                                  roomId: "960877",
+                                  playerIndex: 1,
+                                  userActions: [
+                                UserAction(
+                                    type: "shortSaving",
+                                    title: "예금",
+                                    price: 50000,
+                                    qty: 1),
+                                UserAction(
+                                    type: "cash",
+                                    title: "예금",
+                                    price: -50000,
+                                    qty: 1),
+                              ]));
                         },
                       ),
                       const SizedBox(

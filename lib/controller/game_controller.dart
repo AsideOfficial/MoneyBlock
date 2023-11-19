@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/services/cloud_fuction_service.dart';
 
 import '../constants.dart';
 
@@ -32,6 +34,74 @@ class GameController extends GetxController {
 
   void bindRoomStream() {
     // TODO - 게임 방 내부 데이터 STREAM 연동
+  }
+
+  final roomId = "960877";
+  final myIndex = 1;
+
+  Future<void> shortSavingAction(int price) async {
+    CloudFunctionService.userAction(
+        roomData: RoomData(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- shortSaving ++
+        UserAction(type: "cash", title: "예금", price: -price, qty: 1),
+        UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> longSavingAction(int price) async {
+    CloudFunctionService.userAction(
+        roomData: RoomData(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- longSaving ++
+        UserAction(type: "cash", title: "적금", price: -price, qty: 1),
+        UserAction(type: "longSaving", title: "적금", price: price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> loanAction(int price) async {
+    CloudFunctionService.userAction(
+        roomData: RoomData(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash ++ loan ++
+        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
+        UserAction(type: "loan", title: "대출 실행", price: price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> loanRepaymentAction(int price) async {
+    CloudFunctionService.userAction(
+        roomData: RoomData(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        UserAction(type: "loan", title: "대출 상환", price: -price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> investAction(int price) async {
+    CloudFunctionService.userAction(
+        roomData: RoomData(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        UserAction(type: "loan", title: "대출 상환", price: -price, qty: 1),
+      ],
+    ));
   }
 
   GameAction get currentActionTypeModel {
