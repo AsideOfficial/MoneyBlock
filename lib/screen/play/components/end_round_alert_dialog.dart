@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -373,19 +375,25 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
               Text("플레이어는 월급과 인센티브를 받습니다.",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const Spacer(),
-              SizedBox(
-                width: 184,
-                height: 44,
-                child: MCButton(
-                  title: "확인",
-                  backgroundColor: Constants.blueNeon,
-                  onPressed: () {
-                    Get.back();
-                    Get.dialog(const NewsDialog(),
-                        useSafeArea: false, name: "뉴스");
-                  },
-                ),
-              ),
+              GetX<GameController>(builder: (gameController) {
+                return SizedBox(
+                  width: 184,
+                  height: 44,
+                  child: MCButton(
+                    title: "확인",
+                    backgroundColor: Constants.blueNeon,
+                    onPressed: () {
+                      Get.back();
+                      Get.dialog(
+                          NewsDialog(
+                            newsArticle: gameController.currentNews,
+                          ),
+                          useSafeArea: false,
+                          name: "뉴스");
+                    },
+                  ),
+                );
+              }),
             ],
           ),
         ),
@@ -395,8 +403,10 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
 }
 
 class NewsDialog extends StatefulWidget {
+  final NewsArticle? newsArticle;
   const NewsDialog({
     super.key,
+    required this.newsArticle,
   });
 
   @override
@@ -434,7 +444,7 @@ class _NewsDialogState extends State<NewsDialog> {
                       style: Constants.titleTextStyle
                           .copyWith(color: Colors.black)),
                   const SizedBox(height: 24),
-                  Text('"한국은행 기준금리 0.5% 인상"',
+                  Text('"${widget.newsArticle?.headline}"',
                       style: Constants.defaultTextStyle
                           .copyWith(color: Colors.black, fontSize: 18)),
                   const SizedBox(height: 16),
@@ -442,8 +452,7 @@ class _NewsDialogState extends State<NewsDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Text(
-                            "한국의 중앙은행인 한국은행이 오늘 기준금리를 인상한다고 발표했다. 물가 상승률이 높다는 판단으로 기준금리를 올린 것으로 보인다.",
+                        child: Text(widget.newsArticle?.article1 ?? "",
                             style: Constants.defaultTextStyle.copyWith(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -451,8 +460,7 @@ class _NewsDialogState extends State<NewsDialog> {
                       ),
                       const SizedBox(width: 30),
                       Expanded(
-                        child: Text(
-                            "지난분기 0.5% 인상에 이어 이번 분기에도 0.5%를 인상하였다. 이에 따라 작년부터 지난분기까지 기존 1%대를 유지했던 기준금리는 2%대로 상승하게 되었다. 한국은행은 “앞으로도 경제 지표에 따라 금리를 올리거나 내리도록 결정하겠다”며 추가 인상도 할 수 있음을 암시했다",
+                        child: Text(widget.newsArticle?.article2 ?? '',
                             style: Constants.defaultTextStyle.copyWith(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -460,8 +468,7 @@ class _NewsDialogState extends State<NewsDialog> {
                       ),
                       const SizedBox(width: 30),
                       Expanded(
-                        child: Text(
-                            "한국은행의 기준금리 인상에 따라, 시장의 저축금리와 대출금리를 포함한 전반적인 금리가 더욱 상승할 것으로 예상된다.",
+                        child: Text(widget.newsArticle?.article3 ?? "",
                             style: Constants.defaultTextStyle.copyWith(
                                 color: Colors.black,
                                 fontSize: 14,

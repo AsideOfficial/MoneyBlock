@@ -5,7 +5,7 @@ class Player {
   List<UserAction>? cash; // 현금
   List<UserAction>? shortSaving; // 예금
   List<UserAction>? longSaving; // 적금
-  List<UserAction>? invest; // 투자
+  List<UserAction>? investment; // 투자
   List<UserAction>? expend; // 지출
   List<UserAction>? loan; // 저축
 
@@ -18,7 +18,7 @@ class Player {
     this.cash,
     this.shortSaving,
     this.longSaving,
-    this.invest,
+    this.investment,
     this.expend,
     this.loan,
   });
@@ -27,46 +27,53 @@ class Player {
     return Player(
       isReady: json['isReady'],
       name: json['name'],
-      // cash: (json['cash'] as List<dynamic>?)
-      //     ?.map((data) => Map<String, dynamic>.from(data))
-      //     .map((json) => UserAction.fromJson(json))
-      //     .toList(),
-      // shortSaving: (json['shortSaving'] as List<dynamic>?)
-      //     ?.map((data) => Map<String, dynamic>.from(data))
-      //     .map((json) => UserAction.fromJson(json))
-      //     .toList(),
-      // longSaving: convertDataToJson(json['longSaving'])
-
-      //     // ?.map((data) => Map<String, dynamic>.from(data))
-      //     ?.map((json) => UserAction.fromJson(json))
-      //     .toList(),
-      // invest: (json['invest'] as List<dynamic>?)
-      //     ?.map((data) => Map<String, dynamic>.from(data))
-      //     .map((json) => UserAction.fromJson(json))
-      //     .toList(),
-      // expend: (json['expend'] as List<dynamic>?)
-      //     ?.map((data) => Map<String, dynamic>.from(data))
-      //     .map((json) => UserAction.fromJson(json))
-      //     .toList(),
-      // loan: (json['loan'] as List<dynamic>?)
-      //     ?.map((data) => Map<String, dynamic>.from(data))
-      //     .map((json) => UserAction.fromJson(json))
-      //     .toList(),
+      cash: (json['cash'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      shortSaving: (json['shortSaving'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      longSaving: (json['longSaving'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      investment: (json['investment'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      expend: (json['expend'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      loan: (json['loan'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'isReady': isReady,
-      'name': name,
-      'cash': cash?.map((action) => action.toJson()).toList(),
-      'shortSaving': shortSaving?.map((action) => action.toJson()).toList(),
-      'longSaving': longSaving?.map((action) => action.toJson()).toList(),
-      'invest': invest?.map((action) => action.toJson()).toList(),
-      'expend': expend?.map((action) => action.toJson()).toList(),
-      'loan': loan?.map((action) => action.toJson()).toList(),
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'isReady': isReady,
+  //     'name': name,
+  //     'cash': cash?.map((action) => action.toJson()).toList(),
+  //     'shortSaving':
+  //         shortSaving?.sublist(1).map((action) => action.toJson()).toList(),
+  //     'longSaving':
+  //         longSaving?.sublist(1).map((action) => action.toJson()).toList(),
+  //     'invest': invest?.sublist(1).map((action) => action.toJson()).toList(),
+  //     'expend': expend?.sublist(1).map((action) => action.toJson()).toList(),
+  //     'loan': loan?.sublist(1).map((action) => action.toJson()).toList(),
+  //   };
+  // }
 }
 
 Map<String, dynamic>? convertDataToJson(Map<dynamic, dynamic>? data) {

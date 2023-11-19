@@ -9,12 +9,12 @@ class RoomData {
     required this.data,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'roomId': roomId,
-      'data': data?.toJson(),
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'roomId': roomId,
+  //     'data': data?.toJson(),
+  //   };
+  // }
 
   factory RoomData.fromJson(Map<String, dynamic> json) {
     return RoomData(

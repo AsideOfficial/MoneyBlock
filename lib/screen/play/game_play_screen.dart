@@ -59,7 +59,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     child: Container(
                       height: 60,
                       decoration: ShapeDecoration(
-                        color: isMyTurn
+                        color: gameController.isMyTurn
                             ? const Color(0xFFEA5C67)
                             : const Color(0xFFA4A4A4),
                         shape: const RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         padding: const EdgeInsets.only(left: 40),
                         child: Row(children: [
                           Text(
-                            "라운드1 '${isMyTurn ? "나" : "닉네임"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
+                            "라운드1 '${gameController.isMyTurn ? "나" : "닉네임"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
                             style: Constants.largeTextStyle,
                           )
                         ]),
@@ -84,7 +84,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     flex: 530,
                     child: GestureDetector(
                       onTap: () {
-                        Get.dialog(const NewsDialog());
+                        Get.dialog(NewsDialog(
+                          newsArticle: gameController.currentNews,
+                        ));
                       },
                       child: Container(
                         height: 60,
@@ -110,7 +112,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             ),
                             const SizedBox(width: 25),
                             Text(
-                              '"한국 은행이 기준 금리를 0.5%p 추가 인상했습니다."', // TODO - 지난 뉴스 연동
+                              '"${gameController.currentNews?.headline ?? ""}"', // TODO - 지난 뉴스 연동
                               style: Constants.defaultTextStyle.copyWith(
                                   color: Constants.dark100, fontSize: 16),
                             )
@@ -128,7 +130,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: gameController.isMyTurn,
                         title: "저축",
                         backgroundColor: const Color(0xFF70C14A),
                         titleColor: const Color(0xFF1F6200),
@@ -139,7 +141,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         },
                       ),
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: gameController.isMyTurn,
                         title: "투자",
                         backgroundColor: Constants.cardRed,
                         titleColor: const Color(0xFF97010C),
@@ -151,7 +153,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         },
                       ),
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: gameController.isMyTurn,
                         title: "지출",
                         backgroundColor: Constants.cardBlue,
                         titleColor: const Color(0xFF002D9B),
@@ -161,7 +163,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         },
                       ),
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: true,
                         title: "대출",
                         backgroundColor: Constants.cardOrange,
                         titleColor: const Color(0xFF913B0B),
@@ -177,7 +179,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: gameController.isMyTurn,
                         title: "행운복권",
                         backgroundColor: Constants.cardYellow,
                         titleColor: const Color(0xFFB86300),
@@ -190,7 +192,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         },
                       ),
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: gameController.isMyTurn,
                         title: "무급휴가",
                         backgroundColor: Constants.cardGreenBlue,
                         titleColor: const Color(0xFF005349),
@@ -203,7 +205,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         },
                       ),
                       ActionButton(
-                        isMyTurn: isMyTurn,
+                        isMyTurn: true,
                         title: "랜덤게임",
                         backgroundColor: Constants.cardPink,
                         titleColor: const Color(0xFFA90054),

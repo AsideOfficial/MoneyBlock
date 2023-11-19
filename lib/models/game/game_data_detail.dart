@@ -38,23 +38,23 @@ class GameDataDetails {
     required this.type,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'investmentRateInfo': investmentRateInfo,
-      'isEnd': isEnd,
-      'isFull': isFull,
-      'isPlaying': isPlaying,
-      'loanRateInfo': loanRateInfo,
-      'max': max,
-      'news': news?.map((article) => article.toJson()).toList(),
-      'player': player?.map((player) => player.toJson()).toList(),
-      'roundIndex': roundIndex,
-      'savingRateInfo': savingRateInfo,
-      'theme': theme,
-      'turnIndex': turnIndex,
-      'type': type,
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'investmentRateInfo': investmentRateInfo,
+  //     'isEnd': isEnd,
+  //     'isFull': isFull,
+  //     'isPlaying': isPlaying,
+  //     'loanRateInfo': loanRateInfo,
+  //     'max': max,
+  //     'news': news?.map((article) => article.toJson()).toList(),
+  //     'player': player?.map((player) => player.toJson()).toList(),
+  //     'roundIndex': roundIndex,
+  //     'savingRateInfo': savingRateInfo,
+  //     'theme': theme,
+  //     'turnIndex': turnIndex,
+  //     'type': type,
+  //   };
+  // }
 
   factory GameDataDetails.fromJson(Map<String, dynamic> json) {
     return GameDataDetails(
