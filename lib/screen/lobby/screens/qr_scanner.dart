@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
+import 'package:money_cycle/controller/user_controller.dart';
 import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -226,7 +227,8 @@ class _QRScannerState extends State<QRScanner> {
     final result = await FirebaseService.enterRoom(
       roomId: roomCode,
       uid: FirebaseAuth.instance.currentUser!.uid,
-      characterIndex: 3,
+      characterIndex:
+          Get.find<MCUserController>().user!.value.profileImageIndex,
     );
 
     if (result != null) {

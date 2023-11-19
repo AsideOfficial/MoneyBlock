@@ -10,7 +10,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class ShareCodeDialog extends StatelessWidget {
   const ShareCodeDialog({super.key, required this.roomCode});
 
-  final int roomCode;
+  final String roomCode;
 
   void showSnackBar() {
     Get.snackbar(
@@ -80,7 +80,7 @@ class ShareCodeDialog extends StatelessWidget {
                       ),
                       const SizedBox(height: 13.0),
                       QrImageView(
-                        data: roomCode.toString(),
+                        data: roomCode,
                         padding: EdgeInsets.zero,
                         eyeStyle: const QrEyeStyle(
                           eyeShape: QrEyeShape.square,

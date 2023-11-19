@@ -21,7 +21,7 @@ class WaitingRoomScreen extends StatefulWidget {
 }
 
 class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
-  final roomID = Get.arguments;
+  final roomID = Get.arguments as String;
   final roomRef = FirebaseDatabase.instanceFor(
           app: firebaseApp!,
           databaseURL:
@@ -131,6 +131,12 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
               snapshot.data?.snapshot.value as Map<dynamic, dynamic>);
           final roomData = RoomData.fromJson(json);
 
+          Map<String, bool> participantsState = {};
+
+          for (Player player in roomData.player!) {
+            participantsState[player.uid] = player.isReady;
+          }
+
           return Scaffold(
             body: Stack(
               children: [
@@ -149,7 +155,11 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                           children: [
                             Bounceable(
                               onTap: () async {
-                                //TODO: exitRoom
+                                await FirebaseService.exitRoom(
+                                  roomId: roomID,
+                                  uid: FirebaseAuth.instance.currentUser!.uid,
+                                );
+
                                 Get.back();
                               },
                               child: SizedBox(
@@ -189,16 +199,17 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: roomData.player.map((p) {
+                          children: roomData.player!.map((p) {
                             return PlayerCard(
                               key: UniqueKey(),
-                              userId: p.user.uid,
-                              isHost: roomData.player.indexOf(p) == 0,
+                              userId: p.uid,
+                              characterIndex: p.characterIndex,
+                              isHost: roomData.player!.indexOf(p) == 0,
                               isReady: p.isReady,
                             );
                           }).toList(),
                         ),
-                        if (roomData.player[0].user.uid ==
+                        if (roomData.player![0].uid ==
                             FirebaseAuth.instance.currentUser?.uid)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -279,7 +290,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                           variableColumn(
                             rateType: 'assets/components/loan_rate_box.png',
                             label: '대출금리',
-                            value:roomData.loanRateInfo[0],
+                            value: roomData.loanRateInfo[0],
                           ),
                           const SizedBox(width: 10.0),
                           variableColumn(
@@ -289,32 +300,41 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                             value: roomData.investmentRateInfo[0],
                           ),
                           const Spacer(),
-                          // Bounceable(
-                          //   onTap: (roomData.roomData.player[0].user.uid ==
-                          //           FirebaseAuth.instance.currentUser?.uid)
-                          //       ? () {
-                          //           //TODO: 토글 레디
-                          //           // toggleReady(
-                          //           //   roomData: roomData,
-                          //           //   current: roomData.participants[
-                          //           //       FirebaseAuth
-                          //           //           .instance.currentUser?.uid],
-                          //           // );
-                          //         }
-                          //       : (roomData.roomData.player.length > 1)
-                          //           ? () {
-                          //               //TODO: 게임 시작
-                          //             }
-                          //           : null,
-                          //   child: Image.asset(
-                          //     (roomData.roomData.player[0].user.uid !=
-                          //             FirebaseAuth.instance.currentUser?.uid)
-                          //         ? 'assets/components/game_ready_button${roomData.participants[FirebaseAuth.instance.currentUser?.uid] ? '_already' : ''}.png'
-                          //         : 'assets/components/game_start_button${(roomData.participants.keys.length == 1 || roomData.participants.containsValue(false)) ? '_inactive' : ''}.png',
-                          //     width: 230,
-                          //     height: 50,
-                          //   ),
-                          // ),
+                          Bounceable(
+                            onTap: (roomData.player![0].uid !=
+                                    FirebaseAuth.instance.currentUser?.uid)
+                                ? () {
+                                    FirebaseService.readyToggle(
+                                        roomId: roomID,
+                                        uid: FirebaseAuth
+                                            .instance.currentUser!.uid);
+                                  }
+                                : (roomData.player!.length > 1 &&
+                                        !participantsState.values
+                                            .toList()
+                                            .contains(false))
+                                    ? () async {
+                                        //TODO: 게임 시작
+                                        final myIndex = participantsState.keys
+                                            .toList()
+                                            .where((id) =>
+                                                id ==
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid);
+
+                                        await FirebaseService.startGame(
+                                            roomId: roomID);
+                                      }
+                                    : null,
+                            child: Image.asset(
+                              (roomData.player![0].uid !=
+                                      FirebaseAuth.instance.currentUser?.uid)
+                                  ? 'assets/components/game_ready_button${participantsState[FirebaseAuth.instance.currentUser!.uid]! ? '_already' : ''}.png'
+                                  : 'assets/components/game_start_button${(roomData.player!.length == 1 || participantsState.values.toList().contains(false)) ? '_inactive' : ''}.png',
+                              width: 230,
+                              height: 50,
+                            ),
+                          ),
                           const SizedBox(width: 80.0),
                         ],
                       ),
@@ -400,11 +420,13 @@ class PlayerCard extends StatefulWidget {
   const PlayerCard({
     super.key,
     required this.userId,
+    required this.characterIndex,
     required this.isHost,
     required this.isReady,
   });
 
   final String userId;
+  final int characterIndex;
   final bool isHost;
   final bool isReady;
 
@@ -442,7 +464,7 @@ class _PlayerCardState extends State<PlayerCard> {
             decoration: ShapeDecoration(
               color: isLoading
                   ? Colors.grey
-                  : ProfileImage.cardColors[userData.profileImageIndex],
+                  : ProfileImage.cardColors[widget.characterIndex],
               shape: RoundedRectangleBorder(
                 side: BorderSide(
                   width: 1,
@@ -466,7 +488,7 @@ class _PlayerCardState extends State<PlayerCard> {
               children: [
                 if (!isLoading)
                   Image.asset(
-                    ProfileImage.characters[userData.profileImageIndex],
+                    ProfileImage.characters[widget.characterIndex],
                     width: 150,
                     height: 190,
                     fit: BoxFit.cover,
@@ -478,8 +500,7 @@ class _PlayerCardState extends State<PlayerCard> {
                       decoration: ShapeDecoration(
                         color: isLoading
                             ? Colors.grey
-                            : ProfileImage
-                                .titleColors[userData.profileImageIndex],
+                            : ProfileImage.titleColors[widget.characterIndex],
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
@@ -518,10 +539,13 @@ class _PlayerCardState extends State<PlayerCard> {
                       decoration: ShapeDecoration(
                         color: isLoading
                             ? Colors.grey
-                            : widget.isReady
+                            : widget.isHost
                                 ? ProfileImage
-                                    .titleColors[userData.profileImageIndex]
-                                : const Color(0xFFA5A5A5),
+                                    .titleColors[widget.characterIndex]
+                                : widget.isReady
+                                    ? ProfileImage
+                                        .titleColors[widget.characterIndex]
+                                    : const Color(0xFFA5A5A5),
                         shape: const RoundedRectangleBorder(
                           side: BorderSide(
                             width: 2,

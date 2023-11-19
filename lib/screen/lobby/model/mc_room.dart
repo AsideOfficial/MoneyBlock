@@ -45,7 +45,7 @@ class RoomData {
   late final bool isEnd;
   late final int roundIndex;
   late final int turnIndex;
-  late final List<Player> player;
+  late final List<Player>? player;
   late final String theme;
   late final String type;
   late final int max;
@@ -60,7 +60,7 @@ class RoomData {
     isEnd = json['isEnd'];
     roundIndex = json['roundIndex'];
     turnIndex = json['turnIndex'];
-    player = List.from(json['player'])
+    player = List.from(json['player'] ?? [])
         .map((e) => Player.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     theme = json['theme'];
@@ -88,7 +88,7 @@ class RoomData {
     data['isEnd'] = isEnd;
     data['roundIndex'] = roundIndex;
     data['turnIndex'] = turnIndex;
-    data['player'] = player.map((e) => e.toJson()).toList();
+    data['player'] = player?.map((e) => e.toJson()).toList();
     data['theme'] = theme;
     data['type'] = type;
     data['max'] = max;
@@ -101,42 +101,27 @@ class RoomData {
 }
 
 class Player {
-  Player({required this.user, required this.isReady});
-
-  late final WaitingUser user;
-  late final bool isReady;
-
-  Player.fromJson(Map<String, dynamic> json) {
-    user = WaitingUser.fromJson(Map<String, dynamic>.from(json['user']));
-    isReady = json['isReady'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['user'] = user.toJson();
-    data['isReady'] = isReady;
-    return data;
-  }
-}
-
-class WaitingUser {
-  WaitingUser({
+  Player({
     required this.uid,
     required this.characterIndex,
+    required this.isReady,
   });
 
   late final String uid;
   late final int characterIndex;
+  late final bool isReady;
 
-  WaitingUser.fromJson(Map<String, dynamic> json) {
+  Player.fromJson(Map<String, dynamic> json) {
     uid = json['uid'];
     characterIndex = json['characterIndex'];
+    isReady = json['isReady'];
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['uid'] = uid;
     data['characterIndex'] = characterIndex;
+    data['isReady'] = isReady;
     return data;
   }
 }
