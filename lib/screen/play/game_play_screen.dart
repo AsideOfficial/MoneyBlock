@@ -210,22 +210,23 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         assetPath: "assets/icons/random_game.png",
                         onPressed: () async {
                           // Get.dialog(const FinalResultDialog());
-                          await CloudFunctionService.userAction(
-                              roomData: RoomData(
-                                  roomId: "960877",
-                                  playerIndex: 1,
-                                  userActions: [
-                                UserAction(
-                                    type: "shortSaving",
-                                    title: "예금",
-                                    price: 50000,
-                                    qty: 1),
-                                UserAction(
-                                    type: "cash",
-                                    title: "예금",
-                                    price: -50000,
-                                    qty: 1),
-                              ]));
+                          // await CloudFunctionService.userAction(
+                          //     roomData: RoomData(
+                          //         roomId: "960877",
+                          //         playerIndex: 1,
+                          //         userActions: [
+                          //       UserAction(
+                          //           type: "shortSaving",
+                          //           title: "예금",
+                          //           price: 50000,
+                          //           qty: 1),
+                          //       UserAction(
+                          //           type: "cash",
+                          //           title: "예금",
+                          //           price: -50000,
+                          //           qty: 1),
+                          //     ]));
+                          gameController.bindRoomStream();
                         },
                       ),
                       const SizedBox(

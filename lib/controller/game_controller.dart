@@ -1,9 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game/game_data_detail.dart';
+import 'package:money_cycle/models/game/player.dart';
+import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
+import 'package:money_cycle/services/firebase_real_time_service.dart';
 
 import '../constants.dart';
 
@@ -32,16 +35,24 @@ class GameController extends GetxController {
     isActionChoicing = true;
   }
 
-  void bindRoomStream() {
-    // TODO - 게임 방 내부 데이터 STREAM 연동
+  final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
+  Future<void> bindRoomStream() async {
+    _currentRoom.bindStream(
+        FirebaseRealTimeService.getRoomDataStream(roomId: "015327"));
+    ever(_currentRoom, _roomDataHandler);
   }
 
-  final roomId = "960877";
-  final myIndex = 1;
+  _roomDataHandler(GameDataDetails? room) {
+    debugPrint("${_currentRoom.value?.isPlaying} - 변경 확인!");
+    // _currentRoom.value.
+  }
+
+  final roomId = "015327";
+  final myIndex = 0;
 
   Future<void> shortSavingAction(int price) async {
     CloudFunctionService.userAction(
-        roomData: RoomData(
+        userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
@@ -50,11 +61,12 @@ class GameController extends GetxController {
         UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   Future<void> longSavingAction(int price) async {
     CloudFunctionService.userAction(
-        roomData: RoomData(
+        userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
@@ -63,11 +75,12 @@ class GameController extends GetxController {
         UserAction(type: "longSaving", title: "적금", price: price, qty: 1),
       ],
     ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   Future<void> loanAction(int price) async {
     CloudFunctionService.userAction(
-        roomData: RoomData(
+        userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
@@ -80,7 +93,7 @@ class GameController extends GetxController {
 
   Future<void> loanRepaymentAction(int price) async {
     CloudFunctionService.userAction(
-        roomData: RoomData(
+        userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
@@ -91,17 +104,32 @@ class GameController extends GetxController {
     ));
   }
 
-  Future<void> investAction(int price) async {
-    CloudFunctionService.userAction(
-        roomData: RoomData(
+  Future<void> investAction(String title, int price) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "loan", title: "대출 상환", price: -price, qty: 1),
+        UserAction(type: "cash", title: "$title-투자", price: -price, qty: 1),
+        UserAction(type: "invest", title: "$title-투자", price: -price, qty: 1),
       ],
     ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> expendAction(String title, int price) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        UserAction(type: "cash", title: "$title-구매", price: -price, qty: 1),
+        UserAction(type: "expend", title: "$title-구매", price: -price, qty: 1),
+      ],
+    ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   GameAction get currentActionTypeModel {
