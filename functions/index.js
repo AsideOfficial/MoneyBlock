@@ -228,6 +228,11 @@ exports.exitRoom = onRequest(async (req, res) => {
             room_ref.child('isFull').set(false);
         }
 
+        // 인원 없을 시 방 삭제
+        if (playerList.length === 0) {
+            room_ref.remove();
+        }
+
         const room_data = await room_ref.once('value');
         return res.status(200).json({ roomId: roomId, data: room_data.val() });
     } catch (error) {
