@@ -83,7 +83,8 @@ exports.createRoom = onRequest(async (req, res) => {
         owner.cash = [0];
         owner.shortSaving = [0];
         owner.longSaving = [0];
-        owner.loan = [0];
+        owner.creditLoan = [0];
+        owner.mortgageLoan = [0];
         owner.expend = [0];
         owner.investment = [0];
 
@@ -182,7 +183,8 @@ exports.enterRoom = onRequest(async (req, res) => {
         user.cash = [0];
         user.shortSaving = [0];
         user.longSaving = [0];
-        user.loan = [0];
+        user.creditLoan = [0];
+        user.mortgageLoan = [0];
         user.expend = [0];
         user.investment = [0];
 
