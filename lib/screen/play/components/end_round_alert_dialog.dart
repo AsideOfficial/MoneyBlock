@@ -19,16 +19,18 @@ class EndRoundAlertDialog extends StatefulWidget {
 class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
   @override
   Widget build(BuildContext context) {
-    return CustomAlertDialog(
-      title: "1라운드 종료!",
-      description: "1라운드가 종료되었습니다.",
-      instruction: "게임의 결과를 확인해보세요.",
-      acionButtonTitle: "결과보기",
-      onPressed: () {
-        Get.back();
-        Get.dialog(const EconomicNewsDialog(), useSafeArea: false);
-      },
-    );
+    return GetX<GameController>(builder: (controller) {
+      return CustomAlertDialog(
+        title: "${controller.currentRoundIndex} 종료!",
+        description: "${controller.currentRoundIndex}라운드가 종료되었습니다.",
+        instruction: "게임의 결과를 확인해보세요.",
+        acionButtonTitle: "결과보기",
+        onPressed: () {
+          Get.back();
+          Get.dialog(const EconomicNewsDialog(), useSafeArea: false);
+        },
+      );
+    });
   }
 }
 
@@ -42,236 +44,235 @@ class EconomicNewsDialog extends StatefulWidget {
 }
 
 class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
-  bool isVacation = false;
-  bool isVacationFinished = false;
-
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shadowColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      content: SizedBox(
-        height: 310,
-        child: Row(
-          children: [
-            Container(
-              width: 230,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: Constants.grey00Gradient,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, top: 20, bottom: 17, right: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("지난 뉴스",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 24, color: Colors.black)),
-                    const SizedBox(height: 15),
-                    Text("한국은행 기준금이 0.5% 인상",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 16, color: Colors.black)),
-                    const SizedBox(height: 23),
-                    Container(
-                      height: 1,
-                      color: Constants.grey100,
-                    ),
-                    const SizedBox(height: 10),
-                    Text("금리 증감 결과",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 24, color: Colors.black)),
-                    const SizedBox(height: 8),
-                    Text("저축금리",
-                        style: Constants.defaultTextStyle.copyWith(
-                            fontSize: 16, color: Constants.cardGreen)),
-                    const SizedBox(height: 2),
-                    const RateVariationTile(before: 3, after: 5),
-                    const SizedBox(height: 10),
-                    Text("대출금리",
-                        style: Constants.defaultTextStyle.copyWith(
-                            fontSize: 16, color: Constants.cardOrange)),
-                    const SizedBox(height: 2),
-                    const RateVariationTile(before: 5, after: 4),
-                    const SizedBox(height: 10),
-                    Text("투자변동률",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 16, color: Constants.cardRed)),
-                    const SizedBox(height: 2),
-                    const RateVariationTile(
-                      before: 10,
-                      after: -10,
-                    ),
-                  ],
+    return GetX<GameController>(builder: (controller) {
+      return AlertDialog(
+        shadowColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        content: SizedBox(
+          height: 310,
+          child: Row(
+            children: [
+              Container(
+                width: 230,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: Constants.grey00Gradient,
                 ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              width: 230,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: Constants.grey00Gradient,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, top: 20, bottom: 23, right: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("라운드 정산",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 24, color: Colors.black)),
-                    const SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Text("지난 총 잔액",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 14, color: Colors.black)),
-                        const Spacer(),
-                        Text("1000000원",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 14, color: Colors.black)),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 20),
-                    const AssetVariationListTile(
-                        title: "현금", variation: 100000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 4),
-                    const AssetVariationListTile(
-                        title: "저축", variation: 300000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 4),
-                    const AssetVariationListTile(
-                        title: "투자", variation: 500000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 4),
-                    const AssetVariationListTile(
-                        title: "대출", variation: -500000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 4),
-                    const AssetVariationListTile(
-                        title: "세금", variation: -200000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 4),
-                    const AssetVariationListTile(
-                        title: "인센티브", variation: 400000),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        Text("현재 총 잔액",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 14, color: Colors.black)),
-                        const Spacer(),
-                        Text("1000000원",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 14, color: Colors.black)),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: Constants.grey100),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Stack(
-              alignment: Alignment.topRight,
-              children: [
-                Container(
-                  width: 210,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: Constants.grey00Gradient,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, top: 20, bottom: 23, right: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("현재 순위",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 24, color: Colors.black)),
-                        const SizedBox(height: 15),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: 4,
-                            itemBuilder: (context, index) {
-                              //TODO - 순위 데이터 리스트 연동 및 정렬
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 20,
-                                      child: Text("${index + 1}.",
-                                          style: Constants.defaultTextStyle
-                                              .copyWith(
-                                                  fontSize: 20,
-                                                  color: Colors.black)),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    SizedBox(
-                                        width: 50,
-                                        height: 50,
-                                        child: Image.asset(
-                                            "assets/images/profile_cow.png")),
-                                    const SizedBox(width: 10),
-                                    SizedBox(
-                                      width: 86,
-                                      child: Text("닉네임이다",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: Constants.defaultTextStyle
-                                              .copyWith(
-                                                  fontSize: 20,
-                                                  color: Colors.black)),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, top: 20, bottom: 17, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("지난 뉴스",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 24, color: Colors.black)),
+                      const SizedBox(height: 15),
+                      Text(controller.previousNews?.headline ?? "",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 16, color: Colors.black)),
+                      const SizedBox(height: 23),
+                      Container(
+                        height: 1,
+                        color: Constants.grey100,
+                      ),
+                      const SizedBox(height: 10),
+                      Text("금리 증감 결과",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 24, color: Colors.black)),
+                      const SizedBox(height: 8),
+                      Text("저축금리",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardGreen)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(before: 3, after: 5),
+                      const SizedBox(height: 10),
+                      Text("대출금리",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardOrange)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(before: 5, after: 4),
+                      const SizedBox(height: 10),
+                      Text("투자변동률",
+                          style: Constants.defaultTextStyle.copyWith(
+                              fontSize: 16, color: Constants.cardRed)),
+                      const SizedBox(height: 2),
+                      const RateVariationTile(
+                        before: 10,
+                        after: -10,
+                      ),
+                    ],
                   ),
                 ),
-                Transform.translate(
-                  offset: const Offset(14, -14),
-                  child: Bounceable(
-                    scaleFactor: 0.8,
-                    onTap: () {
-                      Get.back();
-                      Get.dialog(const NewRoundDialog());
-                    },
-                    child: Image.asset(
-                      "assets/icons/button_forward.png",
-                      width: 46.0,
-                      height: 46.0,
-                    ),
+              ),
+              const SizedBox(width: 10),
+              Container(
+                width: 230,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: Constants.grey00Gradient,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, top: 20, bottom: 23, right: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("라운드 정산",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 24, color: Colors.black)),
+                      const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Text("지난 총 잔액",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 14, color: Colors.black)),
+                          const Spacer(),
+                          Text("1000000원",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 14, color: Colors.black)),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 20),
+                      const AssetVariationListTile(
+                          title: "현금", variation: 100000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 4),
+                      const AssetVariationListTile(
+                          title: "저축", variation: 300000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 4),
+                      const AssetVariationListTile(
+                          title: "투자", variation: 500000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 4),
+                      const AssetVariationListTile(
+                          title: "대출", variation: -500000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 4),
+                      const AssetVariationListTile(
+                          title: "세금", variation: -200000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 4),
+                      const AssetVariationListTile(
+                          title: "인센티브", variation: 400000),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Text("현재 총 잔액",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 14, color: Colors.black)),
+                          const Spacer(),
+                          Text("1000000원",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 14, color: Colors.black)),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Constants.grey100),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(width: 10),
+              Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    width: 210,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: Constants.grey00Gradient,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, top: 20, bottom: 23, right: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("현재 순위",
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 24, color: Colors.black)),
+                          const SizedBox(height: 15),
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                //TODO - 순위 데이터 리스트 연동 및 정렬
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        child: Text("${index + 1}.",
+                                            style: Constants.defaultTextStyle
+                                                .copyWith(
+                                                    fontSize: 20,
+                                                    color: Colors.black)),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: Image.asset(
+                                              "assets/images/profile_cow.png")),
+                                      const SizedBox(width: 10),
+                                      SizedBox(
+                                        width: 86,
+                                        child: Text("닉네임이다",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: Constants.defaultTextStyle
+                                                .copyWith(
+                                                    fontSize: 20,
+                                                    color: Colors.black)),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Transform.translate(
+                    offset: const Offset(14, -14),
+                    child: Bounceable(
+                      scaleFactor: 0.8,
+                      onTap: () {
+                        Get.back();
+                        Get.dialog(const NewRoundDialog());
+                      },
+                      child: Image.asset(
+                        "assets/icons/button_forward.png",
+                        width: 46.0,
+                        height: 46.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

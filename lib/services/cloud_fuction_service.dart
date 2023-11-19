@@ -39,10 +39,8 @@ class CloudFunctionService {
         uri,
         headers: <String, String>{"Content-Type": "application/json"},
         body: jsonEncode({
-          {
-            "roomId": roomId,
-            "playerIndex": playerIndex,
-          }
+          "roomId": roomId,
+          "playerIndex": playerIndex,
         }),
       );
 

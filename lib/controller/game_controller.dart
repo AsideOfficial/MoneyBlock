@@ -6,9 +6,9 @@ import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
-import 'package:money_cycle/utils/extension/int.dart';
 
 import '../constants.dart';
 
@@ -38,23 +38,31 @@ class GameController extends GetxController {
   }
 
   //MARK: - <게임 플레이 리스너
-  final roomId = "734424";
+  final roomId = "130922";
   final myIndex = 0;
 
   final Rx<int?> _currenTurnIndex = Rx<int?>(null);
   final Rx<int?> _currenRoundIndex = Rx<int?>(null);
+  int get currentRoundIndex {
+    if (_currenRoundIndex.value != null) {
+      return (_currenRoundIndex.value!) + 1;
+    } else {
+      return 1;
+    }
+  }
+
   final Rx<bool?> _isGameEnded = Rx<bool?>(false);
 
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
   Future<void> bindRoomStream() async {
     _currentRoom.bindStream(
-        FirebaseRealTimeService.getRoomDataStream(roomId: "734424"));
+        FirebaseRealTimeService.getRoomDataStream(roomId: "130922"));
     _currenTurnIndex.bindStream(
-        FirebaseRealTimeService.getTurnIndexStream(roomId: "734424"));
+        FirebaseRealTimeService.getTurnIndexStream(roomId: "130922"));
     _currenRoundIndex.bindStream(
-        FirebaseRealTimeService.getRoundIndexStream(roomId: "734424"));
+        FirebaseRealTimeService.getRoundIndexStream(roomId: "130922"));
     _isGameEnded.bindStream(
-        FirebaseRealTimeService.getIsGameEndedStream(roomId: "734424"));
+        FirebaseRealTimeService.getIsGameEndedStream(roomId: "130922"));
     ever(_currentRoom, _roomDataHandler);
     ever(_currenTurnIndex, _turnIndexHandler);
     ever(_currenRoundIndex, _roundIndexHandler);
@@ -80,6 +88,9 @@ class GameController extends GetxController {
   _roundIndexHandler(int? index) {
     //라운드 인덱스 핸들러 - 동작 검수 완료 ✅
     debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
+    if ((index ?? -0) >= 1) {
+      Get.dialog(const EndRoundAlertDialog());
+    }
   }
 
   _endGameHandler(bool? isEnd) {
@@ -109,6 +120,14 @@ class GameController extends GetxController {
   // 뉴스 콘텐츠
   NewsArticle? get currentNews {
     return _currentRoom.value?.news?[_currenRoundIndex.value ?? 0];
+  }
+
+  NewsArticle? get previousNews {
+    if ((_currenRoundIndex.value ?? 0) > 0) {
+      return _currentRoom.value?.news?[(_currenRoundIndex.value ?? 0 - 1)];
+    } else {
+      return _currentRoom.value?.news?[0];
+    }
   }
 
   // 합산 액
@@ -225,7 +244,8 @@ class GameController extends GetxController {
         UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
-    // await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    // 턴 넘기기
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   //정상동작 확인 ✅
@@ -243,7 +263,8 @@ class GameController extends GetxController {
         UserAction(type: "longSaving", title: "적금", price: price, qty: 1),
       ],
     ));
-    // await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    // 턴 넘기기
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   Future<void> loanAction({
@@ -294,7 +315,7 @@ class GameController extends GetxController {
         UserAction(type: "investment", title: title, price: price, qty: qty),
       ],
     ));
-    // await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
   //정상동작 확인 ✅
