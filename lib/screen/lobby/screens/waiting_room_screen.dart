@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
-import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/main.dart';
 import 'package:money_cycle/screen/lobby/components/setting_dialog.dart';
 import 'package:money_cycle/screen/lobby/components/share_code_dialog.dart';
@@ -317,7 +316,6 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                                             .toList()
                                             .contains(false))
                                     ? () async {
-                                        //TODO: 게임 시작
                                         final myIndex = participantsState.keys
                                             .toList()
                                             .indexOf(FirebaseAuth
