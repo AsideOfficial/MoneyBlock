@@ -8,6 +8,7 @@ import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
+import 'package:money_cycle/screen/play/components/start_game_alert_dialog.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
 
@@ -25,6 +26,12 @@ class GameController extends GetxController {
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
     _currentRoom.value = roomData;
     bindRoomStream(roomId);
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
   }
 
   final _curretnActionType = GameActionType.expend.obs;
@@ -367,11 +374,24 @@ class GameController extends GetxController {
   //MARK: - 플레이어 액션
 
   //정상동작 확인 ✅
+  Future<void> firstSalary() async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- shortSaving ++
+        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
+      ],
+    ));
+  }
+
+  //정상동작 확인 ✅
   Future<void> shortSavingAction({
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -390,7 +410,7 @@ class GameController extends GetxController {
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -408,7 +428,7 @@ class GameController extends GetxController {
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
