@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -24,7 +23,10 @@ class _EndGameAlertDialogState extends State<EndGameAlertDialog> {
       acionButtonTitle: "결과보기",
       onPressed: () {
         Get.back();
-        Get.dialog(const FinalCalculateDialog());
+        Get.dialog(
+          const FinalCalculateDialog(),
+          barrierDismissible: false,
+        );
       },
     );
   }

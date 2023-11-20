@@ -9,6 +9,28 @@ class FirebaseRealTimeService {
       databaseURL:
           "https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
+  static Future<GameDataDetails?> getRoomData({required String roomId}) async {
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
+    try {
+      final snapShot = await roomRef.get();
+      debugPrint('Data: ${snapShot.value}');
+      final data = snapShot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        final json = Map<String, dynamic>.from(data);
+        return GameDataDetails.fromJson(json);
+      } else {
+        debugPrint("getRoomData - 데이터 없음");
+        return null;
+      }
+
+      // 여기에서 데이터를 처리하거나 상태를 업데이트할 수 있습니다.
+    } catch (e) {
+      debugPrint('Error: $e');
+      // 오류 처리 로직을 추가할 수 있습니다.
+    }
+    return null;
+  }
+
   // MARK: - GET STREAM (리스너)
   static Stream<GameDataDetails?> getRoomDataStream({
     required String roomId,

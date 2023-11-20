@@ -1,17 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
-import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
-import 'package:money_cycle/controller/user_controller.dart';
-import 'package:money_cycle/screen/lobby/components/logout_dialog.dart';
-import 'package:money_cycle/screen/lobby/components/my_page_dialog.dart';
 import 'package:money_cycle/screen/play/game_play_screen.dart';
-import 'package:money_cycle/start/add_information_screen.dart';
-import 'package:money_cycle/start/model/profile_image.dart';
-import 'package:money_cycle/utils/firebase_service.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -62,7 +54,7 @@ class _TestScreenState extends State<TestScreen> {
                                 binding: BindingsBuilder(() {
                               Get.put(GameController(
                                 roomId: "794923",
-                                myIndex: 0,
+                                myIndex: 1,
                               ));
                             }));
                           },
