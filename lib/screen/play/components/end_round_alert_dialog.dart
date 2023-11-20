@@ -5,7 +5,6 @@ import 'package:money_cycle/components/mc_button.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
-import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -27,7 +26,11 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
         acionButtonTitle: "결과보기",
         onPressed: () {
           Get.back();
-          Get.dialog(const EconomicNewsDialog(), useSafeArea: false);
+          Get.dialog(
+            const EconomicNewsDialog(),
+            useSafeArea: false,
+            barrierDismissible: false,
+          );
         },
       );
     });
@@ -264,7 +267,10 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       scaleFactor: 0.8,
                       onTap: () {
                         Get.back();
-                        Get.dialog(const NewRoundDialog());
+                        Get.dialog(
+                          const NewRoundDialog(),
+                          barrierDismissible: false,
+                        );
                       },
                       child: Image.asset(
                         "assets/icons/button_forward.png",
@@ -393,7 +399,9 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                     onPressed: () {
                       Get.back();
                       Get.dialog(const NewsDialog(),
-                          useSafeArea: false, name: "뉴스");
+                          barrierDismissible: false,
+                          useSafeArea: false,
+                          name: "뉴스");
                     },
                   ),
                 ),

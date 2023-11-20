@@ -19,12 +19,11 @@ class GameController extends GetxController {
   final int myIndex;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-<<<<<<< HEAD
     debugPrint("게임 컨트롤러 Init 시작");
-=======
->>>>>>> aba3da0cae54db6ada97ce0e4d6f130172e55ffc
+    final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
+    _currentRoom.value = roomData;
     bindRoomStream(roomId);
   }
 
@@ -65,7 +64,6 @@ class GameController extends GetxController {
   }
 
   final Rx<bool?> _isGameEnded = Rx<bool?>(false);
-
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
   GameDataDetails? get currentRoomData => _currentRoom.value;
   Future<void> bindRoomStream(String roomId) async {
@@ -85,14 +83,14 @@ class GameController extends GetxController {
   }
 
   _roomDataHandler(GameDataDetails? room) {
-    debugPrint("[게임 데이터 변경 수신 핸들러]");
-    debugPrint("[게임 데이터 변경 수신 핸들러] 플레이어 리스트 - ${_currentRoom.value?.player}");
+    debugPrint("_roomDataHandler 트리거 -");
+    // debugPrint("[게임 데이터 변경 수신 핸들러] 플레이어 리스트 - ${_currentRoom.value?.player}");
     // _currentRoom.value.
   }
 
   _turnIndexHandler(int? index) {
     //턴 인덱스 핸들러 - 동작 검수 완료 ✅
-    debugPrint("${_currentRoom.value?.turnIndex} - 변경 확인!");
+    debugPrint("_turnIndexHandler 트리거 - 현재 턴 : $index");
     if (index! % (_currentRoom.value!.player?.length ?? 2) == myIndex) {
       debugPrint("$index - 내 차례!");
     } else {
@@ -102,18 +100,25 @@ class GameController extends GetxController {
 
   _roundIndexHandler(int? index) {
     //라운드 인덱스 핸들러 - 동작 검수 완료 ✅
-    debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
+    debugPrint("_roundIndexHandler 트리거 - 라운드 $index");
     if (index == null) return;
     if (index >= 1 && index < 3) {
-      Get.dialog(const EndRoundAlertDialog());
+      Get.dialog(
+        const EndRoundAlertDialog(),
+        barrierDismissible: false,
+      );
     }
   }
 
   _endGameHandler(bool? isEnd) {
     // 게임 종료 핸들러
+    debugPrint("_endGameHandler 트리거 - 게임 종료 여부 : $isEnd");
     if (isEnd == true) {
       //TODO - 게임 종료 로직 실행
-      Get.dialog(const EndGameAlertDialog());
+      Get.dialog(
+        const EndGameAlertDialog(),
+        barrierDismissible: false,
+      );
     } else {}
     debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
   }

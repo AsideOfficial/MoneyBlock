@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
@@ -13,17 +11,24 @@ class FirebaseRealTimeService {
 
   static Future<GameDataDetails?> getRoomData({required String roomId}) async {
     final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
-     try {
-      DataSnapshot snapshot = await databaseReference.once();
-      print('Data: ${snapshot.value}');
+    try {
+      final snapShot = await roomRef.get();
+      debugPrint('Data: ${snapShot.value}');
+      final data = snapShot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        final json = Map<String, dynamic>.from(data);
+        return GameDataDetails.fromJson(json);
+      } else {
+        debugPrint("getRoomData - 데이터 없음");
+        return null;
+      }
+
       // 여기에서 데이터를 처리하거나 상태를 업데이트할 수 있습니다.
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       // 오류 처리 로직을 추가할 수 있습니다.
     }
-     return null;
-  }
-  
+    return null;
   }
 
   // MARK: - GET STREAM (리스너)
