@@ -21,10 +21,7 @@ class GameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-<<<<<<< HEAD
     debugPrint("게임 컨트롤러 Init 시작");
-=======
->>>>>>> aba3da0cae54db6ada97ce0e4d6f130172e55ffc
     bindRoomStream(roomId);
   }
 
