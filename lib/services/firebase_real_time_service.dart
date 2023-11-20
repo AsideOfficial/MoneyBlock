@@ -2,12 +2,34 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
+import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 
 class FirebaseRealTimeService {
   static final FirebaseDatabase _rdb = FirebaseDatabase.instanceFor(
       app: firebaseApp!,
       databaseURL:
           "https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app/");
+
+  static Future<RoomData?> getWaitingRoomData({required String roomId}) async {
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
+    try {
+      final snapShot = await roomRef.get();
+      final data = snapShot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        final json = Map<String, dynamic>.from(data);
+        return RoomData.fromJson(json);
+      } else {
+        debugPrint("getRoomData - 데이터 없음");
+        return null;
+      }
+
+      // 여기에서 데이터를 처리하거나 상태를 업데이트할 수 있습니다.
+    } catch (e) {
+      debugPrint('Error: $e');
+      // 오류 처리 로직을 추가할 수 있습니다.
+    }
+    return null;
+  }
 
   static Future<GameDataDetails?> getRoomData({required String roomId}) async {
     final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
@@ -32,6 +54,26 @@ class FirebaseRealTimeService {
   }
 
   // MARK: - GET STREAM (리스너)
+  static Stream<RoomData?> getWaitingRoomDataStream({
+    required String roomId,
+  }) {
+    final DatabaseReference roomRef = _rdb.ref('Room/$roomId');
+    final Stream<RoomData?> customObjectStream = roomRef.onValue.map((event) {
+      final Map<dynamic, dynamic>? data =
+          event.snapshot.value as Map<dynamic, dynamic>?;
+      debugPrint("Data type: ${data?.runtimeType}");
+
+      if (data != null) {
+        //데이터 존재
+        final Map<String, dynamic> json = Map<String, dynamic>.from(data);
+        return RoomData.fromJson(json);
+      } else {
+        return null;
+      }
+    });
+    return customObjectStream;
+  }
+
   static Stream<GameDataDetails?> getRoomDataStream({
     required String roomId,
   }) {
