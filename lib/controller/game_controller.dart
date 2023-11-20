@@ -21,7 +21,8 @@ class GameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    bindRoomStream();
+    debugPrint("게임 컨트롤러 Init 시작");
+    bindRoomStream(roomId);
   }
 
   final _curretnActionType = GameActionType.expend.obs;
@@ -77,6 +78,7 @@ class GameController extends GetxController {
     ever(_currenTurnIndex, _turnIndexHandler);
     ever(_currenRoundIndex, _roundIndexHandler);
     ever(_isGameEnded, _endGameHandler);
+    debugPrint("게임 이벤트 핸들러 바인딩 완료");
   }
 
   _roomDataHandler(GameDataDetails? room) {

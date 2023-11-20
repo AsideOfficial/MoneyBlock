@@ -328,7 +328,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                                         Get.to(const GamePlayScreen(),
                                             binding: BindingsBuilder(() {
                                           Get.put(GameController(
-                                              roomId: 'roomId',
+                                              roomId: roomID,
                                               myIndex: myIndex));
                                         }));
                                       }

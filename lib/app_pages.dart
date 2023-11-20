@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/lobby/screens/create_room_screen.dart';
 import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/screen/lobby/screens/participate_room_screen.dart';
@@ -20,6 +21,14 @@ class AppPages {
     GetPage(
       name: "/waiting_room",
       page: () => const WaitingRoomScreen(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: "/game_play",
+      page: () => const GamePlayScreen(),
+      binding: BindingsBuilder(() {
+        Get.put<GameController>(GameController(roomId: "794923", myIndex: 0));
+      }),
       transition: Transition.fadeIn,
     ),
   ];
