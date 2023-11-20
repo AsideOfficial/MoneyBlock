@@ -67,15 +67,18 @@ class GameDataDetails {
       max: json['max'] ?? 0,
       roundIndex: json['roundIndex'] ?? 0,
       investmentRateInfo: (json['investmentRateInfo'] as List<dynamic>?)
-              ?.map((item) => (item as num).toDouble())
+              ?.sublist(1)
+              .map((item) => (item as num).toDouble())
               .toList() ??
           [],
       loanRateInfo: (json['loanRateInfo'] as List<dynamic>?)
-              ?.map((item) => (item as num).toDouble())
+              ?.sublist(1)
+              .map((item) => (item as num).toDouble())
               .toList() ??
           [],
       savingRateInfo: (json['savingRateInfo'] as List<dynamic>?)
-              ?.map((item) => (item as num).toDouble())
+              ?.sublist(1)
+              .map((item) => (item as num).toDouble())
               .toList() ??
           [],
       news: (json['news'] as List<dynamic>?)

@@ -73,11 +73,11 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       Text("지난 뉴스",
                           style: Constants.defaultTextStyle
                               .copyWith(fontSize: 24, color: Colors.black)),
-                      const SizedBox(height: 15),
+                      const Spacer(),
                       Text(controller.previousNews?.headline ?? "",
                           style: Constants.defaultTextStyle
                               .copyWith(fontSize: 16, color: Colors.black)),
-                      const SizedBox(height: 23),
+                      const Spacer(),
                       Container(
                         height: 1,
                         color: Constants.grey100,
@@ -362,7 +362,6 @@ class NewRoundDialog extends StatefulWidget {
 }
 
 class _NewRoundDialogState extends State<NewRoundDialog> {
-  int incentive = 400000;
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -375,20 +374,21 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
         width: 306,
         height: 256,
         child: Padding(
-          padding: const EdgeInsets.only(top: 24, bottom: 22),
+          padding: const EdgeInsets.only(top: 24, bottom: 18),
           child: GetX<GameController>(builder: (controller) {
             return Column(
               children: [
                 Text("새로운 라운드", style: Constants.titleTextStyle),
-                const SizedBox(height: 14),
+                const Spacer(),
                 Text("라운드 ${controller.currentRound}가 시작됩니다.",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
                 Text("월급: + 2,000,000 원",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
+                const SizedBox(height: 6),
                 Text("인센티브: + ${controller.myIncentive.commaString} 원",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
-                const SizedBox(height: 10),
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
+                const SizedBox(height: 6),
                 Text("플레이어는 월급과 인센티브를 받습니다.",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
                 const Spacer(),
@@ -405,7 +405,6 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                             setState(() => isLoading = true);
                             await controller.salaryAndIncentive();
                             setState(() => isLoading = false);
-
                             Get.back();
                             Get.dialog(const NewsDialog(),
                                 barrierDismissible: false,
