@@ -1,6 +1,7 @@
 //MARK : - 사용자 액션 (장부 기입)
 class UserAction {
   String? type;
+  bool? isItem;
   String? title;
   int? price;
   int? qty;
@@ -10,6 +11,7 @@ class UserAction {
     required this.title,
     required this.price,
     required this.qty,
+    this.isItem = false,
   });
 
   factory UserAction.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,7 @@ class UserAction {
       title: json['title'],
       price: json['price'],
       qty: json['qty'],
+      isItem: json["isItem"],
     );
   }
 
@@ -27,6 +30,7 @@ class UserAction {
       'title': title,
       'price': price,
       'qty': qty,
+      'isItem': isItem,
     };
   }
 }

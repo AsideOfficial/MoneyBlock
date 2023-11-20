@@ -12,6 +12,7 @@ class Player {
 
   bool? isReady;
   String? name;
+  int? characterIndex;
 
   Player({
     required this.isReady,
@@ -23,12 +24,14 @@ class Player {
     this.expend,
     this.creditLoan,
     this.mortgagesLoan,
+    this.characterIndex,
   });
 
   factory Player.fromJson(Map<String, dynamic> json) {
     return Player(
       isReady: json['isReady'],
       name: json['name'],
+      characterIndex: json["characterIndex"],
       cash: (json['cash'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))

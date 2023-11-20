@@ -146,21 +146,21 @@ class _GameActionDialogState extends State<GameActionDialog> {
                         itemBuilder: (context, index) {
                           final rate = gameController
                               .currentActionTypeModel.rates?[index];
-                          final bool isHigherThanBefore;
-                          if (rate != null) {
-                            if (rate.rateFluctuation.length >= 2) {
-                              isHigherThanBefore = true;
-                            } else {
-                              isHigherThanBefore = false;
-                            }
-                          } else {
-                            isHigherThanBefore = false;
+                          final actionType = gameController.currentActionType;
+                          double before = gameController.previousRate(
+                              actionType: actionType);
+                          double after = gameController.currentRate(
+                              actionType: actionType);
+                          if (rate?.title == "저축금리") {
+                            before += 2;
+                          } else if (rate?.title == "담보대출") {
+                            before -= 1;
                           }
 
                           return RateListTile2(
                               title: rate?.title ?? "",
-                              rate: rate?.rateFluctuation.first ?? 0,
-                              isHigherThanBefore: isHigherThanBefore);
+                              rate: before,
+                              isHigherThanBefore: (before < after));
                         }),
                   ],
                 ),
@@ -255,6 +255,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       //TODO - 투자 API 연동 필요 ✅
 
                                       if (item == null) return;
+                                      if (gameController.totalCash! <
+                                          (item.price * count)) return;
                                       await gameController.investAction(
                                           title: item.title,
                                           price: item.price,
@@ -272,6 +274,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     onPurchase: (count) async {
                                       //TODO - 지출 API 연동 필요 ✅
                                       if (item == null) return;
+                                      if (gameController.totalCash! <
+                                          (item.price * count)) return;
                                       await gameController.expendAction(
                                         title: item.title,
                                         price: item.price,
@@ -294,6 +298,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               ),
             )
           else if (gameController.currentActionType == GameActionType.saving)
+            //MARK: - 저축 활동
             MCContainer(
               borderRadius: 20,
               gradient: gameController.currentBackgroundGradient,
@@ -315,7 +320,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                             style: Constants.titleTextStyle),
                         const SizedBox(width: 12),
                         // TODO - API - 금리 연동
-                        Text("금리: 4%",
+                        Text(
+                            "금리: ${gameController.curretnSpecificActionModel?.title == "예금" ? "${gameController.currentSavingRate}%" : "${gameController.currentSavingRate + 2}%"}",
                             style: Constants.defaultTextStyle
                                 .copyWith(fontSize: 18)),
                       ],
@@ -333,7 +339,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   style: Constants.defaultTextStyle
                                       .copyWith(fontSize: 16)),
                               const SizedBox(height: 4),
-                              amountTile(amount: cash),
+                              amountTile(
+                                  amount: gameController.totalCash!.toDouble()),
                               const SizedBox(height: 10),
                               Text(
                                   "${gameController.curretnSpecificActionModel?.title}금액",
@@ -360,7 +367,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           child: SfSlider(
                                             value: currentAmount,
                                             min: 0,
-                                            max: cash,
+                                            max: gameController.totalCash,
                                             stepSize: 10000,
                                             enableTooltip: false,
                                             showLabels: false,
@@ -445,7 +452,11 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             style: Constants.defaultTextStyle),
                                         const Spacer(),
                                         amountTile(
-                                            amount: currentAmount * 0.04,
+                                            amount: currentAmount *
+                                                (gameController
+                                                        .currentSavingRate +
+                                                    2) /
+                                                100,
                                             width: 100),
                                       ],
                                     ),
@@ -457,7 +468,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         Text("총 이자",
                                             style: Constants.defaultTextStyle),
                                         amountTile(
-                                            amount: currentAmount * 0.04 * 3,
+                                            amount: currentAmount *
+                                                (gameController
+                                                        .currentSavingRate +
+                                                    2) /
+                                                100 *
+                                                3,
                                             width: 100),
                                       ],
                                     ),
@@ -480,7 +496,10 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           style: Constants.defaultTextStyle),
                                       const SizedBox(width: 8),
                                       amountTile(
-                                          amount: currentAmount * 0.04,
+                                          amount: currentAmount *
+                                              (gameController
+                                                  .currentSavingRate) /
+                                              100,
                                           width: 100),
                                     ],
                                   ),

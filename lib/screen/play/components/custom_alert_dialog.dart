@@ -8,15 +8,17 @@ class CustomAlertDialog extends StatelessWidget {
   final String description;
   final String instruction;
   final String acionButtonTitle;
-  final Function() onPressed;
+  final Function()? onPressed;
+  bool? isLoading;
 
-  const CustomAlertDialog({
+  CustomAlertDialog({
     super.key,
     required this.title,
     required this.description,
     required this.instruction,
-    required this.onPressed,
+    this.onPressed,
     required this.acionButtonTitle,
+    this.isLoading,
   });
 
   @override
@@ -45,6 +47,7 @@ class CustomAlertDialog extends StatelessWidget {
                 width: 184,
                 height: 44,
                 child: MCButton(
+                    isLoading: isLoading,
                     title: acionButtonTitle,
                     backgroundColor: Constants.blueNeon,
                     onPressed: onPressed),

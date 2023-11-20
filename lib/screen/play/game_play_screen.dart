@@ -66,6 +66,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 40),
                         child: Row(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: SizedBox(
+                                child: Image.asset(gameController
+                                    .myCharacterAvatarAssetString)),
+                          ),
                           Text(
                             "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : "${gameController.currentTurnPlayer?.name}"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
                             style: Constants.largeTextStyle,

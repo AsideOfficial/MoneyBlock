@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
@@ -144,32 +146,29 @@ class GameController extends GetxController {
     return currentRoomData?.player?[turn];
   }
 
-  double? get currentSavingInterest {
-    return _currentRoom.value?.savingRateInfo?[_currenRoundIndex.value ?? 0];
+  double get currentSavingRate {
+    return _currentRoom.value!.savingRateInfo![_currenRoundIndex.value!];
   }
 
-  double? get previousSavingInterest {
+  double get previousSavingRate {
+    return _currentRoom.value!.savingRateInfo![(_currenRoundIndex.value!) - 1];
+  }
+
+  double get currentInvestRate {
+    return currentRoomData!.investmentRateInfo![_currenRoundIndex.value!];
+  }
+
+  double get previousInvestRate {
     return _currentRoom
-        .value?.savingRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
+        .value!.investmentRateInfo![(_currenRoundIndex.value!) - 1];
   }
 
-  double? get currentInvestInterest {
-    return _currentRoom
-        .value?.investmentRateInfo?[_currenRoundIndex.value ?? 0];
+  double get currentLoanRate {
+    return _currentRoom.value!.loanRateInfo![_currenRoundIndex.value!];
   }
 
-  double? get previousInvestInterest {
-    return _currentRoom
-        .value?.investmentRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
-  }
-
-  double? get currentLoanInterest {
-    return _currentRoom.value?.loanRateInfo?[_currenRoundIndex.value ?? 0];
-  }
-
-  double? get previousLoanInterest {
-    return _currentRoom
-        .value?.loanRateInfo?[(_currenRoundIndex.value ?? 0) - 1];
+  double get previousLoanRate {
+    return _currentRoom.value!.loanRateInfo![(_currenRoundIndex.value!) - 1];
   }
 
   bool get isMyTurn {
@@ -198,6 +197,69 @@ class GameController extends GetxController {
     } else {
       return _currentRoom.value?.news?[0];
     }
+  }
+
+  int getRandomNumber(int max) {
+    Random random = Random();
+    return random.nextInt(max);
+  }
+
+  double previousRate({required GameActionType actionType}) {
+    switch (actionType) {
+      case GameActionType.saving:
+        return previousSavingRate;
+      case GameActionType.investment:
+        return previousInvestRate;
+      case GameActionType.loan:
+        return previousLoanRate;
+      case GameActionType.expend:
+        return 0;
+    }
+  }
+
+  double currentRate({required GameActionType actionType}) {
+    switch (actionType) {
+      case GameActionType.saving:
+        return currentSavingRate;
+      case GameActionType.investment:
+        return currentInvestRate;
+      case GameActionType.loan:
+        return currentLoanRate;
+      case GameActionType.expend:
+        return 0;
+    }
+  }
+
+  String characterAvatarAssetString({required int characterIndex}) {
+    String assetString = "assets/images/profile_bear.png";
+    switch (characterIndex) {
+      case 0:
+        assetString = "assets/images/profile_bear.png";
+      case 1:
+        assetString = "assets/images/profile_cow.png";
+      case 2:
+        assetString = "assets/images/profile_pig.png";
+      case 3:
+        assetString = "assets/images/profile_tiger.png";
+    }
+    return assetString;
+  }
+
+  String get myCharacterAvatarAssetString {
+    final int? myCharacterIndex =
+        currentRoomData?.player?[myIndex].characterIndex;
+    String assetString = "assets/images/profile_bear.png";
+    switch (myCharacterIndex) {
+      case 0:
+        assetString = "assets/images/profile_bear.png";
+      case 1:
+        assetString = "assets/images/profile_cow.png";
+      case 2:
+        assetString = "assets/images/profile_pig.png";
+      case 3:
+        assetString = "assets/images/profile_tiger.png";
+    }
+    return assetString;
   }
 
   // MARK: - 계산 비즈니스 로직
@@ -519,7 +581,12 @@ class GameController extends GetxController {
       userActions: [
         // cash -- invest ++
         UserAction(type: "cash", title: title, price: -(price * qty), qty: 1),
-        UserAction(type: "investment", title: title, price: price, qty: qty),
+        UserAction(
+            type: "investment",
+            title: title,
+            price: price,
+            qty: qty,
+            isItem: true),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
@@ -537,21 +604,43 @@ class GameController extends GetxController {
       userActions: [
         // cash -- loan --
         UserAction(type: "cash", title: title, price: -price, qty: 1),
-        UserAction(type: "expend", title: title, price: -price, qty: 1),
+        UserAction(
+            type: "expend", title: title, price: -price, qty: 1, isItem: true),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  Future<void> calcutateAll(int price) async {
+  Future<List<int>> calculateRound() async {
+    final int previousTotalAsset = totalAsset ?? 0;
+    //저축이자
+    final int previousShrotSaving = totalShortSaving ?? 0;
     final int shortSavingInterest =
-        totalShortSaving! * (previousSavingInterest ?? 0).toInt();
+        totalShortSaving! * (currentSavingRate) ~/ 100;
+    final int previousTotalShortSaving = totalShortSaving ?? 0;
     final int longSavingInterest =
-        (totalLongSaving! * (previousSavingInterest! + 2)).toInt();
-    final int creditLoanInterest =
-        (totalCreditLoan! * previousLoanInterest!).toInt();
+        totalLongSaving! * (currentSavingRate + 2) ~/ 100;
+
+    //대출이자
+    final int creditLoanInterest = totalCreditLoan! * currentLoanRate ~/ 100;
     final int mortgagesLoanInterest =
-        (totalMortgagesLoan! * (previousLoanInterest!) - 1).toInt();
+        totalMortgagesLoan! * (currentLoanRate - 1) ~/ 100;
+    final int totalLoanInterest = creditLoanInterest + mortgagesLoanInterest;
+    //투자이익
+    final int investmentInterest =
+        totalInvestment! * (currentInvestRate) ~/ 100;
+
+    int tax = ((totalCash! +
+                shortSavingInterest +
+                longSavingInterest -
+                -totalLoanInterest +
+                investmentInterest) *
+            0.1)
+        .toInt();
+    if (tax < 0) {
+      tax = 0;
+    }
+
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
@@ -562,7 +651,8 @@ class GameController extends GetxController {
         // 1. 예금
         // shortSaving sum -> shortSaving -- cash ++
         // shortSaving sum * 이번 라운드 이자 -> cash ++
-        UserAction(type: "cash", title: "예금", price: totalShortSaving!, qty: 1),
+        UserAction(
+            type: "cash", title: "예금 출금", price: totalShortSaving!, qty: 1),
         UserAction(
             type: "cash", title: "예금 이자", price: shortSavingInterest, qty: 1),
         UserAction(
@@ -574,7 +664,10 @@ class GameController extends GetxController {
         // 2. 적금
         // longSaving sum * 이번 라운드 이자 -> longSaving ++
         UserAction(
-            type: "longSaving", title: "이자", price: longSavingInterest, qty: 1),
+            type: "longSaving",
+            title: "적금 이자",
+            price: longSavingInterest,
+            qty: 1),
 
         // 3. 대출
         // loan sum * 이번 라운드 이자 -> cash ++
@@ -586,15 +679,29 @@ class GameController extends GetxController {
             title: "담보대출 이자",
             price: -mortgagesLoanInterest,
             qty: 1),
+        // 4. 투자
+        UserAction(
+            type: "investment",
+            title: "투자 수익",
+            price: investmentInterest,
+            qty: 1),
 
-        // 4. 세금 씨발
-        //
+        // 4. 세금
+        UserAction(
+            type: "cash", title: "$currentRound라운드 세금", price: -tax, qty: 1),
 
         // UserAction(type: "cash", title: "예금", price: -price, qty: 1),
         // UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
-    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    return [
+      previousTotalAsset,
+      (previousShrotSaving + shortSavingInterest),
+      (longSavingInterest - previousTotalShortSaving),
+      investmentInterest,
+      -totalLoanInterest,
+      -tax,
+    ];
   }
 
   GameAction get currentActionTypeModel {

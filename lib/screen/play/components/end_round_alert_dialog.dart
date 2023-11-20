@@ -16,6 +16,7 @@ class EndRoundAlertDialog extends StatefulWidget {
 }
 
 class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (controller) {
@@ -24,22 +25,35 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
         description: "${controller.currentRound - 1}라운드가 종료되었습니다.",
         instruction: "게임의 결과를 확인해보세요.",
         acionButtonTitle: "결과보기",
-        onPressed: () {
-          Get.back();
-          Get.dialog(
-            const EconomicNewsDialog(),
-            useSafeArea: false,
-            barrierDismissible: false,
-          );
-        },
+        isLoading: isLoading,
+        onPressed: isLoading
+            ? null
+            : () async {
+                setState(() {
+                  isLoading = true;
+                });
+                final previousDataList = await controller.calculateRound();
+                setState(() {
+                  isLoading = false;
+                });
+
+                Get.back();
+                Get.dialog(
+                  EconomicNewsDialog(previousDataList: previousDataList),
+                  useSafeArea: false,
+                  barrierDismissible: false,
+                );
+              },
       );
     });
   }
 }
 
 class EconomicNewsDialog extends StatefulWidget {
+  final List<int> previousDataList;
   const EconomicNewsDialog({
     super.key,
+    required this.previousDataList,
   });
 
   @override
@@ -92,24 +106,24 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                               fontSize: 16, color: Constants.cardGreen)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousSavingInterest ?? 0.0,
-                          after: controller.currentSavingInterest ?? 0.0),
+                          before: controller.previousSavingRate ?? 0.0,
+                          after: controller.currentSavingRate ?? 0.0),
                       const SizedBox(height: 10),
                       Text("대출금리",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardOrange)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousLoanInterest ?? 0.0,
-                          after: controller.currentLoanInterest ?? 0.0),
+                          before: controller.previousLoanRate ?? 0.0,
+                          after: controller.currentLoanRate ?? 0.0),
                       const SizedBox(height: 10),
                       Text("투자변동률",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardRed)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousInvestInterest ?? 0.0,
-                          after: controller.currentInvestInterest ?? 0.0),
+                          before: controller.previousInvestRate ?? 0.0,
+                          after: controller.currentInvestRate ?? 0.0),
                     ],
                   ),
                 ),
@@ -133,11 +147,11 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       const SizedBox(height: 15),
                       Row(
                         children: [
-                          Text("지난 총 잔액",
+                          Text("지난 총 자산",
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                           const Spacer(),
-                          Text("1000000원",
+                          Text("${widget.previousDataList[0].commaString}원",
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                         ],
@@ -145,43 +159,43 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 20),
-                      const AssetVariationListTile(
-                          title: "현금", variation: 100000),
+                      AssetVariationListTile(
+                          title: "현금", variation: widget.previousDataList[1]),
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 4),
-                      const AssetVariationListTile(
-                          title: "저축", variation: 300000),
+                      AssetVariationListTile(
+                          title: "저축", variation: widget.previousDataList[2]),
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 4),
-                      const AssetVariationListTile(
-                          title: "투자", variation: 500000),
+                      AssetVariationListTile(
+                          title: "투자", variation: widget.previousDataList[3]),
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 4),
-                      const AssetVariationListTile(
-                          title: "대출", variation: -500000),
+                      AssetVariationListTile(
+                          title: "대출", variation: widget.previousDataList[4]),
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 4),
-                      const AssetVariationListTile(
-                          title: "세금", variation: -200000),
+                      AssetVariationListTile(
+                          title: "세금", variation: widget.previousDataList[5]),
                       const SizedBox(height: 4),
                       Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 4),
-                      const AssetVariationListTile(
-                          title: "인센티브", variation: 400000),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
+                      // const AssetVariationListTile(
+                      //     title: "인센티브", variation: 400000),
+                      // const SizedBox(height: 4),
+                      // Container(height: 1, color: Constants.grey100),
                       const Spacer(),
                       Row(
                         children: [
-                          Text("현재 총 잔액",
+                          Text("현재 총 자산",
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                           const Spacer(),
-                          Text("${controller.totalCash?.commaString}원",
+                          Text("${controller.totalAsset?.commaString}원",
                               style: Constants.defaultTextStyle
                                   .copyWith(fontSize: 14, color: Colors.black)),
                         ],
@@ -238,8 +252,10 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                       SizedBox(
                                           width: 50,
                                           height: 50,
-                                          child: Image.asset(
-                                              "assets/images/profile_cow.png")), // TODO - 캐릭터 인덱스 연결
+                                          child: Image.asset(controller
+                                              .characterAvatarAssetString(
+                                                  characterIndex:
+                                                      player.characterIndex!))),
                                       const SizedBox(width: 10),
                                       SizedBox(
                                         width: 86,
@@ -309,7 +325,7 @@ class AssetVariationListTile extends StatelessWidget {
         Text("${(variation >= 0) ? "+" : ""}${variation.commaString}원",
             style: Constants.defaultTextStyle.copyWith(
                 fontSize: 14,
-                color: (variation < 0)
+                color: (variation >= 0)
                     ? Constants.accentRed
                     : Constants.accentBlue)),
       ],
