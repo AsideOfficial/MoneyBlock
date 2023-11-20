@@ -30,6 +30,8 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
               'https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app/')
       .ref('Room/${Get.arguments}');
 
+  bool isLoading = false;
+
   Widget variableColumn({
     required String rateType,
     required String label,
@@ -82,6 +84,16 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    FirebaseService.exitRoom(
+      roomId: roomID,
+      uid: FirebaseAuth.instance.currentUser!.uid,
+    );
+
+    super.dispose();
   }
 
   @override
@@ -156,12 +168,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                         child: Row(
                           children: [
                             Bounceable(
-                              onTap: () async {
-                                await FirebaseService.exitRoom(
-                                  roomId: roomID,
-                                  uid: FirebaseAuth.instance.currentUser!.uid,
-                                );
-
+                              onTap: () {
                                 Get.back();
                               },
                               child: SizedBox(
@@ -304,18 +311,25 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                           const Spacer(),
                           Bounceable(
                             onTap: (roomData.player![0].uid !=
-                                    FirebaseAuth.instance.currentUser?.uid)
-                                ? () {
-                                    FirebaseService.readyToggle(
+                                        FirebaseAuth
+                                            .instance.currentUser?.uid &&
+                                    !isLoading)
+                                ? () async {
+                                    setState(() => isLoading = true);
+                                    await FirebaseService.readyToggle(
                                         roomId: roomID,
                                         uid: FirebaseAuth
                                             .instance.currentUser!.uid);
+                                    setState(() => isLoading = false);
                                   }
                                 : (roomData.player!.length > 1 &&
                                         !participantsState.values
                                             .toList()
-                                            .contains(false))
+                                            .contains(false) &&
+                                        !isLoading)
                                     ? () async {
+                                        setState(() => isLoading = true);
+
                                         final myIndex = participantsState.keys
                                             .toList()
                                             .indexOf(FirebaseAuth
@@ -323,12 +337,19 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
 
                                         await FirebaseService.startGame(
                                             roomId: roomID);
-                                        Get.to(const GamePlayScreen(),
-                                            binding: BindingsBuilder(() {
-                                          Get.put(GameController(
-                                              roomId: roomID,
-                                              myIndex: myIndex));
-                                        }));
+
+                                        setState(() => isLoading = false);
+
+                                        Get.to(
+                                          const GamePlayScreen(),
+                                          binding: BindingsBuilder(() {
+                                            Get.put(
+                                              GameController(
+                                                  roomId: roomID,
+                                                  myIndex: myIndex),
+                                            );
+                                          }),
+                                        );
                                       }
                                     : null,
                             child: Image.asset(

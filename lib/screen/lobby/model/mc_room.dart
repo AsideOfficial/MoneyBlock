@@ -1,20 +1,20 @@
 class WaitingRoom {
   WaitingRoom({
     required this.roomId,
-    required this.roomData,
+    this.roomData,
   });
   late final String roomId;
-  late final RoomData roomData;
+  late final RoomData? roomData;
 
   WaitingRoom.fromJson(Map<String, dynamic> json) {
     roomId = json['roomId'];
-    roomData = RoomData.fromJson(json['data']);
+    roomData = json['data'] != null ? RoomData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['roomId'] = roomId;
-    data['data'] = roomData.toJson();
+    data['data'] = roomData?.toJson();
     return data;
   }
 
@@ -60,7 +60,7 @@ class RoomData {
     isEnd = json['isEnd'];
     roundIndex = json['roundIndex'];
     turnIndex = json['turnIndex'];
-    player = List.from(json['player'] ?? [])
+    player = List.from(json['player'])
         .map((e) => Player.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     theme = json['theme'];

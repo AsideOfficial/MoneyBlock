@@ -27,6 +27,8 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
   double loanRate = 3.0;
   double changeRate = 10.0;
 
+  bool isLoading = false;
+
   double generateRandomDouble({required double min, required double max}) {
     Random random = Random();
     double minValue = min;
@@ -313,8 +315,11 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                       const Spacer(),
                       Bounceable(
                         onTap: (gameMode == GameMode.officeWorker &&
-                                teamMode == TeamMode.solo)
+                                teamMode == TeamMode.solo &&
+                                !isLoading)
                             ? () async {
+                                setState(() => isLoading = true);
+
                                 final roomData =
                                     await FirebaseService.createRoom(
                                   savingRate: savingRate,
@@ -327,6 +332,8 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                       .profileImageIndex,
                                 );
 
+                                setState(() => isLoading = false);
+
                                 if (roomData != null) {
                                   Get.offAndToNamed(
                                     '/waiting_room',
@@ -336,7 +343,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                               }
                             : null,
                         child: Image.asset(
-                          'assets/components/m_create_room_button${(gameMode == GameMode.officeWorker && teamMode == TeamMode.solo) ? '' : '_inactive'}.png',
+                          'assets/components/m_create_room_button${(gameMode == GameMode.officeWorker && teamMode == TeamMode.solo && !isLoading) ? '' : '_inactive'}.png',
                           width: 170,
                           height: 50,
                         ),
