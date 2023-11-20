@@ -31,6 +31,8 @@ class _SettingDialogState extends State<SettingDialog> {
   late double loanRate = widget.loanRate;
   late double changeRate = widget.changeRate;
 
+  bool isLoading = false;
+
   Widget variableSettingBox() {
     return Container(
       width: 316,
@@ -180,16 +182,22 @@ class _SettingDialogState extends State<SettingDialog> {
                 width: 184,
                 height: 44,
                 title: "확인",
-                backgroundColor: Constants.blueNeon,
-                onPressed: () async {
-                  await FirebaseService.updateRateSetting(
-                    roomId: widget.roomID,
-                    savigRate: savingRate,
-                    loanRate: loanRate,
-                    investmentRate: changeRate,
-                  );
-                  Get.back();
-                },
+                backgroundColor: isLoading ? Colors.grey : Constants.blueNeon,
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() => isLoading = true);
+
+                        await FirebaseService.updateRateSetting(
+                          roomId: widget.roomID,
+                          savigRate: savingRate,
+                          loanRate: loanRate,
+                          investmentRate: changeRate,
+                        );
+
+                        setState(() => isLoading = false);
+                        Get.back();
+                      },
               ),
             ],
           ),

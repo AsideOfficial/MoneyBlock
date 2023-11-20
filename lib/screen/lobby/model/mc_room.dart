@@ -7,7 +7,7 @@ class WaitingRoom {
   late final RoomData? roomData;
 
   WaitingRoom.fromJson(Map<String, dynamic> json) {
-    roomId = json['roomId'];
+    roomId = json['roomId'] ?? '';
     roomData = json['data'] != null ? RoomData.fromJson(json['data']) : null;
   }
 
