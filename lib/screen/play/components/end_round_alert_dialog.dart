@@ -362,8 +362,8 @@ class NewRoundDialog extends StatefulWidget {
 }
 
 class _NewRoundDialogState extends State<NewRoundDialog> {
-  int incentive = 2400000;
-
+  int incentive = 400000;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -384,7 +384,9 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                 Text("라운드 ${controller.currentRound}가 시작됩니다.",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
                 const SizedBox(height: 10),
-                Text("+ ${incentive.commaString} 원",
+                Text("월급: + 2,000,000 원",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
+                Text("인센티브: + ${controller.myIncentive.commaString} 원",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 22)),
                 const SizedBox(height: 10),
                 Text("플레이어는 월급과 인센티브를 받습니다.",
@@ -396,13 +398,20 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                   child: MCButton(
                     title: "확인",
                     backgroundColor: Constants.blueNeon,
-                    onPressed: () {
-                      Get.back();
-                      Get.dialog(const NewsDialog(),
-                          barrierDismissible: false,
-                          useSafeArea: false,
-                          name: "뉴스");
-                    },
+                    isLoading: isLoading,
+                    onPressed: isLoading
+                        ? null
+                        : () async {
+                            setState(() => isLoading = true);
+                            await controller.salaryAndIncentive();
+                            setState(() => isLoading = false);
+
+                            Get.back();
+                            Get.dialog(const NewsDialog(),
+                                barrierDismissible: false,
+                                useSafeArea: false,
+                                name: "뉴스");
+                          },
                   ),
                 ),
               ],

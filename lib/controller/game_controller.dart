@@ -201,6 +201,26 @@ class GameController extends GetxController {
   }
 
   // MARK: - 계산 비즈니스 로직
+  int get myRanking {
+    //TODO - 내 순위 계산식
+    return 3;
+  }
+
+  int get myIncentive {
+    int incentive = 0;
+    switch (myRanking) {
+      case 1:
+        incentive = 400000;
+      case 2:
+        incentive = 300000;
+      case 3:
+        incentive = 200000;
+      case 4:
+        incentive = 100000;
+    }
+    return incentive;
+  }
+
   int? get totalCash {
     // 리스트를 순회하면서 price 합산
     final myCashList = _currentRoom.value?.player?[myIndex].cash;
@@ -382,6 +402,20 @@ class GameController extends GetxController {
       userActions: [
         // cash -- shortSaving ++
         UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
+      ],
+    ));
+  }
+
+  //정상동작 확인 ✅
+  Future<void> salaryAndIncentive() async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- shortSaving ++
+        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
+        UserAction(type: "cash", title: "인센티브", price: myIncentive, qty: 1),
       ],
     ));
   }

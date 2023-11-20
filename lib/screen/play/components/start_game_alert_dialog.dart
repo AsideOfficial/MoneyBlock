@@ -113,6 +113,10 @@ class _FirstNewsDialogState extends State<FirstNewsDialog> {
                     title: "확인",
                     backgroundColor: Constants.blueNeon,
                     onPressed: () {
+                          setState(() => isLoading = true);
+                            await gameController.firstSalary();
+                            setState(() => isLoading = false);
+                            Get.back();
                       Get.back();
                       Get.dialog(
                         const NewsDialog(),
