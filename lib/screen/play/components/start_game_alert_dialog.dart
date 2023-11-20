@@ -100,7 +100,7 @@ class _FirstNewsDialogState extends State<FirstNewsDialog> {
               Text("뉴스를 보며,",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const SizedBox(height: 6),
-              Text("자신의 증감을 예측해서",
+              Text("자산의 증감을 예측해서",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const SizedBox(height: 6),
               Text("게임을 플레이해보세요.",
