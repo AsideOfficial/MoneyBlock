@@ -23,13 +23,20 @@ class GameActionDialog extends StatefulWidget {
 
 class _GameActionDialogState extends State<GameActionDialog> {
   double cash = 1000000;
-  double currentAmount = 700000;
+  double currentAmount = 0;
+  double currentLoanAmount = 0;
 
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (gameController) {
       final model = gameController.currentActionTypeModel;
       final specificActionModel = gameController.curretnSpecificActionModel;
+
+      if (currentLoanAmount < gameController.totalCash! / 2 ||
+          currentLoanAmount > gameController.totalCash! * 2) {
+        currentLoanAmount = gameController.totalCash! / 2;
+      }
+
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -571,6 +578,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 ),
               ),
             )
+          //MARK: - loan 대출 활동
           else
             MCContainer(
               borderRadius: 20,
@@ -592,7 +600,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                 "",
                             style: Constants.titleTextStyle),
                         const SizedBox(width: 12),
-                        Text("금리: 4%",
+                        Text(
+                            "금리: ${gameController.curretnSpecificActionModel?.title == "신용대출" ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
                             style: Constants.defaultTextStyle
                                 .copyWith(fontSize: 18)),
                       ],
@@ -610,7 +619,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   style: Constants.defaultTextStyle
                                       .copyWith(fontSize: 16)),
                               const SizedBox(height: 4),
-                              amountTile(amount: cash),
+                              amountTile(
+                                  amount: gameController.totalCash!.toDouble()),
                               const SizedBox(height: 10),
                               Row(
                                 children: [
@@ -629,9 +639,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                                 const Color(0xFF8A3200),
                                           ),
                                           child: SfSlider(
-                                            value: currentAmount,
-                                            min: cash / 2,
-                                            max: cash * 2,
+                                            value: currentLoanAmount,
+                                            min: gameController.totalCash! / 2,
+                                            max: gameController.totalCash! * 2,
                                             stepSize: 10000,
                                             enableTooltip: false,
                                             showLabels: false,
@@ -659,7 +669,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             ),
                                             onChanged: (value) {
                                               setState(() {
-                                                currentAmount = value;
+                                                currentLoanAmount = value;
                                               });
 
                                               debugPrint(value.toString());
@@ -682,7 +692,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       ],
                                     ),
                                   ),
-                                  Text("${((currentAmount / cash))}배",
+                                  Text(
+                                      "${((currentLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
                                       style: Constants.defaultTextStyle
                                           .copyWith(fontSize: 18)),
                                 ],
@@ -710,7 +721,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         style: Constants.defaultTextStyle),
                                     const SizedBox(width: 8),
                                     amountTile(
-                                        amount: currentAmount, width: 100),
+                                        amount: currentLoanAmount, width: 100),
                                   ],
                                 ),
                                 const SizedBox(height: 2),
@@ -729,7 +740,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         "${gameController.curretnSpecificActionModel?.title}",
                                     subTitle:
                                         "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                    perPrice: currentAmount.toInt(),
+                                    perPrice: currentLoanAmount.toInt(),
                                     actionTitle: "대출하기",
                                     primaryActionColor: Constants.cardOrange,
                                     onPurchase: (count) async {
@@ -737,10 +748,18 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       final item = gameController
                                           .curretnSpecificActionModel;
                                       if (item == null) return;
-                                      await gameController.investAction(
+                                      if (item.title == "신용대출") {
+                                        await gameController.creditLoanAction(
                                           title: item.title,
-                                          price: currentAmount.toInt(),
-                                          qty: count);
+                                          price: currentLoanAmount.toInt(),
+                                        );
+                                      } else {
+                                        await gameController
+                                            .mortgagesLoanAction(
+                                          title: item.title,
+                                          price: currentLoanAmount.toInt(),
+                                        );
+                                      }
 
                                       gameController.isActionChoicing = false;
                                     },
