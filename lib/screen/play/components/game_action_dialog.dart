@@ -49,16 +49,19 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 strokePadding: const EdgeInsets.all(5),
                 width: 170,
                 height: 250,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Center(
-                    child: ListView.builder(
+                // alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: model.actions.length,
+                      // padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: const EdgeInsets.all(2.0),
+                          padding: const EdgeInsets.all(2.5),
                           child: ActionChoiceButton(
                             title: model.actions[index].title,
                             onTap: () {
@@ -68,7 +71,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                         );
                       },
                     ),
-                  ),
+                  ],
                 ),
               ),
               Transform.translate(
