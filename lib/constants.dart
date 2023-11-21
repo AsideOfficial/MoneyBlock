@@ -24,7 +24,7 @@ class Constants {
   static Color cardGreenBlue = const Color(0xFF00AA96);
   static Color cardPink = const Color(0xFFF65CA9);
 
-  static Color background = const Color(0xFFC4BBFF);
+  static Color background = const Color(0xFFEBE8FE);
 
   // Theme
   static ThemeData theme = ThemeData(
@@ -87,6 +87,12 @@ class Constants {
     colors: [Color(0xFF6322EE), Color(0xFF8572FF)],
   );
 
+  static const LinearGradient assetSheetGradient = LinearGradient(
+    begin: Alignment(0.00, 1.00),
+    end: Alignment(0, -1),
+    colors: [Color(0xFFBEAEFF), Color(0xFFD3C8FE)],
+  );
+
   static const LinearGradient greyGradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
@@ -96,6 +102,12 @@ class Constants {
   static const LinearGradient grey00Gradient = LinearGradient(
     begin: Alignment(0, 1),
     end: Alignment(0.00, -1.00),
+    colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
+  );
+
+  static const LinearGradient grey00BottomGradient = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
     colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
   );
 

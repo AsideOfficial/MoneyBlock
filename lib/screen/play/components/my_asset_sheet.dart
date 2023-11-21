@@ -27,7 +27,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
           height: size.height * 2,
           width: size.width,
           decoration: const BoxDecoration(
-              gradient: Constants.purpleGradient,
+              gradient: Constants.assetSheetGradient,
               // boxShadow: [
               //   BoxShadow(
               //     color: const Color(0x4C000000),
@@ -49,7 +49,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         Text(
                           "나의 자산현황",
                           style: Constants.largeTextStyle
-                              .copyWith(color: Colors.white),
+                              .copyWith(color: const Color(0xFF583590)),
                         ),
                         const Spacer(),
                         AssetBar(
@@ -80,10 +80,15 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MCContainer(
-                          borderRadius: 20,
-                          gradient: Constants.grey00Gradient,
-                          strokePadding: const EdgeInsets.all(0.4),
+                        Container(
+                          decoration: ShapeDecoration(
+                            gradient: Constants.grey00BottomGradient,
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  width: 2, color: Colors.white),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
                           width: 220,
                           height: 270,
                           child: Padding(
@@ -141,9 +146,14 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         Expanded(
                           child: Container(
                             height: 300,
-                            decoration: BoxDecoration(
+                            decoration: ShapeDecoration(
+                              gradient: Constants.grey00BottomGradient,
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    width: 2, color: Colors.white),
                                 borderRadius: BorderRadius.circular(20),
-                                gradient: Constants.grey00Gradient),
+                              ),
+                            ),
                             child: SingleChildScrollView(
                               child: SizedBox(
                                 height: 1000,

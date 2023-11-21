@@ -203,35 +203,45 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           );
                         },
                       ),
-                      ActionButton(
-                        isMyTurn: true,
-                        title: "랜덤게임",
-                        backgroundColor: Constants.cardPink,
-                        titleColor: const Color(0xFFA90054),
-                        assetPath: "assets/icons/random_game.png",
-                        onPressed: () async {
-                          // Get.dialog(const FinalResultDialog());
-                          // await CloudFunctionService.userAction(
-                          //     roomData: RoomData(
-                          //         roomId: "960877",
-                          //         playerIndex: 1,
-                          //         userActions: [
-                          //       UserAction(
-                          //           type: "shortSaving",
-                          //           title: "예금",
-                          //           price: 50000,
-                          //           qty: 1),
-                          //       UserAction(
-                          //           type: "cash",
-                          //           title: "예금",
-                          //           price: -50000,
-                          //           qty: 1),
-                          //     ]));
-                        },
+                      // ActionButton(
+                      //   isMyTurn: true,
+                      //   title: "랜덤게임",
+                      //   backgroundColor: Constants.cardPink,
+                      //   titleColor: const Color(0xFFA90054),
+                      //   assetPath: "assets/icons/random_game.png",
+                      //   onPressed: () async {
+                      //     // Get.dialog(const FinalResultDialog());
+                      //     // await CloudFunctionService.userAction(
+                      //     //     roomData: RoomData(
+                      //     //         roomId: "960877",
+                      //     //         playerIndex: 1,
+                      //     //         userActions: [
+                      //     //       UserAction(
+                      //     //           type: "shortSaving",
+                      //     //           title: "예금",
+                      //     //           price: 50000,
+                      //     //           qty: 1),
+                      //     //       UserAction(
+                      //     //           type: "cash",
+                      //     //           title: "예금",
+                      //     //           price: -50000,
+                      //     //           qty: 1),
+                      //     //     ]));
+                      //   },
+                      // ),
+                      const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: SizedBox(
+                          width: 150,
+                          height: 90,
+                        ),
                       ),
-                      const SizedBox(
-                        width: 150,
-                        height: 90,
+                      const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: SizedBox(
+                          width: 150,
+                          height: 90,
+                        ),
                       )
                     ],
                   )
@@ -268,7 +278,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           AnimatedPositioned(
               curve: Curves.decelerate,
               duration: const Duration(milliseconds: 400),
-              top: !isSwipeUp ? size.height * 0.04 : size.height * 0.85,
+              top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
               child: GestureDetector(
                   onPanEnd: (details) {
                     if (details.velocity.pixelsPerSecond.dy > -100) {

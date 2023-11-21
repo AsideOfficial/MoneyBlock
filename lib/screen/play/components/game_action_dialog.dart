@@ -537,6 +537,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       final item = gameController
                                           .curretnSpecificActionModel;
                                       if (item == null) return;
+                                      if (gameController.totalCash! <
+                                          (currentAmount)) return;
                                       if (item.title == "예금") {
                                         await gameController.shortSavingAction(
                                           title: item.title,
