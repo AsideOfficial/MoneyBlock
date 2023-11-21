@@ -103,16 +103,19 @@ class RoomData {
 class Player {
   Player({
     required this.uid,
+    required this.name,
     required this.characterIndex,
     required this.isReady,
   });
 
   late final String uid;
+  late final String name;
   late final int characterIndex;
   late final bool isReady;
 
   Player.fromJson(Map<String, dynamic> json) {
     uid = json['uid'];
+    name = json['name'];
     characterIndex = json['characterIndex'];
     isReady = json['isReady'];
   }
@@ -120,6 +123,7 @@ class Player {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['uid'] = uid;
+    data['name'] = name;
     data['characterIndex'] = characterIndex;
     data['isReady'] = isReady;
     return data;

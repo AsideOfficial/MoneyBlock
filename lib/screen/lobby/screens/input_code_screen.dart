@@ -145,6 +145,10 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
                             final result = await FirebaseService.enterRoom(
                               roomId: codeController.text,
                               uid: FirebaseAuth.instance.currentUser!.uid,
+                              name: Get.find<MCUserController>()
+                                  .user!
+                                  .value
+                                  .nickNm,
                               characterIndex: Get.find<MCUserController>()
                                   .user!
                                   .value

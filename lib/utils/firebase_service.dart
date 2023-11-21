@@ -43,6 +43,7 @@ class FirebaseService {
     required double loanRate,
     required double investmentRate,
     required String uid,
+    required String name,
     required int characterIndex,
   }) async {
     final uri = defaultUrl(method: 'createroom');
@@ -53,6 +54,7 @@ class FirebaseService {
       'investmentRate': investmentRate,
       'owner': {
         'uid': uid,
+        'name': name,
         'characterIndex': characterIndex,
       }
     });
@@ -80,6 +82,7 @@ class FirebaseService {
   static Future<WaitingRoom?> enterRoom({
     required String roomId,
     required String uid,
+    required String name,
     required int characterIndex,
   }) async {
     final uri = defaultUrl(method: 'enterroom');
@@ -88,6 +91,7 @@ class FirebaseService {
       'roomId': roomId,
       'user': {
         'uid': uid,
+        'name': name,
         'characterIndex': characterIndex,
       }
     });
