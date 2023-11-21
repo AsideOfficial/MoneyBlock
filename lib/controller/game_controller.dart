@@ -780,6 +780,19 @@ class GameController extends GetxController {
     }
   }
 
+  String get currentDisabledAssetString {
+    switch (_curretnActionType.value) {
+      case GameActionType.saving:
+        return "assets/components/button_square_green_disabled.png";
+      case GameActionType.investment:
+        return "assets/icons/red_button_disabled.png";
+      case GameActionType.expend:
+        return "assets/icons/blue_button_disabled.png";
+      case GameActionType.loan:
+        return "assets/components/button_square_orange_disabled.png";
+    }
+  }
+
   String get currentBackButtonAssetString {
     switch (_curretnActionType.value) {
       case GameActionType.saving:

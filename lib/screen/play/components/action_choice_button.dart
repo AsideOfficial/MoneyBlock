@@ -5,24 +5,32 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 
-class ActionChoiceButton extends StatelessWidget {
+// ignore: must_be_immutable
+class ActionChoiceButton extends StatefulWidget {
   final String title;
   final Function()? onTap;
   final String? buttonString;
-  // bool? isSelected;
-  const ActionChoiceButton({
+  bool? isSelected;
+
+  ActionChoiceButton({
     super.key,
     required this.title,
     this.onTap,
     this.buttonString,
+    this.isSelected,
   });
 
+  @override
+  State<ActionChoiceButton> createState() => _ActionChoiceButtonState();
+}
+
+class _ActionChoiceButtonState extends State<ActionChoiceButton> {
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (gameController) {
       return Bounceable(
         duration: const Duration(seconds: 1),
-        onTap: onTap,
+        onTap: widget.onTap,
         child: SizedBox(
           width: 110,
           height: (gameController.currentActionType == GameActionType.saving ||
@@ -32,10 +40,15 @@ class ActionChoiceButton extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image.asset(gameController.currentAssetString),
+              if (widget.isSelected == null)
+                Image.asset(gameController.currentAssetString)
+              else
+                Image.asset(widget.isSelected!
+                    ? gameController.currentAssetString
+                    : gameController.currentDisabledAssetString),
               Center(
                 child: Text(
-                  title,
+                  widget.title,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 20),
                 ),
               )

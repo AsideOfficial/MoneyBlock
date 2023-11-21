@@ -60,9 +60,20 @@ class _GameActionDialogState extends State<GameActionDialog> {
                       // padding: const EdgeInsets.symmetric(vertical: 12),
                       padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
+                        final specificAction = model.actions[index];
+                        bool? isSelected = false;
+
+                        if (specificAction.title ==
+                            gameController.curretnSpecificActionModel?.title) {
+                          isSelected = true;
+                        } else {
+                          isSelected = false;
+                        }
+
                         return Padding(
                           padding: const EdgeInsets.all(2.5),
                           child: ActionChoiceButton(
+                            isSelected: isSelected,
                             title: model.actions[index].title,
                             onTap: () {
                               gameController.specificActionButtonTap(index);
