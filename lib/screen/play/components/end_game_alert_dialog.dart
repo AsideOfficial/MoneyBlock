@@ -270,6 +270,35 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                           const SizedBox(width: 10),
                         ],
                       ),
+                    const SizedBox(
+                      height: 7,
+                    ),
+                    Bounceable(
+                      onTap: () {
+                        Get.back();
+                        Get.back();
+                      },
+                      child: SizedBox(
+                        width: 230,
+                        height: 50,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              "assets/components/continue_button.png",
+                              fit: BoxFit.cover,
+                            ),
+                            Center(
+                              child: Text("확인",
+                                  style: Constants.largeTextStyle
+                                      .copyWith(fontSize: 22)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    )
                   ],
                 ),
               );
