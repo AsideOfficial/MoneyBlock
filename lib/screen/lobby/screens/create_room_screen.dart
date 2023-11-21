@@ -328,6 +328,10 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                                   loanRate: loanRate,
                                   investmentRate: changeRate,
                                   uid: FirebaseAuth.instance.currentUser!.uid,
+                                  name: Get.find<MCUserController>()
+                                      .user!
+                                      .value
+                                      .nickNm,
                                   characterIndex: Get.find<MCUserController>()
                                       .user!
                                       .value
