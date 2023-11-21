@@ -161,23 +161,140 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                   color: Constants.dark100),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 140,
-                                        width: 600,
-                                        child: ListView.builder(
-                                          controller: ScrollController(
-                                              initialScrollOffset: 30),
-                                          shrinkWrap: true,
-                                          itemCount: savingModel
-                                              .actions[0].items.length,
-                                          scrollDirection: Axis.horizontal,
-                                          itemBuilder: (context, index) {
-                                            return GameItemCard(
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 28),
+                                        child: Row(
+                                          children: [
+                                            SavingCard(
                                                 accentColor:
                                                     Constants.cardGreen,
-                                                item: savingModel
-                                                    .actions[0].items[index]);
-                                          },
+                                                title: "예금",
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 6,
+                                                          left: 8,
+                                                          bottom: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Row(
+                                                        children: [Spacer()],
+                                                      ),
+                                                      Text(
+                                                        "예금잔고",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 12,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "${(gameController.totalShortSaving)?.commaString} 원",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 16,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const Row(
+                                                        children: [Spacer()],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        "예상이자 (턴마다)",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 12,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "${(gameController.totalShortSaving! * gameController.currentSavingRate.toInt() ~/ 100).commaString} 원",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 16,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )),
+                                            const SizedBox(width: 10),
+                                            SavingCard(
+                                                accentColor:
+                                                    Constants.cardGreen,
+                                                title: "적금",
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 6,
+                                                          left: 8,
+                                                          bottom: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Row(
+                                                        children: [Spacer()],
+                                                      ),
+                                                      Text(
+                                                        "적금잔고",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 12,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "${gameController.totalLongSaving?.commaString} 원",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 16,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const Row(
+                                                        children: [Spacer()],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        "예상이자 (라운드 마다)",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 12,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "${(gameController.totalLongSaving! * (gameController.currentSavingRate.toInt() + 2) ~/ 100 * 3).commaString} 원",
+                                                        style: Constants
+                                                            .defaultTextStyle
+                                                            .copyWith(
+                                                                fontSize: 16,
+                                                                color: Constants
+                                                                    .black),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )),
+                                            const Spacer(),
+                                          ],
                                         ),
                                       ),
                                       Padding(

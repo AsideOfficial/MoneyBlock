@@ -4,6 +4,7 @@ class Constants {
   static String appName = 'Money Cycle';
 
   //MARK: - Color
+  static Color black = const Color(0xFF303030);
   static Color grey100 = const Color(0xFF8C8C8C);
   static Color grey03 = const Color(0xFF8C8C8C);
   static Color dark100 = const Color(0xFF6A6A6A);

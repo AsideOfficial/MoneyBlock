@@ -138,6 +138,8 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                 Bounceable(
                     onTap: () {
                       Get.back();
+                      Get.dialog(const FinalResultDialog(),
+                          barrierDismissible: false, useSafeArea: false);
                     },
                     child: SizedBox(
                       width: 110,

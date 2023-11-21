@@ -151,7 +151,12 @@ class GameController extends GetxController {
   }
 
   double get previousSavingRate {
-    return _currentRoom.value!.savingRateInfo![(_currenRoundIndex.value!) - 1];
+    if (_currenRoundIndex.value == 0) {
+      return 0;
+    } else {
+      return _currentRoom
+          .value!.savingRateInfo![(_currenRoundIndex.value!) - 1];
+    }
   }
 
   double get currentInvestRate {
@@ -159,8 +164,12 @@ class GameController extends GetxController {
   }
 
   double get previousInvestRate {
-    return _currentRoom
-        .value!.investmentRateInfo![(_currenRoundIndex.value!) - 1];
+    if (_currenRoundIndex.value == 0) {
+      return 0;
+    } else {
+      return _currentRoom
+          .value!.investmentRateInfo![(_currenRoundIndex.value!) - 1];
+    }
   }
 
   double get currentLoanRate {
@@ -168,7 +177,11 @@ class GameController extends GetxController {
   }
 
   double get previousLoanRate {
-    return _currentRoom.value!.loanRateInfo![(_currenRoundIndex.value!) - 1];
+    if (_currenRoundIndex.value == 0) {
+      return 0;
+    } else {
+      return _currentRoom.value!.loanRateInfo![(_currenRoundIndex.value!) - 1];
+    }
   }
 
   bool get isMyTurn {
@@ -616,10 +629,10 @@ class GameController extends GetxController {
     //저축이자
     final int previousShrotSaving = totalShortSaving ?? 0;
     final int shortSavingInterest =
-        totalShortSaving! * (currentSavingRate) ~/ 100;
+        totalShortSaving! * (currentSavingRate) ~/ 100 * 3;
     final int previousTotalShortSaving = totalShortSaving ?? 0;
     final int longSavingInterest =
-        totalLongSaving! * (currentSavingRate + 2) ~/ 100;
+        totalLongSaving! * (currentSavingRate + 2) ~/ 100 * 3;
 
     //대출이자
     final int creditLoanInterest = totalCreditLoan! * currentLoanRate ~/ 100;

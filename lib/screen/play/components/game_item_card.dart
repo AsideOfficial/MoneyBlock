@@ -85,3 +85,66 @@ class GameItemCard extends StatelessWidget {
     );
   }
 }
+
+class SavingCard extends StatelessWidget {
+  const SavingCard({
+    super.key,
+    this.accentColor,
+    required this.child,
+    required this.title,
+  });
+
+  final String title;
+  final Color? accentColor;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10, top: 1, bottom: 4),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        width: 140,
+        height: 148,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+                width: 1,
+                color: Colors.white,
+                strokeAlign: BorderSide.strokeAlignOutside),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x4C000000),
+              blurRadius: 6,
+              offset: Offset(3, 3),
+              spreadRadius: 1,
+            )
+          ],
+        ),
+        child: Column(children: [
+          Container(
+            clipBehavior: Clip.hardEdge,
+            height: 42,
+            decoration: BoxDecoration(color: Constants.cardGreen),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title,
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 94,
+            child: child,
+          )
+        ]),
+      ),
+    );
+  }
+}

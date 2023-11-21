@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const LobbyScreen();
             } else {
-              return const StartScreen();
+              return const TestScreen();
             }
           }),
         ),
