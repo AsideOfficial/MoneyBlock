@@ -123,6 +123,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   )
                 ],
               ),
+              const SizedBox(
+                height: 8,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
