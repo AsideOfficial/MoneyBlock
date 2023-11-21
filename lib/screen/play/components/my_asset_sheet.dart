@@ -73,7 +73,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                       ],
                     ),
                     const SizedBox(
-                      height: 12,
+                      height: 18,
                     ),
 
                     //MARK :- 보유 자산 현황
@@ -99,42 +99,48 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                               children: [
                                 Text("보유 자산",
                                     style: Constants.titleTextStyle
-                                        .copyWith(color: Constants.dark100)),
+                                        .copyWith(color: Constants.black)),
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Text("돈으로 바꿀 수 있는 재산",
+                                    style: Constants.largeTextStyle.copyWith(
+                                        color: Constants.black, fontSize: 16)),
                                 const Spacer(),
                                 AssetListTile(
                                     title: "현금",
                                     price: gameController.totalCash),
                                 const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                    height: 1, color: const Color(0xFFC5C5C5)),
                                 const SizedBox(height: 10),
                                 AssetListTile(
                                     title: "투자",
                                     price: gameController.totalInvestment),
                                 const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                    height: 1, color: const Color(0xFFC5C5C5)),
                                 const SizedBox(height: 10),
                                 AssetListTile(
                                     title: "저축",
                                     price: gameController.totalSaving),
                                 const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                    height: 1, color: const Color(0xFFC5C5C5)),
                                 const SizedBox(height: 10),
                                 AssetListTile(
                                     title: "대출",
                                     price: -(gameController.totalLoan ?? 0)),
                                 const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                    height: 1, color: const Color(0xFFC5C5C5)),
                                 const SizedBox(height: 10),
                                 AssetListTile(
                                     title: "총",
                                     price: gameController.totalAsset),
                                 const SizedBox(height: 10),
                                 Container(
-                                    height: 1, color: const Color(0xFFD9D9D9)),
+                                    height: 1, color: const Color(0xFFC5C5C5)),
                                 const SizedBox(height: 6),
                               ],
                             ),
@@ -676,11 +682,11 @@ class AssetListTile extends StatelessWidget {
       children: [
         Text(title,
             style: Constants.defaultTextStyle
-                .copyWith(fontSize: 14, color: Constants.dark100)),
+                .copyWith(fontSize: 14, color: Constants.black)),
         const Spacer(),
         Text("${(price ?? 0).commaString}원",
             style: Constants.defaultTextStyle
-                .copyWith(fontSize: 14, color: Constants.dark100))
+                .copyWith(fontSize: 14, color: Constants.black))
       ],
     );
   }

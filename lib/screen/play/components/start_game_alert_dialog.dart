@@ -115,7 +115,7 @@ class _FirstNewsDialogState extends State<FirstNewsDialog> {
                     onPressed: () {
                       Get.back();
                       Get.dialog(
-                        const NewsDialog(),
+                        NewsDialog(),
                         useSafeArea: false,
                       );
                     }),

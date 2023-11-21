@@ -422,7 +422,7 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                             await controller.salaryAndIncentive();
                             setState(() => isLoading = false);
                             Get.back();
-                            Get.dialog(const NewsDialog(),
+                            Get.dialog(NewsDialog(),
                                 barrierDismissible: false,
                                 useSafeArea: false,
                                 name: "뉴스");
@@ -439,8 +439,10 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
 }
 
 class NewsDialog extends StatefulWidget {
-  const NewsDialog({
+  String? actionTitle;
+  NewsDialog({
     super.key,
+    this.actionTitle = "이어서 플레이",
   });
 
   @override
@@ -527,7 +529,7 @@ class _NewsDialogState extends State<NewsDialog> {
                                   height: 50,
                                   child: Image.asset(
                                       "assets/components/continue_button.png")),
-                              Text("이어서 플레이",
+                              Text(widget.actionTitle ?? "",
                                   style: Constants.titleTextStyle
                                       .copyWith(fontSize: 22)),
                             ],

@@ -85,7 +85,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     flex: 530,
                     child: GestureDetector(
                       onTap: () {
-                        Get.dialog(const NewsDialog(), useSafeArea: false);
+                        Get.dialog(NewsDialog(actionTitle: "닫기"),
+                            useSafeArea: false);
                       },
                       child: Container(
                         height: 60,
