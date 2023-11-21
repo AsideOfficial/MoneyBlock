@@ -229,6 +229,7 @@ class _QRScannerState extends State<QRScanner> {
     final result = await FirebaseService.enterRoom(
       roomId: roomCode,
       uid: FirebaseAuth.instance.currentUser!.uid,
+      name: Get.find<MCUserController>().user!.value.nickNm,
       characterIndex:
           Get.find<MCUserController>().user!.value.profileImageIndex,
     );
