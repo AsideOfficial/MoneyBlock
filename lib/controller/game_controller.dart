@@ -136,6 +136,17 @@ class GameController extends GetxController {
 
   //MARK: - UI 비즈니스 로직
 
+  List<UserAction>? get myInvestmentItems {
+    final list = currentRoomData?.player?[myIndex].investment
+        ?.where((element) => element.isItem == true)
+        .toList();
+    if (list != null) {
+      return list;
+    } else {
+      return null;
+    }
+  }
+
   Player? get currentTurnPlayer {
     if (_currenTurnIndex.value == null) return null;
     int turn = 0;

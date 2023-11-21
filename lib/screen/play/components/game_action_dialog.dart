@@ -749,11 +749,13 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           .curretnSpecificActionModel;
                                       if (item == null) return;
                                       if (item.title == "신용대출") {
+                                        debugPrint("신용");
                                         await gameController.creditLoanAction(
                                           title: item.title,
                                           price: currentLoanAmount.toInt(),
                                         );
                                       } else {
+                                        debugPrint("담보");
                                         await gameController
                                             .mortgagesLoanAction(
                                           title: item.title,

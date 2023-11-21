@@ -148,3 +148,138 @@ class SavingCard extends StatelessWidget {
     );
   }
 }
+
+class InvestItemCard extends StatelessWidget {
+  const InvestItemCard({
+    super.key,
+    this.accentColor,
+    required this.child,
+    required this.title,
+    required this.count,
+  });
+
+  final String title;
+  final Color? accentColor;
+  final Widget child;
+  final int count;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10, top: 1, bottom: 4),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        width: 140,
+        height: 136,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+                width: 1,
+                color: Colors.white,
+                strokeAlign: BorderSide.strokeAlignOutside),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x4C000000),
+              blurRadius: 6,
+              offset: Offset(3, 3),
+              spreadRadius: 1,
+            )
+          ],
+        ),
+        child: Column(children: [
+          Stack(
+            alignment: Alignment.topRight,
+            children: [
+              Container(
+                clipBehavior: Clip.hardEdge,
+                height: 60,
+                decoration: BoxDecoration(color: Constants.cardRed),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      title,
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Text("X$count",
+                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+              ),
+            ],
+          ),
+          child
+        ]),
+      ),
+    );
+  }
+}
+
+class LoanItemCard extends StatelessWidget {
+  const LoanItemCard({
+    super.key,
+    this.accentColor,
+    required this.child,
+    required this.title,
+  });
+
+  final String title;
+  final Color? accentColor;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10, top: 1, bottom: 4),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        width: 140,
+        height: 136,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+                width: 1,
+                color: Colors.white,
+                strokeAlign: BorderSide.strokeAlignOutside),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x4C000000),
+              blurRadius: 6,
+              offset: Offset(3, 3),
+              spreadRadius: 1,
+            )
+          ],
+        ),
+        child: Column(children: [
+          Container(
+            clipBehavior: Clip.hardEdge,
+            height: 42,
+            decoration: BoxDecoration(color: Constants.cardOrange),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title,
+                  style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 94,
+            child: child,
+          )
+        ]),
+      ),
+    );
+  }
+}
