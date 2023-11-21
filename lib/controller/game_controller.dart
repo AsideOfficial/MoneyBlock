@@ -33,7 +33,7 @@ class GameController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    Get.dialog(const EndGameAlertDialog(), barrierDismissible: false);
+    Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
   }
 
   final _curretnActionType = GameActionType.expend.obs;
@@ -107,27 +107,29 @@ class GameController extends GetxController {
     }
   }
 
-  _roundIndexHandler(int? index) {
+  _roundIndexHandler(int? index) async {
     //라운드 인덱스 핸들러 - 동작 검수 완료 ✅
     debugPrint("_roundIndexHandler 트리거 - 라운드 $index");
     if (index == null) return;
     if (index >= 1 && index < 3) {
+      // 1.5초 동안 기다리기
+      await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
       Get.dialog(
         const EndRoundAlertDialog(),
+        name: "라운드 종료 다이얼로그",
         barrierDismissible: false,
       );
     }
   }
 
-  _endGameHandler(bool? isEnd) {
+  _endGameHandler(bool? isEnd) async {
     // 게임 종료 핸들러
     debugPrint("_endGameHandler 트리거 - 게임 종료 여부 : $isEnd");
     if (isEnd == true) {
       //TODO - 게임 종료 로직 실행
-      Get.dialog(
-        const EndGameAlertDialog(),
-        barrierDismissible: false,
-      );
+      await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
+      Get.dialog(const EndGameAlertDialog(),
+          barrierDismissible: false, name: "게임 종료 다이얼로그");
     } else {}
     debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
   }
