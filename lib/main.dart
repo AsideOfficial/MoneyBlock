@@ -7,8 +7,6 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
 import 'package:money_cycle/screen/lobby/screens/lobby_screen.dart';
-import 'package:money_cycle/screen/lobby/screens/test_screen.dart';
-import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
 FirebaseApp? firebaseApp;
@@ -46,7 +44,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return const LobbyScreen();
             } else {
-              return const TestScreen();
+              return const StartScreen();
             }
           }),
         ),

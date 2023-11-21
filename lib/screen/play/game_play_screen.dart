@@ -33,274 +33,281 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(body: GetX<GameController>(builder: (gameController) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          //MARK: - Back Layer
-          Container(
-            decoration: BoxDecoration(
-              color: Constants.background,
+    return WillPopScope(
+      onWillPop: () {
+        return Future(() => false);
+      },
+      child: Scaffold(body: GetX<GameController>(builder: (gameController) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            //MARK: - Back Layer
+            Container(
+              decoration: BoxDecoration(
+                color: Constants.background,
+              ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 300,
-                    child: Container(
-                      height: 60,
-                      decoration: ShapeDecoration(
-                        color: gameController.isMyTurn
-                            ? gameController.myCharacterBackgroundColor
-                            : const Color(0xFFA4A4A4),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(20)),
-                        ),
-                        shadows: [Constants.defaultShadow],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Row(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: SizedBox(
-                                child: Image.asset(gameController
-                                    .myCharacterAvatarAssetString)),
-                          ),
-                          Text(
-                            "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : "${gameController.currentTurnPlayer?.name}"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
-                            style: Constants.largeTextStyle,
-                          )
-                        ]),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 22),
-                  Expanded(
-                    flex: 530,
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.dialog(NewsDialog(actionTitle: "닫기"),
-                            useSafeArea: false);
-                      },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 300,
                       child: Container(
                         height: 60,
                         decoration: ShapeDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment(0.00, -1.00),
-                            end: Alignment(0, 1),
-                            colors: [Color(0xFFE6E7E8), Color(0xFFB6BCC2)],
-                          ),
+                          color: gameController.isMyTurn
+                              ? gameController.myCharacterBackgroundColor
+                              : const Color(0xFFA4A4A4),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(20)),
+                                bottomRight: Radius.circular(20)),
                           ),
                           shadows: [Constants.defaultShadow],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 40),
                           child: Row(children: [
-                            Text(
-                              "뉴스",
-                              style: Constants.largeTextStyle
-                                  .copyWith(color: Constants.dark100),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: SizedBox(
+                                  child: Image.asset(gameController
+                                      .myCharacterAvatarAssetString)),
                             ),
-                            const SizedBox(width: 25),
                             Text(
-                              '"${gameController.currentNews?.headline ?? ""}"', // TODO - 지난 뉴스 연동
-                              style: Constants.defaultTextStyle.copyWith(
-                                  color: Constants.dark100, fontSize: 16),
+                              "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : "${gameController.currentTurnPlayer?.name}"}'의 턴", // TODO - 현재 턴인 사용자의 닉네임 연동
+                              style: Constants.largeTextStyle,
                             )
                           ]),
                         ),
                       ),
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ActionButton(
-                        isMyTurn: gameController.isMyTurn,
-                        title: "저축",
-                        backgroundColor: const Color(0xFF70C14A),
-                        titleColor: const Color(0xFF1F6200),
-                        assetPath: "assets/icons/saving.png",
-                        onPressed: () {
-                          gameController.actionButtonTap(GameActionType.saving);
-                          // onActionButtonTap(GameActionType.saving);
+                    const SizedBox(width: 22),
+                    Expanded(
+                      flex: 530,
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.dialog(NewsDialog(actionTitle: "닫기"),
+                              useSafeArea: false);
                         },
-                      ),
-                      ActionButton(
-                        isMyTurn: gameController.isMyTurn,
-                        title: "투자",
-                        backgroundColor: Constants.cardRed,
-                        titleColor: const Color(0xFF97010C),
-                        assetPath: "assets/icons/investment.png",
-                        onPressed: () {
-                          gameController
-                              .actionButtonTap(GameActionType.investment);
-                          // onActionButtonTap(GameActionType.investment);
-                        },
-                      ),
-                      ActionButton(
-                        isMyTurn: gameController.isMyTurn,
-                        title: "지출",
-                        backgroundColor: Constants.cardBlue,
-                        titleColor: const Color(0xFF002D9B),
-                        assetPath: "assets/icons/expend.png",
-                        onPressed: () {
-                          gameController.actionButtonTap(GameActionType.expend);
-                        },
-                      ),
-                      ActionButton(
-                        isMyTurn: true,
-                        title: "대출",
-                        backgroundColor: Constants.cardOrange,
-                        titleColor: const Color(0xFF913B0B),
-                        assetPath: "assets/icons/loan.png",
-                        onPressed: () {
-                          gameController.actionButtonTap(GameActionType.loan);
-                          // gameController.actionButtonTap(GameActionType.loan);
-                        },
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ActionButton(
-                        isMyTurn: gameController.isMyTurn,
-                        title: "행운복권",
-                        backgroundColor: Constants.cardYellow,
-                        titleColor: const Color(0xFFB86300),
-                        assetPath: "assets/icons/lottery.png",
-                        onPressed: () {
-                          Get.dialog(
-                            const LotteryAlert(),
-                          );
-                          // setState(() => isActionChoicing = true);
-                        },
-                      ),
-                      ActionButton(
-                        isMyTurn: gameController.isMyTurn,
-                        title: "무급휴가",
-                        backgroundColor: Constants.cardGreenBlue,
-                        titleColor: const Color(0xFF005349),
-                        assetPath: "assets/icons/vacation.png",
-                        onPressed: () {
-                          // setState(() => isActionChoicing = true);
-                          Get.dialog(
-                            const VacationAlert(),
-                          );
-                        },
-                      ),
-                      // ActionButton(
-                      //   isMyTurn: true,
-                      //   title: "랜덤게임",
-                      //   backgroundColor: Constants.cardPink,
-                      //   titleColor: const Color(0xFFA90054),
-                      //   assetPath: "assets/icons/random_game.png",
-                      //   onPressed: () async {
-                      //     // Get.dialog(const FinalResultDialog());
-                      //     // await CloudFunctionService.userAction(
-                      //     //     roomData: RoomData(
-                      //     //         roomId: "960877",
-                      //     //         playerIndex: 1,
-                      //     //         userActions: [
-                      //     //       UserAction(
-                      //     //           type: "shortSaving",
-                      //     //           title: "예금",
-                      //     //           price: 50000,
-                      //     //           qty: 1),
-                      //     //       UserAction(
-                      //     //           type: "cash",
-                      //     //           title: "예금",
-                      //     //           price: -50000,
-                      //     //           qty: 1),
-                      //     //     ]));
-                      //   },
-                      // ),
-                      const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: SizedBox(
-                          width: 150,
-                          height: 90,
+                        child: Container(
+                          height: 60,
+                          decoration: ShapeDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment(0.00, -1.00),
+                              end: Alignment(0, 1),
+                              colors: [Color(0xFFE6E7E8), Color(0xFFB6BCC2)],
+                            ),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(20)),
+                            ),
+                            shadows: [Constants.defaultShadow],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 40),
+                            child: Row(children: [
+                              Text(
+                                "뉴스",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Constants.dark100),
+                              ),
+                              const SizedBox(width: 25),
+                              Text(
+                                '"${gameController.currentNews?.headline ?? ""}"', // TODO - 지난 뉴스 연동
+                                style: Constants.defaultTextStyle.copyWith(
+                                    color: Constants.dark100, fontSize: 16),
+                              )
+                            ]),
+                          ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: SizedBox(
-                          width: 150,
-                          height: 90,
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-              Container(
-                height: 90,
-                // color: Colors.white,
-              )
-            ],
-          ),
-          //MARK : - Middle Layer (게임 액션)
-          if (gameController.isActionChoicing)
-            GestureDetector(
-              child: Container(color: Colors.black.withOpacity(0.3)),
-              onTap: () => gameController.isActionChoicing = false,
-            ),
-          if (gameController.isActionChoicing)
-            const Column(
-              children: [
-                SizedBox(
-                  height: 40,
+                    )
+                  ],
                 ),
-                // showActtionDialog()
-                GameActionDialog(),
+                const SizedBox(
+                  height: 8,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "저축",
+                          backgroundColor: const Color(0xFF70C14A),
+                          titleColor: const Color(0xFF1F6200),
+                          assetPath: "assets/icons/saving.png",
+                          onPressed: () {
+                            gameController
+                                .actionButtonTap(GameActionType.saving);
+                            // onActionButtonTap(GameActionType.saving);
+                          },
+                        ),
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "투자",
+                          backgroundColor: Constants.cardRed,
+                          titleColor: const Color(0xFF97010C),
+                          assetPath: "assets/icons/investment.png",
+                          onPressed: () {
+                            gameController
+                                .actionButtonTap(GameActionType.investment);
+                            // onActionButtonTap(GameActionType.investment);
+                          },
+                        ),
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "지출",
+                          backgroundColor: Constants.cardBlue,
+                          titleColor: const Color(0xFF002D9B),
+                          assetPath: "assets/icons/expend.png",
+                          onPressed: () {
+                            gameController
+                                .actionButtonTap(GameActionType.expend);
+                          },
+                        ),
+                        ActionButton(
+                          isMyTurn: true,
+                          title: "대출",
+                          backgroundColor: Constants.cardOrange,
+                          titleColor: const Color(0xFF913B0B),
+                          assetPath: "assets/icons/loan.png",
+                          onPressed: () {
+                            gameController.actionButtonTap(GameActionType.loan);
+                            // gameController.actionButtonTap(GameActionType.loan);
+                          },
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "행운복권",
+                          backgroundColor: Constants.cardYellow,
+                          titleColor: const Color(0xFFB86300),
+                          assetPath: "assets/icons/lottery.png",
+                          onPressed: () {
+                            Get.dialog(
+                              const LotteryAlert(),
+                            );
+                            // setState(() => isActionChoicing = true);
+                          },
+                        ),
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "무급휴가",
+                          backgroundColor: Constants.cardGreenBlue,
+                          titleColor: const Color(0xFF005349),
+                          assetPath: "assets/icons/vacation.png",
+                          onPressed: () {
+                            // setState(() => isActionChoicing = true);
+                            Get.dialog(
+                              const VacationAlert(),
+                            );
+                          },
+                        ),
+                        // ActionButton(
+                        //   isMyTurn: true,
+                        //   title: "랜덤게임",
+                        //   backgroundColor: Constants.cardPink,
+                        //   titleColor: const Color(0xFFA90054),
+                        //   assetPath: "assets/icons/random_game.png",
+                        //   onPressed: () async {
+                        //     // Get.dialog(const FinalResultDialog());
+                        //     // await CloudFunctionService.userAction(
+                        //     //     roomData: RoomData(
+                        //     //         roomId: "960877",
+                        //     //         playerIndex: 1,
+                        //     //         userActions: [
+                        //     //       UserAction(
+                        //     //           type: "shortSaving",
+                        //     //           title: "예금",
+                        //     //           price: 50000,
+                        //     //           qty: 1),
+                        //     //       UserAction(
+                        //     //           type: "cash",
+                        //     //           title: "예금",
+                        //     //           price: -50000,
+                        //     //           qty: 1),
+                        //     //     ]));
+                        //   },
+                        // ),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: SizedBox(
+                            width: 150,
+                            height: 90,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: SizedBox(
+                            width: 150,
+                            height: 90,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Container(
+                  height: 90,
+                  // color: Colors.white,
+                )
               ],
             ),
-          // else if (gameController.isActionChoicing &&
-          //     (gameController.currentActionType == GameActionType.saving ||
-          //         gameController.currentActionType == GameActionType.loan))
-          //   const GameActionContainer(),
+            //MARK : - Middle Layer (게임 액션)
+            if (gameController.isActionChoicing)
+              GestureDetector(
+                child: Container(color: Colors.black.withOpacity(0.3)),
+                onTap: () => gameController.isActionChoicing = false,
+              ),
+            if (gameController.isActionChoicing)
+              const Column(
+                children: [
+                  SizedBox(
+                    height: 40,
+                  ),
+                  // showActtionDialog()
+                  GameActionDialog(),
+                ],
+              ),
+            // else if (gameController.isActionChoicing &&
+            //     (gameController.currentActionType == GameActionType.saving ||
+            //         gameController.currentActionType == GameActionType.loan))
+            //   const GameActionContainer(),
 
-          //MARK : - Top Layer (나의 자산 현황 테이블)
-          AnimatedPositioned(
-              curve: Curves.decelerate,
-              duration: const Duration(milliseconds: 400),
-              top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
-              child: GestureDetector(
-                  onPanEnd: (details) {
-                    if (details.velocity.pixelsPerSecond.dy > -100) {
-                      setState(() {
-                        isSwipeUp = true;
-                      });
-                    } else {
-                      setState(() {
-                        isSwipeUp = false;
-                      });
-                    }
-                  },
-                  child: MyAssetSheet(
-                    isSwipeUp: isSwipeUp,
-                  )))
-        ],
-      );
-    }));
+            //MARK : - Top Layer (나의 자산 현황 테이블)
+            AnimatedPositioned(
+                curve: Curves.decelerate,
+                duration: const Duration(milliseconds: 400),
+                top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
+                child: GestureDetector(
+                    onPanEnd: (details) {
+                      if (details.velocity.pixelsPerSecond.dy > -100) {
+                        setState(() {
+                          isSwipeUp = true;
+                        });
+                      } else {
+                        setState(() {
+                          isSwipeUp = false;
+                        });
+                      }
+                    },
+                    child: MyAssetSheet(
+                      isSwipeUp: isSwipeUp,
+                    )))
+          ],
+        );
+      })),
+    );
   }
 }
 

@@ -60,7 +60,7 @@ class RoomData {
     isEnd = json['isEnd'];
     roundIndex = json['roundIndex'];
     turnIndex = json['turnIndex'];
-    player = List.from(json['player'])
+    player = List.from(json['player'] ?? [])
         .map((e) => Player.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     theme = json['theme'];
