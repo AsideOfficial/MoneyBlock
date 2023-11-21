@@ -55,7 +55,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       height: 60,
                       decoration: ShapeDecoration(
                         color: gameController.isMyTurn
-                            ? const Color(0xFFEA5C67)
+                            ? gameController.myCharacterBackgroundColor
                             : const Color(0xFFA4A4A4),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(

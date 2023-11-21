@@ -256,6 +256,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           itemBuilder: (context, index) {
                             final item = gameController
                                 .curretnSpecificActionModel?.items[index];
+                            final evaluatedPrice = (item!.price *
+                                    gameController.currentTotalInvestmentRate)
+                                .toInt();
                             return Bounceable(
                               onTap: () {
                                 if (gameController.currentActionType ==
@@ -269,18 +272,22 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         : true,
                                     title:
                                         "${gameController.curretnSpecificActionModel?.title} 매수",
-                                    subTitle: item?.title ?? "",
-                                    perPrice: item?.price ?? 0,
+                                    subTitle: item.title,
+                                    perPrice: evaluatedPrice,
                                     actionTitle: "매수",
                                     onPurchase: (count) async {
                                       //TODO - 투자 API 연동 필요 ✅
 
-                                      if (item == null) return;
+                                      // if (item == null) return;
                                       if (gameController.totalCash! <
                                           (item.price * count)) return;
                                       await gameController.investAction(
                                           title: item.title,
                                           price: item.price,
+                                          evealuatedPrice: (item.price *
+                                                  gameController
+                                                      .currentTotalInvestmentRate)
+                                              .toInt(),
                                           qty: count);
 
                                       gameController.isActionChoicing = false;
@@ -289,12 +296,11 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                 } else {
                                   Get.dialog(PurchaseAlertDialog(
                                     title: "구입",
-                                    subTitle: item?.title ?? "",
-                                    perPrice: item?.price ?? 0,
+                                    subTitle: item.title,
+                                    perPrice: item.price,
                                     actionTitle: "구입",
                                     onPurchase: (count) async {
                                       //TODO - 지출 API 연동 필요 ✅
-                                      if (item == null) return;
                                       if (gameController.totalCash! <
                                           (item.price * count)) return;
                                       await gameController.expendAction(
@@ -307,10 +313,23 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   ));
                                 }
                               },
-                              child: GameItemCard(
-                                item: item,
-                                accentColor: gameController.currentCardColor,
-                              ),
+                              child: (gameController.currentActionType ==
+                                      GameActionType.investment)
+                                  ? GameItemCard(
+                                      item: item,
+                                      evaluatedPrice: evaluatedPrice,
+                                      priceTitle: gameController
+                                              .curretnSpecificActionModel
+                                              ?.priceTitle ??
+                                          "",
+                                      accentColor:
+                                          gameController.currentCardColor,
+                                    )
+                                  : GameItemCard(
+                                      item: item,
+                                      accentColor:
+                                          gameController.currentCardColor,
+                                    ),
                             );
                           }),
                     ),

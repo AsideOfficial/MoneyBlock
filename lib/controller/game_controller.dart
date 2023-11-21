@@ -255,12 +255,12 @@ class GameController extends GetxController {
   }
 
   String characterAvatarAssetString({required int characterIndex}) {
-    String assetString = "assets/images/profile_bear.png";
+    String assetString = "assets/images/profile_cow.png";
     switch (characterIndex) {
       case 0:
-        assetString = "assets/images/profile_bear.png";
-      case 1:
         assetString = "assets/images/profile_cow.png";
+      case 1:
+        assetString = "assets/images/profile_bear.png";
       case 2:
         assetString = "assets/images/profile_pig.png";
       case 3:
@@ -269,15 +269,47 @@ class GameController extends GetxController {
     return assetString;
   }
 
+  Color characterBackgroundColor({required int characterIndex}) {
+    Color backgroundColor = const Color(0xFFEA5C67);
+    switch (characterIndex) {
+      case 0:
+        backgroundColor = const Color(0xFFEA5C67);
+      case 1:
+        backgroundColor = const Color(0xFF6969E8);
+      case 2:
+        backgroundColor = const Color(0xFFF9D746);
+      case 3:
+        backgroundColor = const Color(0xFF3B892B);
+    }
+    return backgroundColor;
+  }
+
+  Color get myCharacterBackgroundColor {
+    final int? myCharacterIndex =
+        currentRoomData?.player?[myIndex].characterIndex;
+    Color backgroundColor = const Color(0xFFEA5C67);
+    switch (myCharacterIndex) {
+      case 0:
+        backgroundColor = const Color(0xFFEA5C67);
+      case 1:
+        backgroundColor = const Color(0xFF6969E8);
+      case 2:
+        backgroundColor = const Color(0xFFF9D746);
+      case 3:
+        backgroundColor = const Color(0xFF3B892B);
+    }
+    return backgroundColor;
+  }
+
   String get myCharacterAvatarAssetString {
     final int? myCharacterIndex =
         currentRoomData?.player?[myIndex].characterIndex;
-    String assetString = "assets/images/profile_bear.png";
+    String assetString = "assets/images/profile_cow.png";
     switch (myCharacterIndex) {
       case 0:
-        assetString = "assets/images/profile_bear.png";
-      case 1:
         assetString = "assets/images/profile_cow.png";
+      case 1:
+        assetString = "assets/images/profile_bear.png";
       case 2:
         assetString = "assets/images/profile_pig.png";
       case 3:
@@ -287,6 +319,28 @@ class GameController extends GetxController {
   }
 
   // MARK: - 계산 비즈니스 로직
+
+  double get currentTotalInvestmentRate {
+    double result = 1 + (currentRoomData!.investmentRateInfo![0] / 100);
+    switch (currentRound) {
+      case 1:
+        result = 1 + (currentRoomData!.investmentRateInfo![0] / 100);
+
+      case 2:
+        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
+            (1 + currentRoomData!.investmentRateInfo![1] / 100);
+      case 3:
+        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
+            (1 + currentRoomData!.investmentRateInfo![1] / 100) *
+            (1 + currentRoomData!.investmentRateInfo![2] / 100);
+      case 4:
+        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
+            (1 + currentRoomData!.investmentRateInfo![1] / 100) *
+            (1 + currentRoomData!.investmentRateInfo![2] / 100);
+    }
+    return result;
+  }
+
   int get myRanking {
     //TODO - 내 순위 계산식
     return 3;
@@ -329,7 +383,7 @@ class GameController extends GetxController {
         total += (cashData.price! * cashData.qty!);
       }
     }
-    return total;
+    return (total * currentTotalInvestmentRate).toInt();
   }
 
   int? get totalSaving {
@@ -596,6 +650,7 @@ class GameController extends GetxController {
   Future<void> investAction({
     required String title,
     required int price,
+    required int evealuatedPrice,
     required int qty,
   }) async {
     await CloudFunctionService.userAction(
@@ -604,7 +659,11 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- invest ++
-        UserAction(type: "cash", title: title, price: -(price * qty), qty: 1),
+        UserAction(
+            type: "cash",
+            title: title,
+            price: -(evealuatedPrice * qty),
+            qty: 1),
         UserAction(
             type: "investment",
             title: title,
@@ -704,11 +763,11 @@ class GameController extends GetxController {
             price: -mortgagesLoanInterest,
             qty: 1),
         // 4. 투자
-        UserAction(
-            type: "investment",
-            title: "투자 수익",
-            price: investmentInterest,
-            qty: 1),
+        // UserAction(
+        //     type: "investment",
+        //     title: "투자 수익",
+        //     price: investmentInterest,
+        //     qty: 1),
 
         // 4. 세금
         UserAction(

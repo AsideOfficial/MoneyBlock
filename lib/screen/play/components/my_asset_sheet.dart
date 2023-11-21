@@ -329,70 +329,82 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                       if (gameController
                                               .myInvestmentItems?.isNotEmpty ??
                                           false)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 28),
-                                          child: GridView.builder(
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    childAspectRatio: 110 / 136,
-                                                    crossAxisCount: 4,
-                                                    crossAxisSpacing: 10.0,
-                                                    mainAxisSpacing: 20),
-                                            shrinkWrap: true,
-                                            itemCount: gameController
-                                                    .myInvestmentItems
-                                                    ?.length ??
-                                                0,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              final item = gameController
-                                                  .myInvestmentItems?[index];
-                                              return InvestItemCard(
-                                                accentColor: Constants.cardRed,
-                                                count: item?.qty ?? 1,
-                                                title: item?.title ?? "",
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        const Spacer(),
-                                                        Text(
-                                                          "평가금액",
-                                                          style: Constants
-                                                              .defaultTextStyle
-                                                              .copyWith(
-                                                                  fontSize: 12,
-                                                                  color: Constants
-                                                                      .black),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 4),
-                                                        Text(
-                                                          "${(item!.price! * item.qty!)} 원",
-                                                          style: Constants
-                                                              .defaultTextStyle
-                                                              .copyWith(
-                                                                  fontSize: 16,
-                                                                  color: Constants
-                                                                      .black),
-                                                        ),
-                                                        const Row(
-                                                          children: [Spacer()],
-                                                        ),
-                                                        const Spacer(),
-                                                      ]),
-                                                ),
-                                              );
-                                            },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 28),
+                                            child: GridView.builder(
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      childAspectRatio:
+                                                          110 / 136,
+                                                      crossAxisCount: 4,
+                                                      crossAxisSpacing: 10.0,
+                                                      mainAxisSpacing: 20),
+                                              shrinkWrap: true,
+                                              itemCount: gameController
+                                                      .myInvestmentItems
+                                                      ?.length ??
+                                                  0,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                final item = gameController
+                                                    .myInvestmentItems?[index];
+                                                return InvestItemCard(
+                                                  accentColor:
+                                                      Constants.cardRed,
+                                                  count: item?.qty ?? 1,
+                                                  title: item?.title ?? "",
+                                                  child: SizedBox(
+                                                    height: 70,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
+                                                      child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            // const Spacer(),
+                                                            Text(
+                                                              "평가금액",
+                                                              style: Constants
+                                                                  .defaultTextStyle
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Constants
+                                                                          .black),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 4),
+                                                            Text(
+                                                              "${((item!.price! * item.qty!) * gameController.currentTotalInvestmentRate).toInt().commaString} 원",
+                                                              style: Constants
+                                                                  .defaultTextStyle
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Constants
+                                                                          .black),
+                                                            ),
+                                                            const Row(
+                                                              children: [
+                                                                Spacer()
+                                                              ],
+                                                            ),
+                                                            // const Spacer(),
+                                                          ]),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ),
                                       Padding(

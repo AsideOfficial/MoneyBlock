@@ -26,17 +26,23 @@ class Rate {
 class SpecifitGameAction {
   final String title; // 예 : 예금, 적금, 주식, 실물자산, 부동산
   final List<GameActionItem> items; // 저축, 대출은 필요 X
+  final String? priceTitle;
 
-  SpecifitGameAction({required this.title, required this.items});
+  SpecifitGameAction(
+      {required this.title, required this.items, this.priceTitle});
 }
 
 class GameActionItem {
   final String title;
   final int price;
   final String? description;
+  final String? priceTitle;
 
   GameActionItem(
-      {required this.title, required this.description, required this.price});
+      {required this.title,
+      this.description,
+      required this.price,
+      this.priceTitle});
 }
 
 final savingModel = GameAction(
@@ -89,42 +95,29 @@ final investmentModel = GameAction(
     Rate(title: "변동률", rateFluctuation: [10])
   ],
   actions: [
-    SpecifitGameAction(title: '주식', items: [
-      GameActionItem(
-          title: "전기전자", description: "주식 상품 1에 대한 설명", price: 1000000),
-      GameActionItem(title: "금융", description: "주식 상품 1에 대한 설명", price: 100000),
-      GameActionItem(title: "철강", description: "주식 상품 1에 대한 설명", price: 300000),
-      GameActionItem(title: "제약", description: "주식 상품 1에 대한 설명", price: 70000),
+    SpecifitGameAction(title: '주식', priceTitle: "한 주 가격", items: [
+      GameActionItem(title: "전기전자", price: 1000000),
+      GameActionItem(title: "금융", price: 100000),
+      GameActionItem(title: "철강", price: 300000),
+      GameActionItem(title: "제약", price: 70000),
     ]),
-    SpecifitGameAction(title: '실물자산', items: [
-      GameActionItem(
-          title: "금", description: "실물자산 상품 1에 대한 설명", price: 200000),
-      GameActionItem(
-          title: "미술품", description: "실물자산 상품 2에 대한 설명", price: 500000),
-      GameActionItem(
-          title: "다이아몬드", description: "실물자산 상품 3에 대한 설명", price: 700000),
-      GameActionItem(
-          title: "기념주화", description: "실물자산 상품 4에 대한 설명", price: 50000),
+    SpecifitGameAction(title: '실물자산', priceTitle: "구매 가격", items: [
+      GameActionItem(title: "금", price: 200000),
+      GameActionItem(title: "미술품", price: 500000),
+      GameActionItem(title: "다이아몬드", price: 700000),
+      GameActionItem(title: "기념주화", price: 50000),
     ]),
-    SpecifitGameAction(title: '부동산', items: [
-      GameActionItem(
-          title: "서울", description: "부동산 상품 1에 대한 설명", price: 3000000),
-      GameActionItem(
-          title: "대전", description: "부동산 상품 2에 대한 설명", price: 4300000),
-      GameActionItem(
-          title: "광주", description: "부동산 상품 3에 대한 설명", price: 1200000),
-      GameActionItem(
-          title: "부산", description: "부동산 상품 4에 대한 설명", price: 650000),
+    SpecifitGameAction(title: '부동산', priceTitle: "매매 가격", items: [
+      GameActionItem(title: "서울", price: 3000000),
+      GameActionItem(title: "대전", price: 4300000),
+      GameActionItem(title: "광주", price: 1200000),
+      GameActionItem(title: "부산", price: 650000),
     ]),
-    SpecifitGameAction(title: '펀드', items: [
-      GameActionItem(
-          title: "카이마루\n부자시리즈", description: "펀드 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
-          title: "안전에셋\n더드림", description: "펀드 상품 2에 대한 설명", price: 300000),
-      GameActionItem(
-          title: "탁월해\n투자신탁", description: "펀드 상품 3에 대한 설명", price: 500000),
-      GameActionItem(
-          title: "글로벌\n베스트", description: "펀드 상품 4에 대한 설명", price: 1000000),
+    SpecifitGameAction(title: '펀드', priceTitle: "구매 가격", items: [
+      GameActionItem(title: "카이마루\n부자시리즈", price: 100000),
+      GameActionItem(title: "안전에셋\n더드림", price: 300000),
+      GameActionItem(title: "탁월해\n투자신탁", price: 500000),
+      GameActionItem(title: "글로벌\n베스트", price: 1000000),
     ]),
   ],
 );

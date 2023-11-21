@@ -8,10 +8,14 @@ class GameItemCard extends StatelessWidget {
     super.key,
     required this.item,
     this.accentColor,
+    this.evaluatedPrice,
+    this.priceTitle,
   });
 
   final GameActionItem? item;
   final Color? accentColor;
+  final int? evaluatedPrice;
+  final String? priceTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -58,24 +62,36 @@ class GameItemCard extends StatelessWidget {
           SizedBox(
             height: 74,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Row(
+                    children: [Spacer()],
+                  ),
+                  if (priceTitle != null)
+                    Text(
+                      priceTitle ?? "",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 12, color: Constants.black),
+                    ),
+                  if (priceTitle != null) const SizedBox(height: 6),
                   Text(
-                    "${(item!.price >= 1000000) ? ("${(item!.price / 10000.0).toStringAsFixed(0)}만") : item?.price.commaString}원",
+                    (evaluatedPrice != null)
+                        ? "${evaluatedPrice?.commaString}원"
+                        : "${(item!.price >= 1000000) ? ("${(item!.price / 10000.0).toStringAsFixed(0)}만") : item?.price.commaString}원",
                     style: Constants.defaultTextStyle
-                        .copyWith(fontSize: 16, color: Constants.dark100),
+                        .copyWith(fontSize: 14, color: Constants.black),
                   ),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  if (item?.description != null) const SizedBox(height: 4),
                   //TODO - 액션 타입에 따른 분기 처리 필요
-                  Text(
-                    item?.description ?? "",
-                    style: Constants.defaultTextStyle
-                        .copyWith(fontSize: 10, color: Constants.dark100),
-                  ),
+                  if (item?.description != null)
+                    Text(
+                      item?.description ?? "",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 10, color: Constants.black),
+                    ),
                 ],
               ),
             ),
@@ -207,11 +223,12 @@ class InvestItemCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Text("X$count",
-                    style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
-              ),
+              if (count >= 2)
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Text("X$count",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                ),
             ],
           ),
           child
