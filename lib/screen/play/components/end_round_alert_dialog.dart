@@ -234,8 +234,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                       0,
                               itemBuilder: (context, index) {
                                 //TODO - 순위 데이터 리스트 연동 및 정렬
-                                final player =
-                                    controller.currentRoomData!.player![index];
+                                final player = controller.currentRanking[index];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Row(

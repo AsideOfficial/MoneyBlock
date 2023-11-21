@@ -33,7 +33,7 @@ class GameController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
+    Get.dialog(const EndGameAlertDialog(), barrierDismissible: false);
   }
 
   final _curretnActionType = GameActionType.expend.obs;
@@ -519,7 +519,8 @@ class GameController extends GetxController {
 
     if (myInvestList != null) {
       for (UserAction cashData in myInvestList) {
-        total += (cashData.price! * cashData.qty!);
+        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+            .toInt();
       }
     }
 
@@ -529,6 +530,97 @@ class GameController extends GetxController {
       }
     }
     return total;
+  }
+
+  int playerTotalAsset({required int playerIndex}) {
+    // 리스트를 순회하면서 price 합산
+    final myCashList = _currentRoom.value?.player?[playerIndex].cash;
+    final myshortSavingList =
+        _currentRoom.value?.player?[playerIndex].shortSaving;
+    final myLongSavingList =
+        _currentRoom.value?.player?[playerIndex].longSaving;
+    final myCreditLoanList =
+        _currentRoom.value?.player?[playerIndex].creditLoan;
+    final myMortgagesList =
+        _currentRoom.value?.player?[playerIndex].mortgagesLoan;
+    final myInvestList = currentRoomData?.player?[playerIndex].investment;
+    int total = 0;
+    if (myLongSavingList != null) {
+      for (UserAction cashData in myLongSavingList) {
+        total += cashData.price!;
+      }
+    }
+
+    if (myshortSavingList != null) {
+      for (UserAction cashData in myshortSavingList) {
+        total += cashData.price!;
+      }
+    }
+
+    if (myCreditLoanList != null) {
+      for (UserAction cashData in myCreditLoanList) {
+        total -= cashData.price!;
+      }
+    }
+
+    if (myMortgagesList != null) {
+      for (UserAction cashData in myMortgagesList) {
+        total -= cashData.price!;
+      }
+    }
+
+    if (myInvestList != null) {
+      for (UserAction cashData in myInvestList) {
+        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+            .toInt();
+      }
+    }
+
+    if (myCashList != null) {
+      for (UserAction cashData in myCashList) {
+        total += cashData.price!;
+      }
+    }
+    return total;
+  }
+
+  List<Player> get currentRanking {
+    final players = currentRoomData!.player!;
+    final List<int> playersTotalAsset = [];
+    for (int index = 0; index < players.length; index++) {
+      // 플레이어 각각의 총 자산 구해서 리스트에 더함
+      playersTotalAsset.add(playerTotalAsset(playerIndex: index));
+    }
+    List<Player> playerRankingList = sortBySizes(players, playersTotalAsset);
+    return playerRankingList;
+    //TODO - playersTotalAsset 이 큰 순서대로 정렬한 List<Player> 반환
+  }
+
+  List<int> get currentRankingAssetList {
+    final players = currentRoomData!.player!;
+    final List<int> playersTotalAsset = [];
+    for (int index = 0; index < players.length; index++) {
+      // 플레이어 각각의 총 자산 구해서 리스트에 더함
+      playersTotalAsset.add(playerTotalAsset(playerIndex: index));
+    }
+
+    return playersTotalAsset;
+    //TODO - playersTotalAsset 이 큰 순서대로 정렬한 List<Player> 반환
+  }
+
+  List<Player> sortBySizes(List<Player> names, List<int> sizes) {
+    assert(names.length == sizes.length,
+        'Names and sizes must have the same length.');
+
+    List<int> order = List.generate(names.length, (index) => index);
+
+    // 크기가 큰 순서대로 정렬
+    order.sort((a, b) => sizes[b].compareTo(sizes[a]));
+
+    // 정렬된 순서에 따라 이름을 가져와 새로운 배열 생성
+    List<Player> result = order.map((index) => names[index]).toList();
+
+    return result;
   }
 
   //MARK: - 플레이어 액션

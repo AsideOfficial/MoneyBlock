@@ -223,27 +223,44 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                         style: Constants.titleTextStyle
                             .copyWith(color: Colors.black)),
                     const SizedBox(height: 18),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        VictoryStandCard(
-                          name: "이석희",
-                          ranking: 1,
-                          totalAsset: 70000000,
+                    Expanded(
+                      child: SizedBox(
+                        height: 72,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ListView.separated(
+                              padding: EdgeInsets.zero,
+                              separatorBuilder: (context, index) {
+                                return Container(
+                                  // color: Colors.blue,
+                                  width: 40,
+                                );
+                              },
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: (controller
+                                          .currentRoomData!.player!.length <
+                                      4)
+                                  ? controller.currentRoomData!.player!.length
+                                  : 3,
+                              itemBuilder: (context, index) {
+                                final player = controller.currentRanking[index];
+                                final asset =
+                                    controller.currentRankingAssetList[index];
+                                return VictoryStandCard(
+                                  name: player.name ?? "",
+                                  ranking: index + 1,
+                                  totalAsset: asset,
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        VictoryStandCard(
-                          name: "죠습니다",
-                          ranking: 2,
-                          totalAsset: 6000000,
-                        ),
-                        VictoryStandCard(
-                          name: "김규연",
-                          ranking: 3,
-                          totalAsset: 300000,
-                        ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
+                    // const SizedBox(height: 10),
                     Container(height: 1, color: Constants.grey100),
                     const SizedBox(height: 10),
                     if ((controller.currentRoomData?.player?.length ?? 0) > 3)
@@ -256,22 +273,25 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                           SizedBox(
                             width: 34,
                             // height: 70,
-                            child:
-                                Image.asset("assets/images/profile_tiger.png"),
+                            child: Image.asset(
+                                controller.characterAvatarAssetString(
+                                    characterIndex: controller
+                                        .currentRanking[3].characterIndex!)),
                           ),
                           const SizedBox(width: 10),
-                          Text("좋좋좋",
+                          Text(controller.currentRanking[3].name ?? "",
                               style: Constants.largeTextStyle
                                   .copyWith(color: Colors.black)),
                           const SizedBox(width: 10),
-                          Text("50,000원",
+                          Text(
+                              "${(controller.currentRankingAssetList[3]).commaString}원",
                               style: Constants.largeTextStyle
                                   .copyWith(color: Colors.black)),
                           const SizedBox(width: 10),
                         ],
                       ),
                     const SizedBox(
-                      height: 7,
+                      height: 4,
                     ),
                     Bounceable(
                       onTap: () {
