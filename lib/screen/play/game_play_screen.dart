@@ -63,7 +63,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               : const Color(0xFFA4A4A4),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(20)),
+                              bottomRight: Radius.circular(20),
+                            ),
                           ),
                           shadows: [Constants.defaultShadow],
                         ),

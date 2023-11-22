@@ -83,13 +83,37 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                 )
               ],
             ),
+            child: Stack(
+              children: [
+                if (gameMode == GameMode.officeWorker)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      'assets/images/worker_mode.png',
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                else
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '준비중',
+                        style:
+                            Constants.defaultTextStyle.copyWith(fontSize: 20),
+                      ),
+                      const SizedBox(height: 48),
+                    ],
+                  )
+              ],
+            ),
           ),
           Container(
             width: 170,
             height: 58,
             alignment: Alignment.center,
             decoration: ShapeDecoration(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withOpacity(0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
