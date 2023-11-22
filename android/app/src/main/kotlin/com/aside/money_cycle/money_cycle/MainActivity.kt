@@ -1,4 +1,4 @@
-package com.aside.money_cycle
+package com.story_dx.money_cycle
 
 import io.flutter.embedding.android.FlutterActivity
 

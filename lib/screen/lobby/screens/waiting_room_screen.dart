@@ -114,7 +114,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
               .indexOf(FirebaseAuth.instance.currentUser!.uid);
 
           if (roomData != null && roomData.isPlaying) {
-            Get.off(
+            Get.to(
               const GamePlayScreen(),
               binding: BindingsBuilder(() {
                 Get.put(
@@ -124,6 +124,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                   ),
                 );
               }),
+              transition: Transition.fadeIn,
             );
           }
 

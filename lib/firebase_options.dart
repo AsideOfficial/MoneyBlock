@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCKzVylYD8i-Qn4CTmAR8iJVDtmUEnLkAM',
-    appId: '1:11046090334:android:4e536c81ff59b8dae3a6cf',
+    appId: '1:11046090334:android:05ab03bddfa2f848e3a6cf',
     messagingSenderId: '11046090334',
     projectId: 'moneycycle-5f900',
     databaseURL: 'https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -60,13 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAKGQrwIdOqiW86mzuXUQfO85G4m-mhf8E',
-    appId: '1:11046090334:ios:b87e6583fcd4c8dee3a6cf',
+    appId: '1:11046090334:ios:d31ea4efe7d8fdaae3a6cf',
     messagingSenderId: '11046090334',
     projectId: 'moneycycle-5f900',
     databaseURL: 'https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'moneycycle-5f900.appspot.com',
     androidClientId: '11046090334-t5f5m0don9md8o67be7lcn7hcht31aa0.apps.googleusercontent.com',
-    iosClientId: '11046090334-ascse69hjnp93bvdiv6skfb6b2uo9skj.apps.googleusercontent.com',
-    iosBundleId: 'com.aside.moneyCycle',
+    iosClientId: '11046090334-jnl1qlhau488i7g7e6pi57n3skdi9a5m.apps.googleusercontent.com',
+    iosBundleId: 'com.storyDx.moneyCycle',
   );
 }
