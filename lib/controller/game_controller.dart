@@ -24,10 +24,11 @@ class GameController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    debugPrint("게임 컨트롤러 Init 시작");
+    debugPrint("[게임 컨트롤러 onInit 시작]");
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
     _currentRoom.value = roomData;
     bindRoomStream(roomId);
+    debugPrint("[게임 컨트롤러 onInit 종료]");
   }
 
   @override
@@ -62,11 +63,21 @@ class GameController extends GetxController {
 
   //MARK: - <게임 플레이 리스너
 
-  final Rx<int?> _currenTurnIndex = Rx<int?>(null);
-  final Rx<int?> _currenRoundIndex = Rx<int?>(null);
+  final Rx<int?> _currentTurnIndex = Rx<int?>(null);
+  int? get currentTurnIndex => _currentTurnIndex.value;
+
+  final Rx<int?> _currentRoundIndex = Rx<int?>(null);
+  int? get currentRoundIndex {
+    if (_currentRoundIndex.value == null) return 0;
+    if (_currentRoundIndex.value! >= 2) {
+      return 2;
+    }
+    return _currentRoundIndex.value;
+  }
+
   int get currentRound {
-    if (_currenRoundIndex.value != null) {
-      return (_currenRoundIndex.value!) + 1;
+    if (_currentRoundIndex.value != null) {
+      return (_currentRoundIndex.value!) + 1;
     } else {
       return 1;
     }
@@ -74,21 +85,24 @@ class GameController extends GetxController {
 
   final Rx<bool?> _isGameEnded = Rx<bool?>(false);
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
-  GameDataDetails? get currentRoomData => _currentRoom.value;
+  GameDataDetails? get currentRoom => _currentRoom.value;
+
+  //MARK: - 이벤트 핸들러
   Future<void> bindRoomStream(String roomId) async {
+    debugPrint("[게임 이벤트 핸들러 바인딩 시작]");
     _currentRoom
         .bindStream(FirebaseRealTimeService.getRoomDataStream(roomId: roomId));
-    _currenTurnIndex
+    _currentTurnIndex
         .bindStream(FirebaseRealTimeService.getTurnIndexStream(roomId: roomId));
-    _currenRoundIndex.bindStream(
+    _currentRoundIndex.bindStream(
         FirebaseRealTimeService.getRoundIndexStream(roomId: roomId));
     _isGameEnded.bindStream(
         FirebaseRealTimeService.getIsGameEndedStream(roomId: roomId));
     ever(_currentRoom, _roomDataHandler);
-    ever(_currenTurnIndex, _turnIndexHandler);
-    ever(_currenRoundIndex, _roundIndexHandler);
+    ever(_currentTurnIndex, _turnIndexHandler);
+    ever(_currentRoundIndex, _roundIndexHandler);
     ever(_isGameEnded, _endGameHandler);
-    debugPrint("게임 이벤트 핸들러 바인딩 완료");
+    debugPrint("[게임 이벤트 핸들러 바인딩 완료]");
   }
 
   _roomDataHandler(GameDataDetails? room) {
@@ -99,8 +113,9 @@ class GameController extends GetxController {
 
   _turnIndexHandler(int? index) {
     //턴 인덱스 핸들러 - 동작 검수 완료 ✅
-    debugPrint("_turnIndexHandler 트리거 - 현재 턴 : $index");
-    if (index! % (_currentRoom.value!.player?.length ?? 2) == myIndex) {
+    debugPrint("_turnIndexHandler 트리거 - index : $index");
+    if (index == null) return;
+    if (index % (currentRoom!.player?.length ?? 2) == myIndex) {
       debugPrint("$index - 내 차례!");
     } else {
       debugPrint("$index 다른 놈 차례!");
@@ -109,7 +124,7 @@ class GameController extends GetxController {
 
   _roundIndexHandler(int? index) async {
     //라운드 인덱스 핸들러 - 동작 검수 완료 ✅
-    debugPrint("_roundIndexHandler 트리거 - 라운드 $index");
+    debugPrint("_roundIndexHandler 트리거 - index: $index");
     if (index == null) return;
     if (index >= 1 && index < 3) {
       // 1.5초 동안 기다리기
@@ -125,13 +140,13 @@ class GameController extends GetxController {
   _endGameHandler(bool? isEnd) async {
     // 게임 종료 핸들러
     debugPrint("_endGameHandler 트리거 - 게임 종료 여부 : $isEnd");
+    if (isEnd == null) return;
     if (isEnd == true) {
-      //TODO - 게임 종료 로직 실행
       await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
       Get.dialog(const EndGameAlertDialog(),
           barrierDismissible: false, name: "게임 종료 다이얼로그");
     } else {}
-    debugPrint("라운드 변경 - ${_currentRoom.value?.roundIndex}");
+    debugPrint("라운드 변경 - ${currentRoom?.roundIndex}");
   }
 
   //MARK: - </게임 플레이 리스너>
@@ -139,7 +154,8 @@ class GameController extends GetxController {
   //MARK: - UI 비즈니스 로직
 
   List<UserAction>? get myInvestmentItems {
-    final list = currentRoomData?.player?[myIndex].investment
+    if (currentRoom == null) return null;
+    final list = currentRoom!.player?[myIndex].investment
         ?.where((element) => element.isItem == true)
         .toList();
     if (list != null) {
@@ -150,78 +166,74 @@ class GameController extends GetxController {
   }
 
   Player? get currentTurnPlayer {
-    if (_currenTurnIndex.value == null) return null;
+    if (currentTurnIndex == null) return null;
     int turn = 0;
-    if (_currenTurnIndex.value != 0) {
-      turn =
-          (_currenTurnIndex.value! % (_currentRoom.value!.player?.length ?? 2));
+    if (currentTurnIndex != 0) {
+      turn = (currentTurnIndex! % (currentRoom!.player?.length ?? 2));
     }
-    return currentRoomData?.player?[turn];
+    return currentRoom?.player?[turn];
   }
 
   double get currentSavingRate {
-    return _currentRoom.value!.savingRateInfo![_currenRoundIndex.value!];
+    return currentRoom!.savingRateInfo![currentRoundIndex!];
   }
 
   double get previousSavingRate {
-    if (_currenRoundIndex.value == 0) {
+    if (currentRoundIndex == 0) {
       return 0;
     } else {
-      return _currentRoom
-          .value!.savingRateInfo![(_currenRoundIndex.value!) - 1];
+      return _currentRoom.value!.savingRateInfo![(currentRoundIndex!) - 1];
     }
   }
 
   double get currentInvestRate {
-    return currentRoomData!.investmentRateInfo![_currenRoundIndex.value!];
+    return currentRoom!.investmentRateInfo![currentRoundIndex!];
   }
 
   double get previousInvestRate {
-    if (_currenRoundIndex.value == 0) {
+    if (currentRoundIndex == 0) {
       return 0;
     } else {
-      return _currentRoom
-          .value!.investmentRateInfo![(_currenRoundIndex.value!) - 1];
+      return _currentRoom.value!.investmentRateInfo![(currentRoundIndex!) - 1];
     }
   }
 
   double get currentLoanRate {
-    return _currentRoom.value!.loanRateInfo![_currenRoundIndex.value!];
+    return currentRoom!.loanRateInfo![currentRoundIndex!];
   }
 
   double get previousLoanRate {
-    if (_currenRoundIndex.value == 0) {
+    if (currentRoundIndex == 0) {
       return 0;
     } else {
-      return _currentRoom.value!.loanRateInfo![(_currenRoundIndex.value!) - 1];
+      return currentRoom!.loanRateInfo![(currentRoundIndex!) - 1];
     }
   }
 
   bool get isMyTurn {
-    if (_currenTurnIndex.value == null) return false;
-    if (_currenTurnIndex.value == 0) {
-      return (_currenTurnIndex.value == myIndex);
+    if (currentTurnIndex == null) return false;
+    if (currentTurnIndex == 0) {
+      return (currentTurnIndex == myIndex);
     } else {
-      return (_currenTurnIndex.value! %
-              (_currentRoom.value!.player?.length ?? 2) ==
+      return (currentTurnIndex! % (currentRoom!.player?.length ?? 2) ==
           myIndex);
     }
   }
 
   // 뉴스 콘텐츠
   NewsArticle? get currentNews {
-    if (_currenRoundIndex.value == null) return null;
-    if (_currenRoundIndex.value! < 3) {
-      return _currentRoom.value?.news?[_currenRoundIndex.value!];
+    if (currentRoundIndex == null) return null;
+    if (currentRoundIndex! < 3) {
+      return currentRoom?.news?[currentRoundIndex!];
     }
     return null;
   }
 
   NewsArticle? get previousNews {
-    if ((_currenRoundIndex.value ?? 0) > 0) {
-      return _currentRoom.value?.news?[(_currenRoundIndex.value ?? 0 - 1)];
+    if ((currentRoundIndex ?? 0) > 0) {
+      return currentRoom?.news?[(currentRoundIndex ?? 0 - 1)];
     } else {
-      return _currentRoom.value?.news?[0];
+      return currentRoom?.news?[0];
     }
   }
 
@@ -287,8 +299,7 @@ class GameController extends GetxController {
   }
 
   Color get myCharacterBackgroundColor {
-    final int? myCharacterIndex =
-        currentRoomData?.player?[myIndex].characterIndex;
+    final int? myCharacterIndex = currentRoom?.player?[myIndex].characterIndex;
     Color backgroundColor = const Color(0xFFEA5C67);
     switch (myCharacterIndex) {
       case 0:
@@ -304,8 +315,7 @@ class GameController extends GetxController {
   }
 
   String get myCharacterAvatarAssetString {
-    final int? myCharacterIndex =
-        currentRoomData?.player?[myIndex].characterIndex;
+    final int? myCharacterIndex = currentRoom?.player?[myIndex].characterIndex;
     String assetString = "assets/images/profile_cow.png";
     switch (myCharacterIndex) {
       case 0:
@@ -323,22 +333,22 @@ class GameController extends GetxController {
   // MARK: - 계산 비즈니스 로직
 
   double get currentTotalInvestmentRate {
-    double result = 1 + (currentRoomData!.investmentRateInfo![0] / 100);
+    double result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
     switch (currentRound) {
       case 1:
-        result = 1 + (currentRoomData!.investmentRateInfo![0] / 100);
+        result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
 
       case 2:
-        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
-            (1 + currentRoomData!.investmentRateInfo![1] / 100);
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100);
       case 3:
-        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
-            (1 + currentRoomData!.investmentRateInfo![1] / 100) *
-            (1 + currentRoomData!.investmentRateInfo![2] / 100);
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
       case 4:
-        result = (1 + currentRoomData!.investmentRateInfo![0] / 100) *
-            (1 + currentRoomData!.investmentRateInfo![1] / 100) *
-            (1 + currentRoomData!.investmentRateInfo![2] / 100);
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
     }
     return result;
   }
@@ -365,7 +375,7 @@ class GameController extends GetxController {
 
   int? get totalCash {
     // 리스트를 순회하면서 price 합산
-    final myCashList = _currentRoom.value?.player?[myIndex].cash;
+    final myCashList = currentRoom?.player?[myIndex].cash;
     int total = 0;
     if (myCashList != null) {
       for (UserAction cashData in myCashList) {
@@ -378,7 +388,7 @@ class GameController extends GetxController {
   // 합산 액
   int? get totalInvestment {
     // 리스트를 순회하면서 price 합산
-    final myCashList = _currentRoom.value?.player?[myIndex].investment;
+    final myCashList = currentRoom?.player?[myIndex].investment;
     int total = 0;
     if (myCashList != null) {
       for (UserAction cashData in myCashList) {
@@ -390,8 +400,8 @@ class GameController extends GetxController {
 
   int? get totalSaving {
     // 리스트를 순회하면서 price 합산
-    final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
-    final myLongSavingList = _currentRoom.value?.player?[myIndex].longSaving;
+    final myshortSavingList = currentRoom?.player?[myIndex].shortSaving;
+    final myLongSavingList = currentRoom?.player?[myIndex].longSaving;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -412,7 +422,7 @@ class GameController extends GetxController {
 
   int? get totalShortSaving {
     // 리스트를 순회하면서 price 합산
-    final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
+    final myshortSavingList = currentRoom?.player?[myIndex].shortSaving;
     int total = 0;
 
     if (myshortSavingList != null) {
@@ -425,7 +435,7 @@ class GameController extends GetxController {
 
   int? get totalLongSaving {
     // 리스트를 순회하면서 price 합산
-    final myshortSavingList = _currentRoom.value?.player?[myIndex].longSaving;
+    final myshortSavingList = currentRoom?.player?[myIndex].longSaving;
     int total = 0;
 
     if (myshortSavingList != null) {
@@ -438,7 +448,7 @@ class GameController extends GetxController {
 
   int? get totalCreditLoan {
     // 리스트를 순회하면서 price 합산
-    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
+    final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
     int total = 0;
 
     if (myCreditLoanList != null) {
@@ -451,8 +461,7 @@ class GameController extends GetxController {
 
   int? get totalMortgagesLoan {
     // 리스트를 순회하면서 price 합산
-    final myLongMortgagesList =
-        _currentRoom.value?.player?[myIndex].mortgagesLoan;
+    final myLongMortgagesList = currentRoom?.player?[myIndex].mortgagesLoan;
     int total = 0;
 
     if (myLongMortgagesList != null) {
@@ -465,9 +474,8 @@ class GameController extends GetxController {
 
   int? get totalLoan {
     // 리스트를 순회하면서 price 합산
-    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
-    final myMortgagesLoanList =
-        _currentRoom.value?.player?[myIndex].mortgagesLoan;
+    final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
+    final myMortgagesLoanList = currentRoom?.player?[myIndex].mortgagesLoan;
     int total = 0;
     if (myCreditLoanList != null) {
       for (UserAction cashData in myCreditLoanList) {
@@ -488,12 +496,12 @@ class GameController extends GetxController {
 
   int? get totalAsset {
     // 리스트를 순회하면서 price 합산
-    final myCashList = _currentRoom.value?.player?[myIndex].cash;
-    final myshortSavingList = _currentRoom.value?.player?[myIndex].shortSaving;
-    final myLongSavingList = _currentRoom.value?.player?[myIndex].longSaving;
-    final myCreditLoanList = _currentRoom.value?.player?[myIndex].creditLoan;
-    final myMortgagesList = _currentRoom.value?.player?[myIndex].mortgagesLoan;
-    final myInvestList = currentRoomData?.player?[myIndex].investment;
+    final myCashList = currentRoom?.player?[myIndex].cash;
+    final myshortSavingList = currentRoom?.player?[myIndex].shortSaving;
+    final myLongSavingList = currentRoom?.player?[myIndex].longSaving;
+    final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
+    final myMortgagesList = currentRoom?.player?[myIndex].mortgagesLoan;
+    final myInvestList = currentRoom?.player?[myIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -536,16 +544,12 @@ class GameController extends GetxController {
 
   int playerTotalAsset({required int playerIndex}) {
     // 리스트를 순회하면서 price 합산
-    final myCashList = _currentRoom.value?.player?[playerIndex].cash;
-    final myshortSavingList =
-        _currentRoom.value?.player?[playerIndex].shortSaving;
-    final myLongSavingList =
-        _currentRoom.value?.player?[playerIndex].longSaving;
-    final myCreditLoanList =
-        _currentRoom.value?.player?[playerIndex].creditLoan;
-    final myMortgagesList =
-        _currentRoom.value?.player?[playerIndex].mortgagesLoan;
-    final myInvestList = currentRoomData?.player?[playerIndex].investment;
+    final myCashList = currentRoom?.player?[playerIndex].cash;
+    final myshortSavingList = currentRoom?.player?[playerIndex].shortSaving;
+    final myLongSavingList = currentRoom?.player?[playerIndex].longSaving;
+    final myCreditLoanList = currentRoom?.player?[playerIndex].creditLoan;
+    final myMortgagesList = currentRoom?.player?[playerIndex].mortgagesLoan;
+    final myInvestList = currentRoom?.player?[playerIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -587,7 +591,7 @@ class GameController extends GetxController {
   }
 
   List<Player> get currentRanking {
-    final players = currentRoomData!.player!;
+    final players = currentRoom!.player!;
     final List<int> playersTotalAsset = [];
     for (int index = 0; index < players.length; index++) {
       // 플레이어 각각의 총 자산 구해서 리스트에 더함
@@ -599,7 +603,7 @@ class GameController extends GetxController {
   }
 
   List<int> get currentRankingAssetList {
-    final players = currentRoomData!.player!;
+    final players = currentRoom!.player!;
     final List<int> playersTotalAsset = [];
     for (int index = 0; index < players.length; index++) {
       // 플레이어 각각의 총 자산 구해서 리스트에 더함

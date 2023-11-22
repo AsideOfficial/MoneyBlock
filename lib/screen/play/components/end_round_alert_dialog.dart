@@ -230,8 +230,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount:
-                                  controller.currentRoomData?.player?.length ??
-                                      0,
+                                  controller.currentRoom?.player?.length ?? 0,
                               itemBuilder: (context, index) {
                                 //TODO - 순위 데이터 리스트 연동 및 정렬
                                 final player = controller.currentRanking[index];

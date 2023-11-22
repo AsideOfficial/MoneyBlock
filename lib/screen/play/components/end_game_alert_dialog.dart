@@ -3,6 +3,7 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -175,11 +176,6 @@ class FinalResultDialog extends StatefulWidget {
 }
 
 class _FinalResultDialogState extends State<FinalResultDialog> {
-  int cash = 5000000;
-  int saving = 1000000;
-  int asset = 2000000;
-  int loan = -1000000;
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -240,11 +236,10 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: (controller
-                                          .currentRoomData!.player!.length <
-                                      4)
-                                  ? controller.currentRoomData!.player!.length
-                                  : 3,
+                              itemCount:
+                                  (controller.currentRoom!.player!.length < 4)
+                                      ? controller.currentRoom!.player!.length
+                                      : 3,
                               itemBuilder: (context, index) {
                                 final player = controller.currentRanking[index];
                                 final asset =
@@ -253,6 +248,10 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                                   name: player.name ?? "",
                                   ranking: index + 1,
                                   totalAsset: asset,
+                                  assetString:
+                                      controller.characterAvatarAssetString(
+                                          characterIndex:
+                                              player.characterIndex ?? 0),
                                 );
                               },
                             ),
@@ -263,7 +262,7 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                     // const SizedBox(height: 10),
                     Container(height: 1, color: Constants.grey100),
                     const SizedBox(height: 10),
-                    if ((controller.currentRoomData?.player?.length ?? 0) > 3)
+                    if ((controller.currentRoom?.player?.length ?? 0) > 3)
                       Row(
                         children: [
                           Text("4위",
@@ -334,11 +333,13 @@ class VictoryStandCard extends StatelessWidget {
   final String name;
   final int ranking;
   final int totalAsset;
+  final String assetString;
   const VictoryStandCard({
     super.key,
     required this.name,
     required this.ranking,
     required this.totalAsset,
+    required this.assetString,
   });
 
   @override
@@ -370,7 +371,7 @@ class VictoryStandCard extends StatelessWidget {
                 //     )
                 //   ],
                 // ),
-                child: Image.asset("assets/images/profile_bear.png"),
+                child: Image.asset(assetString),
               ),
               Positioned(
                 left: 0,
