@@ -14,7 +14,6 @@ FirebaseApp? firebaseApp;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   firebaseApp = await Firebase.initializeApp(
-    name: "MoneyCycle",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
