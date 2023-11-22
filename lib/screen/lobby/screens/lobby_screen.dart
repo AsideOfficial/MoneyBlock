@@ -158,7 +158,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                           const SizedBox(width: 22.0),
                           toolButton(
                             iconUrl: 'assets/icons/logout_button.png',
-                            label: '로그아웃',
+                            label: '계정관리',
                             onTap: () {
                               showDialog(
                                 context: context,

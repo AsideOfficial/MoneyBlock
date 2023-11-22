@@ -61,55 +61,82 @@ class LogoutDialog extends StatelessWidget {
             end: Alignment(0, 1),
             colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            alignment: Alignment.topRight,
             children: [
-              Text(
-                '로그아웃',
-                textAlign: TextAlign.center,
-                style: Constants.defaultTextStyle.copyWith(
-                  color: const Color(0xFF303030),
-                  fontSize: 24,
-                  letterSpacing: 0.20,
-                ),
-              ),
-              const SizedBox(height: 48.0),
-              Text(
-                '로그아웃 하시겠습니까?',
-                textAlign: TextAlign.center,
-                style: Constants.defaultTextStyle.copyWith(
-                  color: const Color(0xFF303030),
-                  fontSize: 20,
-                  letterSpacing: 0.20,
-                ),
-              ),
-              const SizedBox(height: 40.0),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  actionButton(
-                    shadowColor: const Color(0x26000000),
-                    gradient: const LinearGradient(
-                      begin: Alignment(0.00, -1.00),
-                      end: Alignment(0, 1),
-                      colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+                  Text(
+                    '계정관리',
+                    textAlign: TextAlign.center,
+                    style: Constants.defaultTextStyle.copyWith(
+                      color: const Color(0xFF303030),
+                      fontSize: 24,
+                      letterSpacing: 0.20,
                     ),
-                    label: '닫기',
-                    labelColor: const Color(0xFF696969),
-                    onTap: () => Get.back(),
                   ),
-                  const SizedBox(width: 10.0),
-                  actionButton(
-                    shadowColor: const Color(0x3F000000),
-                    color: const Color(0xFF41ADEB),
-                    label: '로그아웃',
-                    labelColor: Colors.white,
-                    onTap: () {
-                      Get.back();
-                      FirebaseAuth.instance.signOut();
-                    },
+                  const SizedBox(height: 48.0),
+                  Text(
+                    '로그아웃 하시겠습니까?',
+                    textAlign: TextAlign.center,
+                    style: Constants.defaultTextStyle.copyWith(
+                      color: const Color(0xFF303030),
+                      fontSize: 20,
+                      letterSpacing: 0.20,
+                    ),
                   ),
+                  const SizedBox(height: 40.0),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      actionButton(
+                        shadowColor: const Color(0x26000000),
+                        gradient: const LinearGradient(
+                          begin: Alignment(0.00, -1.00),
+                          end: Alignment(0, 1),
+                          colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+                        ),
+                        label: '회원탈퇴',
+                        labelColor: const Color(0xFF696969),
+                        onTap: () async {
+                          User? user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            await user.delete();
+                            Get.back();
+                          } else {}
+                        },
+                      ),
+                      const SizedBox(width: 10.0),
+                      actionButton(
+                        shadowColor: const Color(0x3F000000),
+                        color: const Color(0xFF41ADEB),
+                        label: '로그아웃',
+                        labelColor: Colors.white,
+                        onTap: () {
+                          Get.back();
+                          FirebaseAuth.instance.signOut();
+                        },
+                      ),
+                    ],
+                  )
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Bounceable(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: SizedBox(
+                    width: 44,
+                    height: 44,
+                    child: Image.asset(
+                      "assets/icons/x_button.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               )
             ],
           ),
