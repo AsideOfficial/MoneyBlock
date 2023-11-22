@@ -53,18 +53,18 @@ class LogoutDialog extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
-        child: MCContainer(
-          width: 306,
-          height: 256,
-          gradient: const LinearGradient(
-            begin: Alignment(0.00, -1.00),
-            end: Alignment(0, 1),
-            colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
-          ),
-          child: Stack(
-            alignment: Alignment.topRight,
-            children: [
-              Column(
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            MCContainer(
+              width: 306,
+              height: 256,
+              gradient: const LinearGradient(
+                begin: Alignment(0.00, -1.00),
+                end: Alignment(0, 1),
+                colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
+              ),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -122,24 +122,24 @@ class LogoutDialog extends StatelessWidget {
                   )
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Bounceable(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: Image.asset(
-                      "assets/icons/x_button.png",
-                      fit: BoxFit.cover,
-                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Bounceable(
+                onTap: () {
+                  Get.back();
+                },
+                child: SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: Image.asset(
+                    "assets/icons/x_button.png",
+                    fit: BoxFit.cover,
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
