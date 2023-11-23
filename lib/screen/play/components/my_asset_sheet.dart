@@ -4,7 +4,6 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
-import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -22,7 +21,6 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (gameController) {
       Size size = MediaQuery.of(context).size;
-      final wow = gameController.currentActionType;
       return Container(
           height: size.height * 2,
           width: size.width,

@@ -74,14 +74,13 @@ class _MyPageDialogState extends State<MyPageDialog> {
                                     style: Constants.defaultTextStyle
                                         .copyWith(fontSize: 24.0),
                                   ),
-                                  const SizedBox(height: 10.0),
                                   Text(
                                     '프로필 변경',
                                     textAlign: TextAlign.center,
                                     style: Constants.defaultTextStyle
                                         .copyWith(fontSize: 16.0),
                                   ),
-                                  const SizedBox(height: 10.0),
+                                  const SizedBox(height: 4.0),
                                   Bounceable(
                                     onTap: () {
                                       setState(() {
@@ -109,7 +108,7 @@ class _MyPageDialogState extends State<MyPageDialog> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 9.0),
+                                  const SizedBox(height: 4.0),
                                 ],
                               ),
                             if (hasFocus) const SizedBox(height: 20.0),

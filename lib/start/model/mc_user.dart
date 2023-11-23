@@ -5,9 +5,9 @@ class MCUser {
   final String name;
   final String nickNm;
   final int profileImageIndex;
-  final String phoneNumber;
-  final String birthday;
-  final String gender;
+  final String? phoneNumber;
+  final String? birthday;
+  final String? gender;
   final String? parentInfo;
   final String? location;
 
@@ -16,9 +16,9 @@ class MCUser {
     required this.name,
     required this.nickNm,
     required this.profileImageIndex,
-    required this.phoneNumber,
-    required this.birthday,
-    required this.gender,
+    this.phoneNumber,
+    this.birthday,
+    this.gender,
     this.parentInfo,
     this.location,
   });
@@ -31,9 +31,9 @@ class MCUser {
       name: data?['name'] as String,
       nickNm: data?['nickNm'] as String,
       profileImageIndex: data?['profileImageIndex'] as int,
-      phoneNumber: data?['phoneNumber'] as String,
-      birthday: data?['birthday'] as String,
-      gender: data?['gender'] as String,
+      phoneNumber: data?['phoneNumber'] as String?,
+      birthday: data?['birthday'] as String?,
+      gender: data?['gender'] as String?,
       parentInfo: data?['parentInfo'] as String?,
       location: data?['location'] as String?,
     );

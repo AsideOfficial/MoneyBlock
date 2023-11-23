@@ -106,24 +106,24 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                               fontSize: 16, color: Constants.cardGreen)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousSavingRate ?? 0.0,
-                          after: controller.currentSavingRate ?? 0.0),
+                          before: controller.previousSavingRate,
+                          after: controller.currentSavingRate),
                       const SizedBox(height: 10),
                       Text("대출금리",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardOrange)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousLoanRate ?? 0.0,
-                          after: controller.currentLoanRate ?? 0.0),
+                          before: controller.previousLoanRate,
+                          after: controller.currentLoanRate),
                       const SizedBox(height: 10),
                       Text("투자변동률",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardRed)),
                       const SizedBox(height: 2),
                       RateVariationTile(
-                          before: controller.previousInvestRate ?? 0.0,
-                          after: controller.currentInvestRate ?? 0.0),
+                          before: controller.previousInvestRate,
+                          after: controller.currentInvestRate),
                     ],
                   ),
                 ),
@@ -437,8 +437,8 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
 }
 
 class NewsDialog extends StatefulWidget {
-  String? actionTitle;
-  NewsDialog({
+  final String? actionTitle;
+  const NewsDialog({
     super.key,
     this.actionTitle = "이어서 플레이",
   });

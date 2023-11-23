@@ -9,9 +9,9 @@ class CustomAlertDialog extends StatelessWidget {
   final String instruction;
   final String acionButtonTitle;
   final Function()? onPressed;
-  bool? isLoading;
+  final bool? isLoading;
 
-  CustomAlertDialog({
+  const CustomAlertDialog({
     super.key,
     required this.title,
     required this.description,

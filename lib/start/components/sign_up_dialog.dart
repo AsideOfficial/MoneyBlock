@@ -4,6 +4,8 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/components/mc_text_field.dart';
+import 'package:money_cycle/start/model/mc_user.dart';
+import 'package:money_cycle/utils/firebase_service.dart';
 
 import '../../components/mc_button.dart';
 import '../../constants.dart';
@@ -24,7 +26,7 @@ class _SignUpDailogState extends State<SignUpDailog> {
   final passwordController = TextEditingController();
   final verifyPasswordController = TextEditingController();
 
-  void signUpWithFirebase({required String email, password}) async {
+  Future<void> signUpWithFirebase({required String email, password}) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
@@ -33,6 +35,17 @@ class _SignUpDailogState extends State<SignUpDailog> {
     } catch (e) {
       debugPrint('sign up failed: $e');
     }
+  }
+
+  void updateUserData({required String name}) async {
+    await FirebaseService.updateUserData(
+      userData: MCUser(
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        name: name,
+        nickNm: name,
+        profileImageIndex: 0,
+      ),
+    );
   }
 
   @override
@@ -128,10 +141,18 @@ class _SignUpDailogState extends State<SignUpDailog> {
           signUpState: signUpState,
           passwordController: passwordController,
           verifyPasswordController: verifyPasswordController,
-          onPressed: () {
-            signUpWithFirebase(
+          onPressed: () async {
+            await signUpWithFirebase(
               email: emailController.text,
               password: passwordController.text,
+            );
+
+            await FirebaseService.updateUserData(
+              userData: MCUser(
+                  uid: FirebaseAuth.instance.currentUser!.uid,
+                  name: nickNameController.text,
+                  nickNm: nickNameController.text,
+                  profileImageIndex: 0),
             );
 
             setState(() {
@@ -448,7 +469,7 @@ class CompletionPage extends StatelessWidget {
         children: [
           Text("회원가입 완료", style: Constants.titleTextStyle),
           Text(
-            "회원가입이 완료되었습니다.\n추가정보를 입력하고 머니사이클을 즐겨보세요!",
+            "회원가입이 완료되었습니다.\n지금바로 머니사이클을 즐겨보세요!",
             style: Constants.defaultTextStyle.copyWith(height: 1.5),
             textAlign: TextAlign.center,
           ),
@@ -456,7 +477,7 @@ class CompletionPage extends StatelessWidget {
             isLoading: false,
             width: 184,
             height: 44,
-            title: "입력하러 가기",
+            title: "확인",
             backgroundColor: Constants.blueNeon,
             onPressed: onPressed,
           ),

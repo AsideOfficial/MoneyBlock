@@ -80,11 +80,11 @@ class _SignInDialogState extends State<SignInDialog> {
                   child: MCContainer(
                     width: 400,
                     height: 300,
+                    alignment: Alignment.center,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
                         children: [
-                          const SizedBox(height: 22),
                           Text("이메일 로그인", style: Constants.titleTextStyle),
                           const SizedBox(height: 16),
                           MCTextField(
