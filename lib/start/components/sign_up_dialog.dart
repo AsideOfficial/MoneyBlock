@@ -269,7 +269,7 @@ class _EmailNickNameInputState extends State<EmailNickNameInput> {
                   controller: widget.nickNameController,
                   hintText: "이름",
                   textInputAction: TextInputAction.done,
-                  maxLength: 20,
+                  maxLength: 8,
                   onChanged: (p0) {
                     setState(() {
                       isValidNickName = false;
@@ -284,7 +284,7 @@ class _EmailNickNameInputState extends State<EmailNickNameInput> {
                   const Padding(
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(
-                      "3~20자 사이의 이름을 입력해주세요.",
+                      "3~8자 사이의 이름을 입력해주세요.",
                       style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),

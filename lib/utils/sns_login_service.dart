@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
+import 'package:money_cycle/start/model/mc_user.dart';
 import 'package:money_cycle/utils/firebase_auth_remote_data_source.dart';
+import 'package:money_cycle/utils/firebase_service.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class KakaoLoginService {
@@ -69,6 +71,16 @@ class KakaoLoginService {
 
     final userID =
         await FirebaseAuth.instance.signInWithCustomToken(customToken);
+    await FirebaseService.updateUserData(
+      userData: MCUser(
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        name: FirebaseAuth.instance.currentUser!.displayName ?? '이름을 설정해주세요',
+        nickNm:
+            FirebaseAuth.instance.currentUser!.displayName ?? '닉네임을 설정해주세요',
+        profileImageIndex: 0,
+      ),
+    );
+
     debugPrint('Login Succeed: $userID');
   }
 }
@@ -88,6 +100,16 @@ class GoogleLoginService {
 
         final userID =
             await FirebaseAuth.instance.signInWithCredential(googleCredential);
+        await FirebaseService.updateUserData(
+          userData: MCUser(
+            uid: FirebaseAuth.instance.currentUser!.uid,
+            name:
+                FirebaseAuth.instance.currentUser!.displayName ?? '이름을 설정해주세요',
+            nickNm: FirebaseAuth.instance.currentUser!.displayName ??
+                '닉네임을 설정해주세요',
+            profileImageIndex: 0,
+          ),
+        );
         debugPrint('Login Succeed: $userID');
       }
     } catch (e) {
@@ -114,6 +136,15 @@ class AppleLoginService {
 
       final userID =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseService.updateUserData(
+        userData: MCUser(
+          uid: FirebaseAuth.instance.currentUser!.uid,
+          name: FirebaseAuth.instance.currentUser!.displayName ?? '이름을 설정해주세요',
+          nickNm:
+              FirebaseAuth.instance.currentUser!.displayName ?? '닉네임을 설정해주세요',
+          profileImageIndex: 0,
+        ),
+      );
       debugPrint('Login Succeed: $userID');
     } catch (e) {
       debugPrint('apple login error: $e');

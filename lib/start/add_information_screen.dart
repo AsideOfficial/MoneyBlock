@@ -57,6 +57,8 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance.signOut();
+
     const background = BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment(0.00, 1.00),
