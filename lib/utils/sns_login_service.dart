@@ -24,13 +24,13 @@ class KakaoLoginService {
         return;
       }
       // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
-      loginWithKakaoAccount();
+      await loginWithKakaoAccount();
     }
   }
 
   static Future<void> loginWithKakaoAccount() async {
     try {
-      kakao.UserApi.instance.loginWithKakaoAccount();
+      await kakao.UserApi.instance.loginWithKakaoAccount();
       debugPrint('카카오계정으로 로그인 성공');
     } catch (error) {
       debugPrint('카카오계정으로 로그인 실패 $error');
@@ -75,8 +75,7 @@ class KakaoLoginService {
       userData: MCUser(
         uid: FirebaseAuth.instance.currentUser!.uid,
         name: FirebaseAuth.instance.currentUser!.displayName ?? '이름을 설정해주세요',
-        nickNm:
-            FirebaseAuth.instance.currentUser!.displayName ?? '닉네임을 설정해주세요',
+        nickNm: FirebaseAuth.instance.currentUser!.displayName ?? '닉네임을 설정해주세요',
         profileImageIndex: 0,
       ),
     );
@@ -105,8 +104,8 @@ class GoogleLoginService {
             uid: FirebaseAuth.instance.currentUser!.uid,
             name:
                 FirebaseAuth.instance.currentUser!.displayName ?? '이름을 설정해주세요',
-            nickNm: FirebaseAuth.instance.currentUser!.displayName ??
-                '닉네임을 설정해주세요',
+            nickNm:
+                FirebaseAuth.instance.currentUser!.displayName ?? '닉네임을 설정해주세요',
             profileImageIndex: 0,
           ),
         );

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="money_cycle"
         android:name="${applicationName}"
@@ -24,7 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
+        android:exported="true">
 	        <intent-filter android:label="flutter_web_auth">
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
