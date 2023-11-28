@@ -638,9 +638,9 @@ class AssetBar extends StatelessWidget {
         ),
         JustTheTooltip(
           content: SizedBox(
-              height: 60,
+              height: 72,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -649,9 +649,7 @@ class AssetBar extends StatelessWidget {
                       style: Constants.largeTextStyle
                           .copyWith(color: Constants.dark100),
                     ),
-                    const SizedBox(
-                      height: 6,
-                    ),
+                    const SizedBox(height: 5),
                     Text(
                       assetType.description,
                       style: Constants.defaultTextStyle
