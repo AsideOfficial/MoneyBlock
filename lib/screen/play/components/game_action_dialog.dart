@@ -26,6 +26,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
   double currentAmount = 0;
   double currentLoanAmount = 0;
   double height = 280;
+  bool isSelected = false;
 
   //MARK: - 플레이어 개인 활동 선택 화면
   List<Widget> actionChoiceContainer(
@@ -183,6 +184,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      //MARK :- 대출 금액 선택
                       SizedBox(
                         width: 230,
                         child: Column(
@@ -192,6 +194,29 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                 style: Constants.defaultTextStyle
                                     .copyWith(fontSize: 16)),
                             const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                singleChoiceButton(
+                                    title: "신용 대출",
+                                    isSelected: isSelected,
+                                    onPressed: () {
+                                      setState(() {
+                                        isSelected = true;
+                                      });
+                                    }),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                singleChoiceButton(
+                                    title: "담보 대출",
+                                    isSelected: !isSelected,
+                                    onPressed: () {
+                                      setState(() {
+                                        isSelected = false;
+                                      });
+                                    }),
+                              ],
+                            ),
                             amountTile(
                                 amount: gameController.totalCash!.toDouble()),
                             const SizedBox(height: 10),
@@ -279,6 +304,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                         color: Colors.white,
                       ),
                       const SizedBox(width: 26),
+                      //MARK: - 대출 실행
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,18 +345,24 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     final item = gameController
                                         .curretnSpecificActionModel;
                                     if (item == null) return;
-                                    if (item.title == "신용대출") {
-                                      debugPrint("신용");
-                                      await gameController.creditLoanAction(
-                                        title: item.title,
-                                        price: currentLoanAmount.toInt(),
-                                      );
+                                    if (item.title == "대출") {
+                                      // TODO - 대출 액션
+                                      if (item.title == "신용대출") {
+                                        debugPrint("신용");
+                                        await gameController.creditLoanAction(
+                                          title: item.title,
+                                          price: currentLoanAmount.toInt(),
+                                        );
+                                      } else {
+                                        debugPrint("담보");
+                                        await gameController
+                                            .mortgagesLoanAction(
+                                          title: item.title,
+                                          price: currentLoanAmount.toInt(),
+                                        );
+                                      }
                                     } else {
-                                      debugPrint("담보");
-                                      await gameController.mortgagesLoanAction(
-                                        title: item.title,
-                                        price: currentLoanAmount.toInt(),
-                                      );
+                                      // TODO - 상환 액션
                                     }
 
                                     gameController.isActionChoicing = false;
@@ -634,6 +666,43 @@ class _GameActionDialogState extends State<GameActionDialog> {
           )
         ];
     }
+  }
+
+  CupertinoButton singleChoiceButton(
+      {required String title,
+      required bool isSelected,
+      required Function() onPressed}) {
+    return CupertinoButton(
+      onPressed: onPressed,
+      padding: EdgeInsets.zero,
+      child: Row(
+        children: [
+          Container(
+              width: 20.0,
+              height: 20.0,
+              decoration: const ShapeDecoration(
+                shape: CircleBorder(
+                  side: BorderSide(width: 1.5, color: Colors.white),
+                ),
+              ),
+              child: Center(
+                child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelected ? Colors.white : Colors.transparent)),
+              )),
+          const SizedBox(width: 16.0),
+          Text(title,
+              style: Constants.defaultTextStyle.copyWith(
+                color: Colors.white,
+                decorationColor: Constants.grey03,
+                decorationThickness: 2,
+              )),
+        ],
+      ),
+    );
   }
 
   //MARK: - 플레이어 개인 활동 설명 화면

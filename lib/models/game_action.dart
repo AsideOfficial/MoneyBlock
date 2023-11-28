@@ -176,7 +176,7 @@ final loanModel = GameAction(
     Rate(title: "담보대출", rateFluctuation: [7, 5])
   ],
   actions: [
-    SpecifitGameAction(title: '신용대출', items: [
+    SpecifitGameAction(title: '대출', items: [
       GameActionItem(
           title: "신용대출21", description: "신용대출 상품 1에 대한 설명", price: 100000),
       GameActionItem(
@@ -186,7 +186,7 @@ final loanModel = GameAction(
       GameActionItem(
           title: "신용대출4", description: "신용대출 상품 1에 대한 설명", price: 1000000),
     ]),
-    SpecifitGameAction(title: '담보대출', items: [
+    SpecifitGameAction(title: '상환', items: [
       GameActionItem(
           title: "담보대출1", description: "담보대출 상품 1에 대한 설명", price: 100000),
       GameActionItem(
