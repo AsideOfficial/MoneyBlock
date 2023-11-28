@@ -88,7 +88,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                             ),
                           ),
                           width: 220,
-                          height: 270,
+                          height: 292,
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 18, left: 16, right: 16, bottom: 5),
@@ -137,9 +137,6 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                     title: "총",
                                     price: gameController.totalAsset),
                                 const SizedBox(height: 10),
-                                Container(
-                                    height: 1, color: const Color(0xFFC5C5C5)),
-                                const SizedBox(height: 6),
                               ],
                             ),
                           ),
@@ -149,7 +146,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                         ),
                         Expanded(
                           child: Container(
-                            height: 300,
+                            height: 292,
                             decoration: ShapeDecoration(
                               gradient: Constants.grey00BottomGradient,
                               shape: RoundedRectangleBorder(
@@ -189,7 +186,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                       const EdgeInsets.only(
                                                           top: 6,
                                                           left: 8,
-                                                          bottom: 10),
+                                                          bottom: 0),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -253,7 +250,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                       const EdgeInsets.only(
                                                           top: 6,
                                                           left: 8,
-                                                          bottom: 10),
+                                                          bottom: 0),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment

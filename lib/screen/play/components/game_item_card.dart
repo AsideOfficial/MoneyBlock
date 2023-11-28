@@ -120,7 +120,7 @@ class SavingCard extends StatelessWidget {
       child: Container(
         clipBehavior: Clip.antiAlias,
         width: 140,
-        height: 148,
+        height: 160,
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -156,7 +156,7 @@ class SavingCard extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 94,
+            height: 102,
             child: child,
           )
         ]),
