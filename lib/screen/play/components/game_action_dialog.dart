@@ -25,6 +25,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
   double cash = 1000000;
   double currentAmount = 0;
   double currentLoanAmount = 0;
+  double height = 276;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 gradient: gameController.currentBackgroundGradient,
                 strokePadding: const EdgeInsets.all(5),
                 width: 170,
-                height: 250,
+                height: height,
                 // alignment: Alignment.center,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +108,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               gradient: Constants.greyGradient,
               strokePadding: const EdgeInsets.all(5),
               width: 180,
-              height: 250,
+              height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 18, left: 10, right: 10, bottom: 5),
@@ -200,7 +201,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               width: (gameController.currentActionType != GameActionType.expend)
                   ? 340
                   : 530,
-              height: 250,
+              height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 24, left: 30, right: 10, bottom: 10),
@@ -228,7 +229,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           gameController.curretnSpecificActionModel == null)
                       ? 340
                       : 530,
-              height: 250,
+              height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 24, left: 30, right: 10, bottom: 10),
@@ -344,7 +345,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               gradient: gameController.currentBackgroundGradient,
               strokePadding: const EdgeInsets.all(5),
               width: 530,
-              height: 250,
+              height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 24, left: 30, right: 10, bottom: 12),
@@ -620,7 +621,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               gradient: gameController.currentBackgroundGradient,
               strokePadding: const EdgeInsets.all(5),
               width: 530,
-              height: 250,
+              height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 24, left: 30, right: 10, bottom: 12),

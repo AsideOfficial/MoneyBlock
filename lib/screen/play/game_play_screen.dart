@@ -90,7 +90,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       flex: 530,
                       child: GestureDetector(
                         onTap: () {
-                          Get.dialog(NewsDialog(actionTitle: "닫기"),
+                          Get.dialog(const NewsDialog(actionTitle: "닫기"),
                               useSafeArea: false);
                         },
                         child: Container(
@@ -273,11 +273,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
             if (gameController.isActionChoicing)
               const Column(
                 children: [
-                  SizedBox(
-                    height: 40,
-                  ),
+                  SizedBox(height: 30),
                   // showActtionDialog()
-                  GameActionDialog(),
+                  Center(child: GameActionDialog()),
                 ],
               ),
             // else if (gameController.isActionChoicing &&

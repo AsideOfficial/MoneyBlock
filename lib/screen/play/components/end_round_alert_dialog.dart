@@ -420,7 +420,7 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                             await controller.salaryAndIncentive();
                             setState(() => isLoading = false);
                             Get.back();
-                            Get.dialog(NewsDialog(),
+                            Get.dialog(const NewsDialog(),
                                 barrierDismissible: false,
                                 useSafeArea: false,
                                 name: "뉴스");
@@ -472,68 +472,71 @@ class _NewsDialogState extends State<NewsDialog> {
               padding: const EdgeInsets.only(
                   top: 20, left: 30, right: 30, bottom: 18),
               child: GetX<GameController>(builder: (controller) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                return Stack(
+                  alignment: Alignment.bottomRight,
                   children: [
-                    Text("뉴스",
-                        style: Constants.titleTextStyle
-                            .copyWith(color: Colors.black)),
-                    const SizedBox(height: 24),
-                    Text('"${controller.currentNews?.headline}"',
-                        style: Constants.defaultTextStyle
-                            .copyWith(color: Colors.black, fontSize: 18)),
-                    const SizedBox(height: 16),
-                    Row(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(controller.currentNews?.article1 ?? "",
-                              style: Constants.defaultTextStyle.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  height: 1.25)),
+                        Text("뉴스",
+                            style: Constants.titleTextStyle
+                                .copyWith(color: Colors.black)),
+                        const SizedBox(height: 12),
+                        Text('"${controller.currentNews?.headline}"',
+                            style: Constants.defaultTextStyle
+                                .copyWith(color: Colors.black, fontSize: 18)),
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  controller.currentNews?.article1 ?? "",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      height: 1.25)),
+                            ),
+                            const SizedBox(width: 30),
+                            Expanded(
+                              child: Text(
+                                  controller.currentNews?.article2 ?? '',
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      height: 1.25)),
+                            ),
+                            const SizedBox(width: 30),
+                            Expanded(
+                              child: Text(
+                                  controller.currentNews?.article3 ?? "",
+                                  style: Constants.defaultTextStyle.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      height: 1.25)),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 30),
-                        Expanded(
-                          child: Text(controller.currentNews?.article2 ?? '',
-                              style: Constants.defaultTextStyle.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  height: 1.25)),
-                        ),
-                        const SizedBox(width: 30),
-                        Expanded(
-                          child: Text(controller.currentNews?.article3 ?? "",
-                              style: Constants.defaultTextStyle.copyWith(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  height: 1.25)),
-                        ),
+                        const Spacer(),
                       ],
                     ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        Bounceable(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              SizedBox(
-                                  width: 230,
-                                  height: 50,
-                                  child: Image.asset(
-                                      "assets/components/continue_button.png")),
-                              Text(widget.actionTitle ?? "",
-                                  style: Constants.titleTextStyle
-                                      .copyWith(fontSize: 22)),
-                            ],
-                          ),
-                        ),
-                      ],
+                    Bounceable(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                              width: 230,
+                              height: 50,
+                              child: Image.asset(
+                                  "assets/components/continue_button.png")),
+                          Text(widget.actionTitle ?? "",
+                              style: Constants.titleTextStyle
+                                  .copyWith(fontSize: 22)),
+                        ],
+                      ),
                     ),
                   ],
                 );
