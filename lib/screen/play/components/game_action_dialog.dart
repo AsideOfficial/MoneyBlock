@@ -25,7 +25,765 @@ class _GameActionDialogState extends State<GameActionDialog> {
   double cash = 1000000;
   double currentAmount = 0;
   double currentLoanAmount = 0;
-  double height = 276;
+  double height = 280;
+
+  //MARK: - 플레이어 개인 활동 선택 화면
+  List<Widget> actionChoiceContainer(
+      GameActionType actionType, GameController gameController) {
+    switch (actionType) {
+      case GameActionType.expend:
+      case GameActionType.investment:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: (gameController.currentActionType != GameActionType.expend)
+                ? 340
+                : 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(gameController.curretnSpecificActionModel?.title ?? "",
+                      style: Constants.titleTextStyle),
+                  const SizedBox(height: 6),
+                  Text(
+                      "어떤 ${gameController.curretnSpecificActionModel?.title}를 하시겠습니까?",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 140,
+                    width: 600,
+                    child: ListView.builder(
+                        controller: ScrollController(initialScrollOffset: 58),
+                        scrollDirection: Axis.horizontal,
+                        key: UniqueKey(),
+                        itemCount: gameController
+                            .curretnSpecificActionModel?.items.length,
+                        // itemExtent: 120,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final item = gameController
+                              .curretnSpecificActionModel?.items[index];
+                          final evaluatedPrice = (item!.price *
+                                  gameController.currentTotalInvestmentRate)
+                              .toInt();
+                          return Bounceable(
+                            onTap: () {
+                              if (gameController.currentActionType ==
+                                  GameActionType.investment) {
+                                Get.dialog(PurchaseAlertDialog(
+                                  isMultiple: (gameController
+                                              .curretnSpecificActionModel
+                                              ?.title ==
+                                          "부동산")
+                                      ? false
+                                      : true,
+                                  title:
+                                      "${gameController.curretnSpecificActionModel?.title} 매수",
+                                  subTitle: item.title,
+                                  perPrice: evaluatedPrice,
+                                  actionTitle: "매수",
+                                  onPurchase: (count) async {
+                                    //TODO - 투자 API 연동 필요 ✅
+
+                                    // if (item == null) return;
+                                    if (gameController.totalCash! <
+                                        (item.price * count)) return;
+                                    await gameController.investAction(
+                                        title: item.title,
+                                        price: item.price,
+                                        evealuatedPrice: (item.price *
+                                                gameController
+                                                    .currentTotalInvestmentRate)
+                                            .toInt(),
+                                        qty: count);
+
+                                    gameController.isActionChoicing = false;
+                                  },
+                                ));
+                              } else {
+                                Get.dialog(PurchaseAlertDialog(
+                                  title: "구입",
+                                  subTitle: item.title,
+                                  perPrice: item.price,
+                                  actionTitle: "구입",
+                                  onPurchase: (count) async {
+                                    //TODO - 지출 API 연동 필요 ✅
+                                    if (gameController.totalCash! <
+                                        (item.price * count)) return;
+                                    await gameController.expendAction(
+                                      title: item.title,
+                                      price: item.price,
+                                    );
+
+                                    gameController.isActionChoicing = false;
+                                  },
+                                ));
+                              }
+                            },
+                            child: (gameController.currentActionType ==
+                                    GameActionType.investment)
+                                ? GameItemCard(
+                                    item: item,
+                                    evaluatedPrice: evaluatedPrice,
+                                    priceTitle: gameController
+                                            .curretnSpecificActionModel
+                                            ?.priceTitle ??
+                                        "",
+                                    accentColor:
+                                        gameController.currentCardColor,
+                                  )
+                                : GameItemCard(
+                                    item: item,
+                                    accentColor:
+                                        gameController.currentCardColor,
+                                  ),
+                          );
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ];
+      case GameActionType.loan:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          gameController.curretnSpecificActionModel?.title ??
+                              "",
+                          style: Constants.titleTextStyle),
+                      const SizedBox(width: 12),
+                      Text(
+                          "금리: ${gameController.curretnSpecificActionModel?.title == "신용대출" ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 18)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 230,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("보유현금",
+                                style: Constants.defaultTextStyle
+                                    .copyWith(fontSize: 16)),
+                            const SizedBox(height: 4),
+                            amountTile(
+                                amount: gameController.totalCash!.toDouble()),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 170,
+                                  child: Column(
+                                    children: [
+                                      SfSliderTheme(
+                                        data: SfSliderThemeData(
+                                          activeTrackHeight: 3,
+                                          inactiveTrackHeight: 3,
+                                          trackCornerRadius: 2,
+                                          activeTrackColor:
+                                              Colors.white.withOpacity(0.8),
+                                          inactiveTrackColor:
+                                              const Color(0xFF8A3200),
+                                        ),
+                                        child: SfSlider(
+                                          value: currentLoanAmount,
+                                          min: gameController.totalCash! / 2,
+                                          max: gameController.totalCash! * 2,
+                                          stepSize: 10000,
+                                          enableTooltip: false,
+                                          showLabels: false,
+                                          showTicks: false,
+                                          thumbIcon: Container(
+                                            width: 18,
+                                            height: 18,
+                                            decoration: const ShapeDecoration(
+                                              gradient:
+                                                  Constants.orangeGradient,
+                                              shape: OvalBorder(
+                                                side: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.white),
+                                              ),
+                                              shadows: [
+                                                BoxShadow(
+                                                  color: Color(0x3F000000),
+                                                  blurRadius: 1,
+                                                  offset: Offset(0, 1),
+                                                  spreadRadius: 0,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              currentLoanAmount = value;
+                                            });
+
+                                            debugPrint(value.toString());
+                                          },
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text("0.5배",
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(fontSize: 10)),
+                                          const Spacer(),
+                                          Text("2배",
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(fontSize: 10)),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                    "${((currentLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
+                                    style: Constants.defaultTextStyle
+                                        .copyWith(fontSize: 18)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Container(
+                        width: 1,
+                        height: 150,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 26),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text("대출금액",
+                                      style: Constants.defaultTextStyle),
+                                  const SizedBox(width: 8),
+                                  amountTile(
+                                      amount: currentLoanAmount, width: 100),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
+                              const Text(
+                                "※다음 턴에 주어지는 이자입니다.",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                          Bounceable(
+                              onTap: () {
+                                Get.dialog(PurchaseAlertDialog(
+                                  title:
+                                      "${gameController.curretnSpecificActionModel?.title}",
+                                  subTitle:
+                                      "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                  perPrice: currentLoanAmount.toInt(),
+                                  actionTitle: "대출하기",
+                                  primaryActionColor: Constants.cardOrange,
+                                  onPurchase: (count) async {
+                                    //TODO - API - 대출 실행 금액 = currentAmount
+                                    final item = gameController
+                                        .curretnSpecificActionModel;
+                                    if (item == null) return;
+                                    if (item.title == "신용대출") {
+                                      debugPrint("신용");
+                                      await gameController.creditLoanAction(
+                                        title: item.title,
+                                        price: currentLoanAmount.toInt(),
+                                      );
+                                    } else {
+                                      debugPrint("담보");
+                                      await gameController.mortgagesLoanAction(
+                                        title: item.title,
+                                        price: currentLoanAmount.toInt(),
+                                      );
+                                    }
+
+                                    gameController.isActionChoicing = false;
+                                  },
+                                ));
+                              },
+                              child: SizedBox(
+                                width: 184,
+                                height: 50,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                        "assets/icons/button_long_orange.png"),
+                                    Center(
+                                      child: Text("대출하기",
+                                          style: Constants.largeTextStyle),
+                                    )
+                                  ],
+                                ),
+                              ))
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ];
+      case GameActionType.saving:
+        return [
+          //MARK: - 저축 활동
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          gameController.curretnSpecificActionModel?.title ??
+                              "",
+                          style: Constants.titleTextStyle),
+                      const SizedBox(width: 12),
+                      // TODO - API - 금리 연동
+                      Text(
+                          "금리: ${gameController.curretnSpecificActionModel?.title == "예금" ? "${gameController.currentSavingRate}%" : "${gameController.currentSavingRate + 2}%"}",
+                          style: Constants.defaultTextStyle
+                              .copyWith(fontSize: 18)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 230,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("보유현금",
+                                style: Constants.defaultTextStyle
+                                    .copyWith(fontSize: 16)),
+                            const SizedBox(height: 4),
+                            amountTile(
+                                amount: gameController.totalCash!.toDouble()),
+                            const SizedBox(height: 10),
+                            Text(
+                                "${gameController.curretnSpecificActionModel?.title}금액",
+                                style: Constants.defaultTextStyle
+                                    .copyWith(fontSize: 16)),
+                            const SizedBox(height: 4),
+                            amountTile(amount: currentAmount),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 180,
+                                  child: Column(
+                                    children: [
+                                      SfSliderTheme(
+                                        data: SfSliderThemeData(
+                                          activeTrackHeight: 3,
+                                          inactiveTrackHeight: 3,
+                                          trackCornerRadius: 2,
+                                          activeTrackColor:
+                                              Colors.white.withOpacity(0.8),
+                                          inactiveTrackColor:
+                                              const Color(0xFF257300),
+                                        ),
+                                        child: SfSlider(
+                                          value: currentAmount,
+                                          min: 0,
+                                          max: gameController.totalCash,
+                                          stepSize: 10000,
+                                          enableTooltip: false,
+                                          showLabels: false,
+                                          showTicks: false,
+                                          thumbIcon: Container(
+                                            width: 18,
+                                            height: 18,
+                                            decoration: const ShapeDecoration(
+                                              gradient: Constants.greenGradient,
+                                              shape: OvalBorder(
+                                                side: BorderSide(
+                                                    width: 0.5,
+                                                    color: Colors.white),
+                                              ),
+                                              shadows: [
+                                                BoxShadow(
+                                                  color: Color(0x3F000000),
+                                                  blurRadius: 1,
+                                                  offset: Offset(0, 1),
+                                                  spreadRadius: 0,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              currentAmount = value;
+                                            });
+
+                                            debugPrint(value.toString());
+                                          },
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text("0%",
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(fontSize: 10)),
+                                          const Spacer(),
+                                          Text("100%",
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(fontSize: 10)),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                    "${((currentAmount / cash) * 100).toInt()}%",
+                                    style: Constants.defaultTextStyle
+                                        .copyWith(fontSize: 18)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Container(
+                        width: 1,
+                        height: 150,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 26),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (gameController
+                                  .curretnSpecificActionModel?.title ==
+                              "적금")
+                            SizedBox(
+                              width: 190,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text("턴당 이자",
+                                          style: Constants.defaultTextStyle),
+                                      const Spacer(),
+                                      amountTile(
+                                          amount: currentAmount *
+                                              (gameController
+                                                      .currentSavingRate +
+                                                  2) /
+                                              100,
+                                          width: 100),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("총 이자",
+                                          style: Constants.defaultTextStyle),
+                                      amountTile(
+                                          amount: currentAmount *
+                                              (gameController
+                                                      .currentSavingRate +
+                                                  2) /
+                                              100 *
+                                              3,
+                                          width: 100),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    "※다음 라운드에 주어지는 이자입니다.",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text("예상 이자",
+                                        style: Constants.defaultTextStyle),
+                                    const SizedBox(width: 8),
+                                    amountTile(
+                                        amount: currentAmount *
+                                            (gameController.currentSavingRate) /
+                                            100,
+                                        width: 100),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  "※다음 턴에 주어지는 이자입니다.",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 32),
+                          Bounceable(
+                              onTap: () {
+                                Get.dialog(PurchaseAlertDialog(
+                                  title: gameController
+                                          .curretnSpecificActionModel?.title ??
+                                      "",
+                                  subTitle:
+                                      "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                  perPrice: currentAmount.toInt(),
+                                  primaryActionColor: Constants.cardGreen,
+                                  actionTitle:
+                                      "${gameController.curretnSpecificActionModel?.title}하기",
+                                  onPurchase: (count) async {
+                                    // TODO - 예금, 적금 API 연동 필요 금액 = currentAmout
+                                    final item = gameController
+                                        .curretnSpecificActionModel;
+                                    if (item == null) return;
+                                    if (gameController.totalCash! <
+                                        (currentAmount)) return;
+                                    if (item.title == "예금") {
+                                      await gameController.shortSavingAction(
+                                        title: item.title,
+                                        price: currentAmount.toInt(),
+                                      );
+
+                                      gameController.isActionChoicing = false;
+                                    } else if (item.title == "적금") {
+                                      await gameController.longSavingAction(
+                                        title: item.title,
+                                        price: currentAmount.toInt(),
+                                      );
+
+                                      gameController.isActionChoicing = false;
+                                    }
+                                  },
+                                ));
+                              },
+                              child: SizedBox(
+                                width: 184,
+                                height: 50,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                        "assets/icons/button_long_green.png"),
+                                    Center(
+                                      child: Text(
+                                          "${gameController.curretnSpecificActionModel?.title}하기",
+                                          style: Constants.largeTextStyle),
+                                    )
+                                  ],
+                                ),
+                              ))
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ];
+    }
+  }
+
+  //MARK: - 플레이어 개인 활동 설명 화면
+  List<Widget> actionDescriptionContainer(
+      GameActionType actionType, GameController gameController) {
+    switch (actionType) {
+      case GameActionType.expend:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${gameController.currentActionTypeModel.title} 활동",
+                      style: Constants.titleTextStyle),
+                  const SizedBox(height: 18),
+                  Text(gameController.currentActionTypeModel.description,
+                      maxLines: 3,
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, height: 2)),
+                ],
+              ),
+            ),
+          )
+        ];
+      case GameActionType.investment:
+      case GameActionType.loan:
+      case GameActionType.saving:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: Constants.greyGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 180,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 18, left: 10, right: 10, bottom: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(gameController.currentActionTypeModel.rateTitle ?? "",
+                      style: Constants.titleTextStyle
+                          .copyWith(color: Constants.dark100)),
+                  const SizedBox(height: 18),
+                  Text(
+                      "${gameController.currentActionTypeModel.rateTitle ?? ""}란?",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, color: Constants.dark100)),
+                  const SizedBox(height: 8),
+                  Text(
+                      gameController.currentActionTypeModel.rateDescription ??
+                          "",
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, color: Constants.dark100)),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 90,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("지난 라운드",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 10, color: Constants.dark100)),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Container(
+                            width: 1, height: 16, color: Constants.dark100),
+                      ),
+                      Expanded(
+                        flex: 60,
+                        child: Text("이번 라운드",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 10, color: Constants.dark100)),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Container(height: 1, color: const Color(0xFFABABAB)),
+                  const SizedBox(height: 4),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          gameController.currentActionTypeModel.rates?.length ??
+                              0,
+                      itemBuilder: (context, index) {
+                        final rate =
+                            gameController.currentActionTypeModel.rates?[index];
+                        final actionType = gameController.currentActionType;
+                        double before =
+                            gameController.previousRate(actionType: actionType);
+                        double after =
+                            gameController.currentRate(actionType: actionType);
+                        if (rate?.title == "저축금리") {
+                          before += 2;
+                        } else if (rate?.title == "담보대출") {
+                          before -= 1;
+                        }
+
+                        return RateListTile2(
+                            title: rate?.title ?? "",
+                            rate: before,
+                            isHigherThanBefore: (before < after));
+                      }),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 340,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("${gameController.currentActionTypeModel.title} 활동",
+                      style: Constants.titleTextStyle),
+                  const SizedBox(height: 18),
+                  Text(gameController.currentActionTypeModel.description,
+                      maxLines: 3,
+                      style: Constants.defaultTextStyle
+                          .copyWith(fontSize: 16, height: 2)),
+                ],
+              ),
+            ),
+          )
+        ];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,730 +859,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
             ],
           ),
           const SizedBox(width: 12),
-          if (gameController.currentActionType != GameActionType.expend &&
-              gameController.curretnSpecificActionModel == null)
-            MCContainer(
-              borderRadius: 20,
-              gradient: Constants.greyGradient,
-              strokePadding: const EdgeInsets.all(5),
-              width: 180,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 18, left: 10, right: 10, bottom: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(gameController.currentActionTypeModel.rateTitle ?? "",
-                        style: Constants.titleTextStyle
-                            .copyWith(color: Constants.dark100)),
-                    const SizedBox(height: 18),
-                    Text(
-                        "${gameController.currentActionTypeModel.rateTitle ?? ""}란?",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 16, color: Constants.dark100)),
-                    const SizedBox(height: 8),
-                    Text(
-                        gameController.currentActionTypeModel.rateDescription ??
-                            "",
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 16, color: Constants.dark100)),
-                    const SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text("지난 라운드",
-                                  style: Constants.defaultTextStyle.copyWith(
-                                      fontSize: 10, color: Constants.dark100)),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Container(
-                              width: 1, height: 16, color: Constants.dark100),
-                        ),
-                        Expanded(
-                          flex: 60,
-                          child: Text("이번 라운드",
-                              style: Constants.defaultTextStyle.copyWith(
-                                  fontSize: 10, color: Constants.dark100)),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Container(height: 1, color: const Color(0xFFABABAB)),
-                    const SizedBox(height: 4),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: gameController
-                                .currentActionTypeModel.rates?.length ??
-                            0,
-                        itemBuilder: (context, index) {
-                          final rate = gameController
-                              .currentActionTypeModel.rates?[index];
-                          final actionType = gameController.currentActionType;
-                          double before = gameController.previousRate(
-                              actionType: actionType);
-                          double after = gameController.currentRate(
-                              actionType: actionType);
-                          if (rate?.title == "저축금리") {
-                            before += 2;
-                          } else if (rate?.title == "담보대출") {
-                            before -= 1;
-                          }
-
-                          return RateListTile2(
-                              title: rate?.title ?? "",
-                              rate: before,
-                              isHigherThanBefore: (before < after));
-                        }),
-                  ],
-                ),
-              ),
-            ),
-          if (gameController.currentActionType != GameActionType.expend &&
-              gameController.curretnSpecificActionModel == null)
-            const SizedBox(
-              width: 12,
-            ),
           if (gameController.curretnSpecificActionModel == null)
-            MCContainer(
-              borderRadius: 20,
-              gradient: gameController.currentBackgroundGradient,
-              strokePadding: const EdgeInsets.all(5),
-              width: (gameController.currentActionType != GameActionType.expend)
-                  ? 340
-                  : 530,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("${model.title} 활동", style: Constants.titleTextStyle),
-                    const SizedBox(height: 18),
-                    Text(model.description,
-                        maxLines: 3,
-                        style: Constants.defaultTextStyle
-                            .copyWith(fontSize: 16, height: 2)),
-                  ],
-                ),
-              ),
-            )
-          else if (gameController.currentActionType == GameActionType.expend ||
-              gameController.currentActionType == GameActionType.investment)
-            MCContainer(
-              borderRadius: 20,
-              gradient: gameController.currentBackgroundGradient,
-              strokePadding: const EdgeInsets.all(5),
-              width:
-                  (gameController.currentActionType != GameActionType.expend &&
-                          gameController.curretnSpecificActionModel == null)
-                      ? 340
-                      : 530,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(specificActionModel?.title ?? "",
-                        style: Constants.titleTextStyle),
-                    const SizedBox(height: 6),
-                    Text("어떤 ${specificActionModel?.title}를 하시겠습니까?",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 16)),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 140,
-                      width: 600,
-                      child: ListView.builder(
-                          controller: ScrollController(initialScrollOffset: 58),
-                          scrollDirection: Axis.horizontal,
-                          key: UniqueKey(),
-                          itemCount: gameController
-                              .curretnSpecificActionModel?.items.length,
-                          // itemExtent: 120,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            final item = gameController
-                                .curretnSpecificActionModel?.items[index];
-                            final evaluatedPrice = (item!.price *
-                                    gameController.currentTotalInvestmentRate)
-                                .toInt();
-                            return Bounceable(
-                              onTap: () {
-                                if (gameController.currentActionType ==
-                                    GameActionType.investment) {
-                                  Get.dialog(PurchaseAlertDialog(
-                                    isMultiple: (gameController
-                                                .curretnSpecificActionModel
-                                                ?.title ==
-                                            "부동산")
-                                        ? false
-                                        : true,
-                                    title:
-                                        "${gameController.curretnSpecificActionModel?.title} 매수",
-                                    subTitle: item.title,
-                                    perPrice: evaluatedPrice,
-                                    actionTitle: "매수",
-                                    onPurchase: (count) async {
-                                      //TODO - 투자 API 연동 필요 ✅
-
-                                      // if (item == null) return;
-                                      if (gameController.totalCash! <
-                                          (item.price * count)) return;
-                                      await gameController.investAction(
-                                          title: item.title,
-                                          price: item.price,
-                                          evealuatedPrice: (item.price *
-                                                  gameController
-                                                      .currentTotalInvestmentRate)
-                                              .toInt(),
-                                          qty: count);
-
-                                      gameController.isActionChoicing = false;
-                                    },
-                                  ));
-                                } else {
-                                  Get.dialog(PurchaseAlertDialog(
-                                    title: "구입",
-                                    subTitle: item.title,
-                                    perPrice: item.price,
-                                    actionTitle: "구입",
-                                    onPurchase: (count) async {
-                                      //TODO - 지출 API 연동 필요 ✅
-                                      if (gameController.totalCash! <
-                                          (item.price * count)) return;
-                                      await gameController.expendAction(
-                                        title: item.title,
-                                        price: item.price,
-                                      );
-
-                                      gameController.isActionChoicing = false;
-                                    },
-                                  ));
-                                }
-                              },
-                              child: (gameController.currentActionType ==
-                                      GameActionType.investment)
-                                  ? GameItemCard(
-                                      item: item,
-                                      evaluatedPrice: evaluatedPrice,
-                                      priceTitle: gameController
-                                              .curretnSpecificActionModel
-                                              ?.priceTitle ??
-                                          "",
-                                      accentColor:
-                                          gameController.currentCardColor,
-                                    )
-                                  : GameItemCard(
-                                      item: item,
-                                      accentColor:
-                                          gameController.currentCardColor,
-                                    ),
-                            );
-                          }),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (gameController.currentActionType == GameActionType.saving)
-            //MARK: - 저축 활동
-            MCContainer(
-              borderRadius: 20,
-              gradient: gameController.currentBackgroundGradient,
-              strokePadding: const EdgeInsets.all(5),
-              width: 530,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                            gameController.curretnSpecificActionModel?.title ??
-                                "",
-                            style: Constants.titleTextStyle),
-                        const SizedBox(width: 12),
-                        // TODO - API - 금리 연동
-                        Text(
-                            "금리: ${gameController.curretnSpecificActionModel?.title == "예금" ? "${gameController.currentSavingRate}%" : "${gameController.currentSavingRate + 2}%"}",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 18)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 230,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("보유현금",
-                                  style: Constants.defaultTextStyle
-                                      .copyWith(fontSize: 16)),
-                              const SizedBox(height: 4),
-                              amountTile(
-                                  amount: gameController.totalCash!.toDouble()),
-                              const SizedBox(height: 10),
-                              Text(
-                                  "${gameController.curretnSpecificActionModel?.title}금액",
-                                  style: Constants.defaultTextStyle
-                                      .copyWith(fontSize: 16)),
-                              const SizedBox(height: 4),
-                              amountTile(amount: currentAmount),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 180,
-                                    child: Column(
-                                      children: [
-                                        SfSliderTheme(
-                                          data: SfSliderThemeData(
-                                            activeTrackHeight: 3,
-                                            inactiveTrackHeight: 3,
-                                            trackCornerRadius: 2,
-                                            activeTrackColor:
-                                                Colors.white.withOpacity(0.8),
-                                            inactiveTrackColor:
-                                                const Color(0xFF257300),
-                                          ),
-                                          child: SfSlider(
-                                            value: currentAmount,
-                                            min: 0,
-                                            max: gameController.totalCash,
-                                            stepSize: 10000,
-                                            enableTooltip: false,
-                                            showLabels: false,
-                                            showTicks: false,
-                                            thumbIcon: Container(
-                                              width: 18,
-                                              height: 18,
-                                              decoration: const ShapeDecoration(
-                                                gradient:
-                                                    Constants.greenGradient,
-                                                shape: OvalBorder(
-                                                  side: BorderSide(
-                                                      width: 0.5,
-                                                      color: Colors.white),
-                                                ),
-                                                shadows: [
-                                                  BoxShadow(
-                                                    color: Color(0x3F000000),
-                                                    blurRadius: 1,
-                                                    offset: Offset(0, 1),
-                                                    spreadRadius: 0,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                currentAmount = value;
-                                              });
-
-                                              debugPrint(value.toString());
-                                            },
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text("0%",
-                                                style: Constants
-                                                    .defaultTextStyle
-                                                    .copyWith(fontSize: 10)),
-                                            const Spacer(),
-                                            Text("100%",
-                                                style: Constants
-                                                    .defaultTextStyle
-                                                    .copyWith(fontSize: 10)),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                      "${((currentAmount / cash) * 100).toInt()}%",
-                                      style: Constants.defaultTextStyle
-                                          .copyWith(fontSize: 18)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Container(
-                          width: 1,
-                          height: 150,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 26),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (gameController
-                                    .curretnSpecificActionModel?.title ==
-                                "적금")
-                              SizedBox(
-                                width: 190,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text("턴당 이자",
-                                            style: Constants.defaultTextStyle),
-                                        const Spacer(),
-                                        amountTile(
-                                            amount: currentAmount *
-                                                (gameController
-                                                        .currentSavingRate +
-                                                    2) /
-                                                100,
-                                            width: 100),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("총 이자",
-                                            style: Constants.defaultTextStyle),
-                                        amountTile(
-                                            amount: currentAmount *
-                                                (gameController
-                                                        .currentSavingRate +
-                                                    2) /
-                                                100 *
-                                                3,
-                                            width: 100),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 2),
-                                    const Text(
-                                      "※다음 라운드에 주어지는 이자입니다.",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text("예상 이자",
-                                          style: Constants.defaultTextStyle),
-                                      const SizedBox(width: 8),
-                                      amountTile(
-                                          amount: currentAmount *
-                                              (gameController
-                                                  .currentSavingRate) /
-                                              100,
-                                          width: 100),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  const Text(
-                                    "※다음 턴에 주어지는 이자입니다.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            const SizedBox(height: 32),
-                            Bounceable(
-                                onTap: () {
-                                  Get.dialog(PurchaseAlertDialog(
-                                    title: gameController
-                                            .curretnSpecificActionModel
-                                            ?.title ??
-                                        "",
-                                    subTitle:
-                                        "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                    perPrice: currentAmount.toInt(),
-                                    primaryActionColor: Constants.cardGreen,
-                                    actionTitle:
-                                        "${gameController.curretnSpecificActionModel?.title}하기",
-                                    onPurchase: (count) async {
-                                      // TODO - 예금, 적금 API 연동 필요 금액 = currentAmout
-                                      final item = gameController
-                                          .curretnSpecificActionModel;
-                                      if (item == null) return;
-                                      if (gameController.totalCash! <
-                                          (currentAmount)) return;
-                                      if (item.title == "예금") {
-                                        await gameController.shortSavingAction(
-                                          title: item.title,
-                                          price: currentAmount.toInt(),
-                                        );
-
-                                        gameController.isActionChoicing = false;
-                                      } else if (item.title == "적금") {
-                                        await gameController.longSavingAction(
-                                          title: item.title,
-                                          price: currentAmount.toInt(),
-                                        );
-
-                                        gameController.isActionChoicing = false;
-                                      }
-                                    },
-                                  ));
-                                },
-                                child: SizedBox(
-                                  width: 184,
-                                  height: 50,
-                                  child: Stack(
-                                    children: [
-                                      Image.asset(
-                                          "assets/icons/button_long_green.png"),
-                                      Center(
-                                        child: Text(
-                                            "${gameController.curretnSpecificActionModel?.title}하기",
-                                            style: Constants.largeTextStyle),
-                                      )
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            )
-          //MARK: - loan 대출 활동
+            ...actionDescriptionContainer(
+                gameController.currentActionType, gameController)
           else
-            MCContainer(
-              borderRadius: 20,
-              gradient: gameController.currentBackgroundGradient,
-              strokePadding: const EdgeInsets.all(5),
-              width: 530,
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                            gameController.curretnSpecificActionModel?.title ??
-                                "",
-                            style: Constants.titleTextStyle),
-                        const SizedBox(width: 12),
-                        Text(
-                            "금리: ${gameController.curretnSpecificActionModel?.title == "신용대출" ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 18)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 230,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("보유현금",
-                                  style: Constants.defaultTextStyle
-                                      .copyWith(fontSize: 16)),
-                              const SizedBox(height: 4),
-                              amountTile(
-                                  amount: gameController.totalCash!.toDouble()),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 170,
-                                    child: Column(
-                                      children: [
-                                        SfSliderTheme(
-                                          data: SfSliderThemeData(
-                                            activeTrackHeight: 3,
-                                            inactiveTrackHeight: 3,
-                                            trackCornerRadius: 2,
-                                            activeTrackColor:
-                                                Colors.white.withOpacity(0.8),
-                                            inactiveTrackColor:
-                                                const Color(0xFF8A3200),
-                                          ),
-                                          child: SfSlider(
-                                            value: currentLoanAmount,
-                                            min: gameController.totalCash! / 2,
-                                            max: gameController.totalCash! * 2,
-                                            stepSize: 10000,
-                                            enableTooltip: false,
-                                            showLabels: false,
-                                            showTicks: false,
-                                            thumbIcon: Container(
-                                              width: 18,
-                                              height: 18,
-                                              decoration: const ShapeDecoration(
-                                                gradient:
-                                                    Constants.orangeGradient,
-                                                shape: OvalBorder(
-                                                  side: BorderSide(
-                                                      width: 0.5,
-                                                      color: Colors.white),
-                                                ),
-                                                shadows: [
-                                                  BoxShadow(
-                                                    color: Color(0x3F000000),
-                                                    blurRadius: 1,
-                                                    offset: Offset(0, 1),
-                                                    spreadRadius: 0,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                currentLoanAmount = value;
-                                              });
-
-                                              debugPrint(value.toString());
-                                            },
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text("0.5배",
-                                                style: Constants
-                                                    .defaultTextStyle
-                                                    .copyWith(fontSize: 10)),
-                                            const Spacer(),
-                                            Text("2배",
-                                                style: Constants
-                                                    .defaultTextStyle
-                                                    .copyWith(fontSize: 10)),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                      "${((currentLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
-                                      style: Constants.defaultTextStyle
-                                          .copyWith(fontSize: 18)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Container(
-                          width: 1,
-                          height: 150,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 26),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text("대출금액",
-                                        style: Constants.defaultTextStyle),
-                                    const SizedBox(width: 8),
-                                    amountTile(
-                                        amount: currentLoanAmount, width: 100),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                const Text(
-                                  "※다음 턴에 주어지는 이자입니다.",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 32),
-                            Bounceable(
-                                onTap: () {
-                                  Get.dialog(PurchaseAlertDialog(
-                                    title:
-                                        "${gameController.curretnSpecificActionModel?.title}",
-                                    subTitle:
-                                        "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                    perPrice: currentLoanAmount.toInt(),
-                                    actionTitle: "대출하기",
-                                    primaryActionColor: Constants.cardOrange,
-                                    onPurchase: (count) async {
-                                      //TODO - API - 대출 실행 금액 = currentAmount
-                                      final item = gameController
-                                          .curretnSpecificActionModel;
-                                      if (item == null) return;
-                                      if (item.title == "신용대출") {
-                                        debugPrint("신용");
-                                        await gameController.creditLoanAction(
-                                          title: item.title,
-                                          price: currentLoanAmount.toInt(),
-                                        );
-                                      } else {
-                                        debugPrint("담보");
-                                        await gameController
-                                            .mortgagesLoanAction(
-                                          title: item.title,
-                                          price: currentLoanAmount.toInt(),
-                                        );
-                                      }
-
-                                      gameController.isActionChoicing = false;
-                                    },
-                                  ));
-                                },
-                                child: SizedBox(
-                                  width: 184,
-                                  height: 50,
-                                  child: Stack(
-                                    children: [
-                                      Image.asset(
-                                          "assets/icons/button_long_orange.png"),
-                                      Center(
-                                        child: Text("대출하기",
-                                            style: Constants.largeTextStyle),
-                                      )
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ...actionChoiceContainer(
+                gameController.currentActionType, gameController),
         ],
       );
     });
