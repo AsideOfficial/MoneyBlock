@@ -62,7 +62,7 @@ class Player {
           .map((data) => Map<String, dynamic>.from(data))
           .map((json) => UserAction.fromJson(json))
           .toList(),
-      mortgagesLoan: (json['creditLoan'] as List<dynamic>?)
+      mortgagesLoan: (json['mortgagesLoan'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
           .map((json) => UserAction.fromJson(json))

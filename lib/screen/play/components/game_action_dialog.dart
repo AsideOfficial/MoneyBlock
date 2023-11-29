@@ -167,23 +167,31 @@ class _GameActionDialogState extends State<GameActionDialog> {
               height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 12),
+                    top: 24, left: 18, right: 10, bottom: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                            gameController.curretnSpecificActionModel?.title ??
-                                "",
-                            style: Constants.titleTextStyle),
-                        const SizedBox(width: 12),
-                        Text(
-                            "금리: ${isCreditLoan ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 18)),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                  gameController
+                                          .curretnSpecificActionModel?.title ??
+                                      "",
+                                  style: Constants.titleTextStyle),
+                              const SizedBox(width: 12),
+                              Text(
+                                  "금리: ${isCreditLoan ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
+                                  style: Constants.defaultTextStyle
+                                      .copyWith(fontSize: 18)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -194,114 +202,143 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  singleChoiceButton(
-                                      title: "신용 대출",
-                                      isSelected: isCreditLoan,
-                                      onPressed: () {
-                                        setState(() {
-                                          isCreditLoan = true;
-                                        });
-                                      }),
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  singleChoiceButton(
-                                      title: "담보 대출",
-                                      isSelected: !isCreditLoan,
-                                      onPressed: () {
-                                        setState(() {
-                                          isCreditLoan = false;
-                                        });
-                                      }),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        singleChoiceButton(
+                                            title: "신용 대출",
+                                            isSelected: isCreditLoan,
+                                            onPressed: () {
+                                              setState(() {
+                                                isCreditLoan = true;
+                                              });
+                                            }),
+                                        const SizedBox(
+                                          width: 12,
+                                        ),
+                                        singleChoiceButton(
+                                            title: "담보 대출",
+                                            isSelected: !isCreditLoan,
+                                            onPressed: () {
+                                              setState(() {
+                                                isCreditLoan = false;
+                                              });
+                                            }),
+                                      ],
+                                    ),
+                                    Text(isCreditLoan ? "보유현금" : "자산가치",
+                                        style: Constants.defaultTextStyle
+                                            .copyWith(fontSize: 16)),
+                                    const SizedBox(height: 4),
+                                    amountTile(
+                                        amount: isCreditLoan
+                                            ? gameController.totalCash!
+                                                .toDouble()
+                                            : gameController.totalAsset!
+                                                .toDouble()),
+                                  ],
+                                ),
                               ),
-                              Text(isCreditLoan ? "보유현금" : "자산가치",
-                                  style: Constants.defaultTextStyle
-                                      .copyWith(fontSize: 16)),
-                              const SizedBox(height: 4),
-                              amountTile(
-                                  amount: isCreditLoan
-                                      ? gameController.totalCash!.toDouble()
-                                      : gameController.totalAsset!.toDouble()),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 22),
                               if ((isCreditLoan &&
                                       gameController.totalCash! > 0) ||
                                   (!isCreditLoan &&
                                       gameController.totalAsset! > 0))
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     SizedBox(
                                       width: 170,
                                       child: Column(
+                                        // crossAxisAlignment:
+                                        //     CrossAxisAlignment.start,
                                         children: [
-                                          SfSliderTheme(
-                                            data: SfSliderThemeData(
-                                              activeTrackHeight: 3,
-                                              inactiveTrackHeight: 3,
-                                              trackCornerRadius: 2,
-                                              activeTrackColor:
-                                                  Colors.white.withOpacity(0.8),
-                                              inactiveTrackColor:
-                                                  const Color(0xFF8A3200),
-                                            ),
-                                            child: SfSlider(
-                                              value: isCreditLoan
-                                                  ? currentCreditLoanAmount
-                                                  : currentMortagagesLoanAmount,
-                                              min:
-                                                  gameController.totalCash! / 2,
-                                              max:
-                                                  gameController.totalCash! * 2,
-                                              stepSize: 10000,
-                                              enableTooltip: false,
-                                              showLabels: false,
-                                              showTicks: false,
-                                              thumbIcon: Container(
-                                                width: 18,
-                                                height: 18,
-                                                decoration:
-                                                    const ShapeDecoration(
-                                                  gradient:
-                                                      Constants.orangeGradient,
-                                                  shape: OvalBorder(
-                                                    side: BorderSide(
-                                                        width: 0.5,
-                                                        color: Colors.white),
-                                                  ),
-                                                  shadows: [
-                                                    BoxShadow(
-                                                      color: Color(0x3F000000),
-                                                      blurRadius: 1,
-                                                      offset: Offset(0, 1),
-                                                      spreadRadius: 0,
-                                                    )
-                                                  ],
-                                                ),
+                                          SizedBox(
+                                            width: 170,
+                                            child: SfSliderTheme(
+                                              data: SfSliderThemeData(
+                                                overlayRadius: 18,
+                                                activeTrackHeight: 3,
+                                                inactiveTrackHeight: 3,
+                                                trackCornerRadius: 2,
+                                                activeTrackColor: Colors.white
+                                                    .withOpacity(0.8),
+                                                inactiveTrackColor:
+                                                    const Color(0xFF8A3200),
                                               ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  currentCreditLoanAmount =
-                                                      value;
-                                                });
+                                              child: SfSlider(
+                                                value: isCreditLoan
+                                                    ? currentCreditLoanAmount
+                                                    : currentMortagagesLoanAmount,
+                                                min: gameController.totalCash! /
+                                                    2,
+                                                max: gameController.totalCash! *
+                                                    2,
+                                                stepSize: 10000,
+                                                enableTooltip: false,
+                                                showLabels: false,
+                                                showTicks: false,
+                                                thumbIcon: Container(
+                                                  width: 18,
+                                                  height: 18,
+                                                  decoration:
+                                                      const ShapeDecoration(
+                                                    gradient: Constants
+                                                        .orangeGradient,
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                          width: 0.5,
+                                                          color: Colors.white),
+                                                    ),
+                                                    shadows: [
+                                                      BoxShadow(
+                                                        color:
+                                                            Color(0x3F000000),
+                                                        blurRadius: 1,
+                                                        offset: Offset(0, 1),
+                                                        spreadRadius: 0,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    if (isCreditLoan) {
+                                                      currentCreditLoanAmount =
+                                                          value;
+                                                    } else {
+                                                      currentMortagagesLoanAmount =
+                                                          value;
+                                                    }
+                                                  });
 
-                                                debugPrint(value.toString());
-                                              },
+                                                  debugPrint(value.toString());
+                                                },
+                                              ),
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Text("0.5배",
-                                                  style: Constants
-                                                      .defaultTextStyle
-                                                      .copyWith(fontSize: 10)),
-                                              const Spacer(),
-                                              Text("2배",
-                                                  style: Constants
-                                                      .defaultTextStyle
-                                                      .copyWith(fontSize: 10)),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: Row(
+                                              children: [
+                                                Text("0.5배",
+                                                    style: Constants
+                                                        .defaultTextStyle
+                                                        .copyWith(
+                                                            fontSize: 10)),
+                                                const Spacer(),
+                                                Text("2배",
+                                                    style: Constants
+                                                        .defaultTextStyle
+                                                        .copyWith(
+                                                            fontSize: 10)),
+                                              ],
+                                            ),
                                           )
                                         ],
                                       ),
@@ -370,9 +407,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         if (item.title == "대출") {
                                           // TODO - 대출 액션
                                           if (isCreditLoan) {
-                                            if (gameController.totalCash! <
-                                                    currentCreditLoanAmount ||
-                                                gameController.totalCash! < 0) {
+                                            if (gameController.totalCash! < 0) {
                                               return;
                                             }
                                             debugPrint("신용 대출 실행");
@@ -439,7 +474,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
               height: height,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 24, left: 30, right: 10, bottom: 12),
+                    top: 24, left: 30, right: 10, bottom: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -540,6 +575,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                                       0))
                                             SfSliderTheme(
                                               data: SfSliderThemeData(
+                                                overlayRadius: 12,
                                                 activeTrackHeight: 3,
                                                 inactiveTrackHeight: 3,
                                                 trackCornerRadius: 2,
