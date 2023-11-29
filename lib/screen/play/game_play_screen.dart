@@ -342,7 +342,9 @@ class _LotteryAlertState extends State<LotteryAlert> {
       backgroundColor: Colors.transparent,
       content: MCContainer(
         strokePadding: const EdgeInsets.all(3),
-        gradient: Constants.yellowGradient,
+        gradient: (widget.luckyItem.price! > 0)
+            ? Constants.yellowGradient
+            : Constants.purpleGreyGradient,
         width: 330,
         height: 330,
         child: Padding(
@@ -356,12 +358,14 @@ class _LotteryAlertState extends State<LotteryAlert> {
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 10),
               SizedBox(
-                  height: 70, child: Image.asset("assets/icons/lottery.png")),
+                  height: 70,
+                  child: Image.asset(
+                      gameController.luckyItemAssetString(widget.luckyItem))),
               const SizedBox(height: 4),
               Text("현금 ${widget.luckyItem.price?.commaString ?? ""}원",
                   style: Constants.titleTextStyle),
               const SizedBox(height: 6),
-              Text(widget.luckyItem.description ?? "",
+              Text(widget.luckyItem.guide ?? "",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 12),
               Bounceable(
@@ -386,7 +390,9 @@ class _LotteryAlertState extends State<LotteryAlert> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset("assets/icons/button_long_yellow.png"),
+                      Image.asset((widget.luckyItem.price! > 0)
+                          ? "assets/icons/button_long_yellow.png"
+                          : "assets/icons/button_long_purple_grey.png"),
                       if (!isLoading)
                         Text(
                           "확인",

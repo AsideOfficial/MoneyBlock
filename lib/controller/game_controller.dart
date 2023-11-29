@@ -340,6 +340,25 @@ class GameController extends GetxController {
     return assetString;
   }
 
+  String luckyItemAssetString(LuckyLottery item) {
+    String assetString = "assets/icons/lottery.png";
+    switch (item.title) {
+      case "행운복권 당첨!":
+        assetString = "assets/icons/lottery.png";
+      case "건강 검진":
+        assetString = "assets/icons/medical_checkup.png";
+      case "자동차 사고":
+        assetString = "assets/icons/car_accident.png";
+      case "공모전 당선!":
+        assetString = "assets/icons/throphy.png";
+      case "과속운전":
+        assetString = "assets/icons/speeding.png";
+      case "친척모임":
+        assetString = "assets/icons/allowance.png";
+    }
+    return assetString;
+  }
+
   // MARK: - 계산 비즈니스 로직
 
   double get currentTotalInvestmentRate {

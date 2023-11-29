@@ -123,6 +123,12 @@ class Constants {
     colors: [Color(0xFFF2F2F2), Color(0xFFE2E2E2)],
   );
 
+  static const LinearGradient purpleGreyGradient = LinearGradient(
+    begin: Alignment(0.00, -1.00),
+    end: Alignment(0, 1),
+    colors: [Color(0xFF9298CA), Color(0xFFBEC2E0)],
+  );
+
   //MARK: - Shadow
 
   static BoxShadow defaultShadow = const BoxShadow(
