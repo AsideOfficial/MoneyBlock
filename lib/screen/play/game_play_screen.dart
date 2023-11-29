@@ -9,6 +9,7 @@ import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
+import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -356,92 +357,6 @@ class LotteryAlert extends StatelessWidget {
                       Image.asset("assets/icons/button_long_yellow.png"),
                       Text(
                         "확인",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 20),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class VacationAlert extends StatefulWidget {
-  const VacationAlert({
-    super.key,
-  });
-
-  @override
-  State<VacationAlert> createState() => _VacationAlertState();
-}
-
-class _VacationAlertState extends State<VacationAlert> {
-  bool isVacation = false;
-  bool isVacationFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      content: MCContainer(
-        strokePadding: const EdgeInsets.all(3),
-        gradient: Constants.greenBlueGradient,
-        width: 300,
-        height: 300,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 28, bottom: 18),
-          child: Column(
-            children: [
-              Text("무급휴가", style: Constants.titleTextStyle),
-              const SizedBox(height: 6),
-              Text("지금 바로 휴가를 즐기세요.",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
-              const SizedBox(height: 10),
-              SizedBox(
-                  height: 70, child: Image.asset("assets/icons/vacation.png")),
-              const SizedBox(height: 4),
-              Text("휴가를 떠난 당신, 2턴을 쉬게 됩니다..",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
-              const SizedBox(height: 6),
-              Text("다만 마지막 라운드라면 1턴만 쉽니다.",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
-              const SizedBox(height: 12),
-              Bounceable(
-                duration: const Duration(seconds: 1),
-                onTap: () {
-                  // Get.back();
-                  if (!isVacation) {
-                    setState(() {
-                      isVacation = true;
-                    });
-                    return;
-                  }
-                  if (isVacationFinished) {
-                    Get.back();
-                    return;
-                  }
-
-                  setState(() {
-                    isVacationFinished = true;
-                  });
-                },
-                child: SizedBox(
-                  width: 180,
-                  height: 50,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset((isVacation && !isVacationFinished)
-                          ? "assets/icons/button_long_green_blue_disabled.png"
-                          : "assets/icons/button_long_green_blue.png"),
-                      Text(
-                        isVacation ? "휴가종료" : "확인",
                         style:
                             Constants.defaultTextStyle.copyWith(fontSize: 20),
                       )

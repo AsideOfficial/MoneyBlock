@@ -83,6 +83,11 @@ class GameController extends GetxController {
     }
   }
 
+  bool get isVacation {
+    if (currentRoom?.player?[myIndex].isVacation == null) return false;
+    return currentRoom!.player![myIndex].isVacation!;
+  }
+
   final Rx<bool?> _isGameEnded = Rx<bool?>(false);
   final Rx<GameDataDetails?> _currentRoom = Rx<GameDataDetails?>(null);
   GameDataDetails? get currentRoom => _currentRoom.value;
@@ -822,6 +827,18 @@ class GameController extends GetxController {
             type: "expend", title: title, price: -price, qty: 1, isItem: true),
       ],
     ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> startVacation() async {
+    await CloudFunctionService.startVacation(
+        roomId: roomId, playerIndex: myIndex);
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> useVacation() async {
+    await CloudFunctionService.useVacation(
+        roomId: roomId, playerIndex: myIndex);
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
