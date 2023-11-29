@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
+import 'package:money_cycle/utils/extension/int.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -196,8 +198,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           titleColor: const Color(0xFFB86300),
                           assetPath: "assets/icons/lottery.png",
                           onPressed: () {
+                            final luckyItem =
+                                gameController.getRandomLuckyLottery();
                             Get.dialog(
-                              const LotteryAlert(),
+                              LotteryAlert(
+                                luckyItem: luckyItem,
+                              ),
+                              barrierDismissible: false,
+                              useSafeArea: false,
                             );
                             // setState(() => isActionChoicing = true);
                           },
@@ -311,10 +319,21 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 }
 
-class LotteryAlert extends StatelessWidget {
+class LotteryAlert extends StatefulWidget {
+  final LuckyLottery luckyItem;
+
   const LotteryAlert({
     super.key,
+    required this.luckyItem,
   });
+
+  @override
+  State<LotteryAlert> createState() => _LotteryAlertState();
+}
+
+class _LotteryAlertState extends State<LotteryAlert> {
+  bool isLoading = false;
+  final gameController = Get.find<GameController>();
 
   @override
   Widget build(BuildContext context) {
@@ -330,24 +349,37 @@ class LotteryAlert extends StatelessWidget {
           padding: const EdgeInsets.only(top: 28, bottom: 12),
           child: Column(
             children: [
-              Text("행운복권 당첨!", style: Constants.titleTextStyle),
+              Text(widget.luckyItem.title ?? "",
+                  style: Constants.titleTextStyle),
               const SizedBox(height: 6),
-              Text("복권에 당첨되었습니다.",
+              Text(widget.luckyItem.description ?? "",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 10),
               SizedBox(
                   height: 70, child: Image.asset("assets/icons/lottery.png")),
               const SizedBox(height: 4),
-              Text("현금 +6,000,000원", style: Constants.titleTextStyle),
+              Text("현금 ${widget.luckyItem.price?.commaString ?? ""}원",
+                  style: Constants.titleTextStyle),
               const SizedBox(height: 6),
-              Text("당첨금을 받아가세요.",
+              Text(widget.luckyItem.description ?? "",
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 12),
               Bounceable(
                 duration: const Duration(seconds: 1),
-                onTap: () {
-                  Get.back();
-                },
+                onTap: isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await gameController.luckyDrawAction(
+                            lotteryItem: widget.luckyItem);
+
+                        setState(() {
+                          isLoading = false;
+                        });
+                        Get.back();
+                      },
                 child: SizedBox(
                   width: 180,
                   height: 50,
@@ -355,11 +387,21 @@ class LotteryAlert extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       Image.asset("assets/icons/button_long_yellow.png"),
-                      Text(
-                        "확인",
-                        style:
-                            Constants.defaultTextStyle.copyWith(fontSize: 20),
-                      )
+                      if (!isLoading)
+                        Text(
+                          "확인",
+                          style:
+                              Constants.defaultTextStyle.copyWith(fontSize: 20),
+                        )
+                      else
+                        const Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child:
+                                CircularProgressIndicator(color: Colors.white),
+                          ),
+                        )
                     ],
                   ),
                 ),

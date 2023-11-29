@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
+import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/models/game/user_action.dart';
@@ -20,6 +21,10 @@ class GameController extends GetxController {
   GameController({required this.roomId, required this.myIndex});
   final String roomId;
   final int myIndex;
+
+  // Mock 데이터를 LuckyLottery 인스턴스로 변환
+  List<LuckyLottery> lotteryList =
+      mockLotteryData.map((data) => LuckyLottery.fromJson(data)).toList();
 
   @override
   void onInit() async {
@@ -635,6 +640,34 @@ class GameController extends GetxController {
   }
 
   //MARK: - 플레이어 액션
+
+  LuckyLottery getRandomLuckyLottery() {
+    if (lotteryList.isEmpty) {
+      throw Exception('행운 복권 콘텐츠 확인 불가.');
+    }
+
+    Random random = Random();
+    int randomIndex = random.nextInt(lotteryList.length);
+
+    return lotteryList[randomIndex];
+  }
+
+  Future<void> luckyDrawAction({required LuckyLottery lotteryItem}) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash +-
+        UserAction(
+            type: "cash",
+            title: lotteryItem.title,
+            price: lotteryItem.price,
+            qty: 1),
+      ],
+    ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
 
   //정상동작 확인 ✅
   Future<void> firstSalary() async {
