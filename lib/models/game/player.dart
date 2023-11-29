@@ -11,6 +11,7 @@ class Player {
   List<UserAction>? mortgagesLoan; // 담보대출
 
   bool? isReady;
+  bool? isVacation;
   String? name;
   int? characterIndex;
 
@@ -25,6 +26,7 @@ class Player {
     this.creditLoan,
     this.mortgagesLoan,
     this.characterIndex,
+    this.isVacation,
   });
 
   factory Player.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,8 @@ class Player {
       isReady: json['isReady'],
       name: json['name'],
       characterIndex: json["characterIndex"],
+      isVacation:
+          (json["isVacation"] != null) ? json["isVacation"] as bool : false,
       cash: (json['cash'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
