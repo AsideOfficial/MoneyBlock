@@ -737,7 +737,7 @@ class GameController extends GetxController {
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -753,7 +753,7 @@ class GameController extends GetxController {
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -769,7 +769,7 @@ class GameController extends GetxController {
     required String title,
     required int price,
   }) async {
-    CloudFunctionService.userAction(
+    await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,

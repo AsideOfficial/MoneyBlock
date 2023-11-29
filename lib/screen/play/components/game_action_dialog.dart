@@ -736,8 +736,11 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             "${gameController.curretnSpecificActionModel?.title}",
                                         subTitle:
                                             "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                        perPrice:
-                                            currentCreditLoanAmount.toInt(),
+                                        perPrice: isCreditLoan
+                                            ? currentCreditLoanPaybackAmount
+                                                .toInt()
+                                            : currentMortgagesLoanPaybackAmount
+                                                .toInt(),
                                         actionTitle: "상환하기",
                                         primaryActionColor:
                                             Constants.cardOrange,
