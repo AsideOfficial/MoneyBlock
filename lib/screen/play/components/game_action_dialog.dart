@@ -42,9 +42,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
             borderRadius: 20,
             gradient: gameController.currentBackgroundGradient,
             strokePadding: const EdgeInsets.all(5),
-            width: (gameController.currentActionType != GameActionType.expend)
-                ? 340
-                : 530,
+            width: 530,
             height: height,
             child: Padding(
               padding: const EdgeInsets.only(
