@@ -15,8 +15,6 @@ class VacationAlert extends StatefulWidget {
 }
 
 class _VacationAlertState extends State<VacationAlert> {
-  bool isVacation = false;
-  bool isVacationFinished = false;
   bool isLoading = false;
   final gameController = Get.find<GameController>();
 
@@ -101,8 +99,6 @@ class InVacationAlert extends StatefulWidget {
 }
 
 class _InVacationAlertState extends State<InVacationAlert> {
-  bool isVacation = false;
-  bool isVacationFinished = false;
   bool isLoading = false;
 
   @override
@@ -144,8 +140,8 @@ class _InVacationAlertState extends State<InVacationAlert> {
                             isLoading = true;
                           });
 
-                          if (isVacation) {
-                            // await gameController.useVacation();
+                          if (gameController.isVacation) {
+                            await gameController.useVacation();
                           } else {
                             Get.back();
                           }
@@ -164,14 +160,14 @@ class _InVacationAlertState extends State<InVacationAlert> {
                             : "assets/icons/button_long_green_blue_disabled.png"),
                         if (!isLoading)
                           Text(
-                            isVacation ? "턴 넘기기" : "휴가 종료",
+                            gameController.isVacation ? "턴 넘기기" : "휴가 종료",
                             style: Constants.defaultTextStyle
                                 .copyWith(fontSize: 20),
                           )
                         else
                           const SizedBox(
-                            width: 44,
-                            height: 44,
+                            width: 30,
+                            height: 30,
                             child: CircularProgressIndicator(
                               color: Colors.white,
                             ),
