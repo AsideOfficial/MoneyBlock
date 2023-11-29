@@ -87,6 +87,8 @@ exports.createRoom = onRequest(async (req, res) => {
         owner.mortgageLoan = [0];
         owner.expend = [0];
         owner.investment = [0];
+        owner.isVacation = false;
+        owner.vacationCount = 0;
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
@@ -187,6 +189,8 @@ exports.enterRoom = onRequest(async (req, res) => {
         user.mortgageLoan = [0];
         user.expend = [0];
         user.investment = [0];
+        user.isVacation = false;
+        user.vacationCount = 0;
 
         playerList.push(user);
 
