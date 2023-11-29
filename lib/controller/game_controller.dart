@@ -712,6 +712,22 @@ class GameController extends GetxController {
     ));
   }
 
+  Future<void> creditLoanPaybackAction({
+    required String title,
+    required int price,
+  }) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash ++ loan ++
+        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        UserAction(type: "creditLoan", title: "대출 상환", price: -price, qty: 1),
+      ],
+    ));
+  }
+
   Future<void> mortgagesLoanAction({
     required String title,
     required int price,
@@ -724,6 +740,23 @@ class GameController extends GetxController {
         // cash ++ loan ++
         UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
         UserAction(type: "mortgagesLoan", title: "대출 실행", price: price, qty: 1),
+      ],
+    ));
+  }
+
+  Future<void> mortgagesLoanPaybackAction({
+    required String title,
+    required int price,
+  }) async {
+    CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash ++ loan ++
+        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        UserAction(
+            type: "mortgagesLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }

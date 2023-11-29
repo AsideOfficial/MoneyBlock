@@ -122,13 +122,13 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                     ],
                   ),
                 ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               Text("금액: ${totalAmount.commaString}원",
                   style:
                       Constants.largeTextStyle.copyWith(color: Colors.black)),
               const Spacer(),
               SizedBox(
-                height: 44,
+                height: 48,
                 child: Row(
                   children: [
                     Expanded(

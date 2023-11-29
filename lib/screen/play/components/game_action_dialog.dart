@@ -24,9 +24,12 @@ class GameActionDialog extends StatefulWidget {
 class _GameActionDialogState extends State<GameActionDialog> {
   double cash = 1000000;
   double currentAmount = 0;
-  double currentLoanAmount = 0;
+  double currentCreditLoanAmount = 0;
+  double currentMortagagesLoanAmount = 0;
+  double currentCreditLoanPaybackAmount = 0;
+  double currentMortgagesLoanPaybackAmount = 0;
   double height = 280;
-  bool isSelected = false;
+  bool isCreditLoan = false;
 
   //MARK: - 플레이어 개인 활동 선택 화면
   List<Widget> actionChoiceContainer(
@@ -153,245 +156,597 @@ class _GameActionDialogState extends State<GameActionDialog> {
           ),
         ];
       case GameActionType.loan:
-        return [
-          MCContainer(
-            borderRadius: 20,
-            gradient: gameController.currentBackgroundGradient,
-            strokePadding: const EdgeInsets.all(5),
-            width: 530,
-            height: height,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 24, left: 30, right: 10, bottom: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                          gameController.curretnSpecificActionModel?.title ??
-                              "",
-                          style: Constants.titleTextStyle),
-                      const SizedBox(width: 12),
-                      Text(
-                          "금리: ${gameController.curretnSpecificActionModel?.title == "신용대출" ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 18)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      //MARK :- 대출 금액 선택
-                      SizedBox(
-                        width: 230,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("보유현금",
-                                style: Constants.defaultTextStyle
-                                    .copyWith(fontSize: 16)),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                singleChoiceButton(
-                                    title: "신용 대출",
-                                    isSelected: isSelected,
-                                    onPressed: () {
-                                      setState(() {
-                                        isSelected = true;
-                                      });
-                                    }),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                singleChoiceButton(
-                                    title: "담보 대출",
-                                    isSelected: !isSelected,
-                                    onPressed: () {
-                                      setState(() {
-                                        isSelected = false;
-                                      });
-                                    }),
-                              ],
-                            ),
-                            amountTile(
-                                amount: gameController.totalCash!.toDouble()),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 170,
-                                  child: Column(
-                                    children: [
-                                      SfSliderTheme(
-                                        data: SfSliderThemeData(
-                                          activeTrackHeight: 3,
-                                          inactiveTrackHeight: 3,
-                                          trackCornerRadius: 2,
-                                          activeTrackColor:
-                                              Colors.white.withOpacity(0.8),
-                                          inactiveTrackColor:
-                                              const Color(0xFF8A3200),
-                                        ),
-                                        child: SfSlider(
-                                          value: currentLoanAmount,
-                                          min: gameController.totalCash! / 2,
-                                          max: gameController.totalCash! * 2,
-                                          stepSize: 10000,
-                                          enableTooltip: false,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          thumbIcon: Container(
-                                            width: 18,
-                                            height: 18,
-                                            decoration: const ShapeDecoration(
-                                              gradient:
-                                                  Constants.orangeGradient,
-                                              shape: OvalBorder(
-                                                side: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.white),
-                                              ),
-                                              shadows: [
-                                                BoxShadow(
-                                                  color: Color(0x3F000000),
-                                                  blurRadius: 1,
-                                                  offset: Offset(0, 1),
-                                                  spreadRadius: 0,
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              currentLoanAmount = value;
-                                            });
-
-                                            debugPrint(value.toString());
-                                          },
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text("0.5배",
-                                              style: Constants.defaultTextStyle
-                                                  .copyWith(fontSize: 10)),
-                                          const Spacer(),
-                                          Text("2배",
-                                              style: Constants.defaultTextStyle
-                                                  .copyWith(fontSize: 10)),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                    "${((currentLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
-                                    style: Constants.defaultTextStyle
-                                        .copyWith(fontSize: 18)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Container(
-                        width: 1,
-                        height: 150,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 26),
-                      //MARK: - 대출 실행
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
+        //TODO 대출 실행
+        if (gameController.curretnSpecificActionModel?.title == "대출") {
+          return [
+            MCContainer(
+              borderRadius: 20,
+              gradient: gameController.currentBackgroundGradient,
+              strokePadding: const EdgeInsets.all(5),
+              width: 530,
+              height: height,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 24, left: 30, right: 10, bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                            gameController.curretnSpecificActionModel?.title ??
+                                "",
+                            style: Constants.titleTextStyle),
+                        const SizedBox(width: 12),
+                        Text(
+                            "금리: ${isCreditLoan ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 18)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 230,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  Text("대출금액",
-                                      style: Constants.defaultTextStyle),
-                                  const SizedBox(width: 8),
-                                  amountTile(
-                                      amount: currentLoanAmount, width: 100),
+                                  singleChoiceButton(
+                                      title: "신용 대출",
+                                      isSelected: isCreditLoan,
+                                      onPressed: () {
+                                        setState(() {
+                                          isCreditLoan = true;
+                                        });
+                                      }),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  singleChoiceButton(
+                                      title: "담보 대출",
+                                      isSelected: !isCreditLoan,
+                                      onPressed: () {
+                                        setState(() {
+                                          isCreditLoan = false;
+                                        });
+                                      }),
                                 ],
                               ),
-                              const SizedBox(height: 2),
-                              const Text(
-                                "※다음 턴에 주어지는 이자입니다.",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-                          Bounceable(
-                              onTap: () {
-                                Get.dialog(PurchaseAlertDialog(
-                                  title:
-                                      "${gameController.curretnSpecificActionModel?.title}",
-                                  subTitle:
-                                      "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                  perPrice: currentLoanAmount.toInt(),
-                                  actionTitle: "대출하기",
-                                  primaryActionColor: Constants.cardOrange,
-                                  onPurchase: (count) async {
-                                    //TODO - API - 대출 실행 금액 = currentAmount
-                                    final item = gameController
-                                        .curretnSpecificActionModel;
-                                    if (item == null) return;
-                                    if (item.title == "대출") {
-                                      // TODO - 대출 액션
-                                      if (item.title == "신용대출") {
-                                        debugPrint("신용");
-                                        await gameController.creditLoanAction(
-                                          title: item.title,
-                                          price: currentLoanAmount.toInt(),
-                                        );
-                                      } else {
-                                        debugPrint("담보");
-                                        await gameController
-                                            .mortgagesLoanAction(
-                                          title: item.title,
-                                          price: currentLoanAmount.toInt(),
-                                        );
-                                      }
-                                    } else {
-                                      // TODO - 상환 액션
-                                    }
-
-                                    gameController.isActionChoicing = false;
-                                  },
-                                ));
-                              },
-                              child: SizedBox(
-                                width: 184,
-                                height: 50,
-                                child: Stack(
+                              Text(isCreditLoan ? "보유현금" : "자산가치",
+                                  style: Constants.defaultTextStyle
+                                      .copyWith(fontSize: 16)),
+                              const SizedBox(height: 4),
+                              amountTile(
+                                  amount: isCreditLoan
+                                      ? gameController.totalCash!.toDouble()
+                                      : gameController.totalAsset!.toDouble()),
+                              const SizedBox(height: 10),
+                              if ((isCreditLoan &&
+                                      gameController.totalCash! > 0) ||
+                                  (!isCreditLoan &&
+                                      gameController.totalAsset! > 0))
+                                Row(
                                   children: [
-                                    Image.asset(
-                                        "assets/icons/button_long_orange.png"),
-                                    Center(
-                                      child: Text("대출하기",
-                                          style: Constants.largeTextStyle),
-                                    )
+                                    SizedBox(
+                                      width: 170,
+                                      child: Column(
+                                        children: [
+                                          SfSliderTheme(
+                                            data: SfSliderThemeData(
+                                              activeTrackHeight: 3,
+                                              inactiveTrackHeight: 3,
+                                              trackCornerRadius: 2,
+                                              activeTrackColor:
+                                                  Colors.white.withOpacity(0.8),
+                                              inactiveTrackColor:
+                                                  const Color(0xFF8A3200),
+                                            ),
+                                            child: SfSlider(
+                                              value: isCreditLoan
+                                                  ? currentCreditLoanAmount
+                                                  : currentMortagagesLoanAmount,
+                                              min:
+                                                  gameController.totalCash! / 2,
+                                              max:
+                                                  gameController.totalCash! * 2,
+                                              stepSize: 10000,
+                                              enableTooltip: false,
+                                              showLabels: false,
+                                              showTicks: false,
+                                              thumbIcon: Container(
+                                                width: 18,
+                                                height: 18,
+                                                decoration:
+                                                    const ShapeDecoration(
+                                                  gradient:
+                                                      Constants.orangeGradient,
+                                                  shape: OvalBorder(
+                                                    side: BorderSide(
+                                                        width: 0.5,
+                                                        color: Colors.white),
+                                                  ),
+                                                  shadows: [
+                                                    BoxShadow(
+                                                      color: Color(0x3F000000),
+                                                      blurRadius: 1,
+                                                      offset: Offset(0, 1),
+                                                      spreadRadius: 0,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  currentCreditLoanAmount =
+                                                      value;
+                                                });
+
+                                                debugPrint(value.toString());
+                                              },
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text("0.5배",
+                                                  style: Constants
+                                                      .defaultTextStyle
+                                                      .copyWith(fontSize: 10)),
+                                              const Spacer(),
+                                              Text("2배",
+                                                  style: Constants
+                                                      .defaultTextStyle
+                                                      .copyWith(fontSize: 10)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                        "${((currentCreditLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
+                                        style: Constants.defaultTextStyle
+                                            .copyWith(fontSize: 18)),
                                   ],
                                 ),
-                              ))
-                        ],
-                      )
-                    ],
-                  ),
-                ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Container(
+                          width: 1,
+                          height: 150,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 26),
+                        //MARK: - 대출 실행
+                        SizedBox(
+                          height: 150,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text("대출금액",
+                                          style: Constants.defaultTextStyle),
+                                      const SizedBox(width: 8),
+                                      amountTile(
+                                          amount: currentCreditLoanAmount,
+                                          width: 100),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  const Text(
+                                    "※다음 턴에 주어지는 이자입니다.",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 32),
+                              Bounceable(
+                                  onTap: () {
+                                    Get.dialog(PurchaseAlertDialog(
+                                      title:
+                                          "${gameController.curretnSpecificActionModel?.title}",
+                                      subTitle:
+                                          "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                      perPrice: currentCreditLoanAmount.toInt(),
+                                      actionTitle: "대출하기",
+                                      primaryActionColor: Constants.cardOrange,
+                                      onPurchase: (count) async {
+                                        //TODO - API - 대출 실행 금액 = currentAmount
+                                        final item = gameController
+                                            .curretnSpecificActionModel;
+                                        if (item == null) return;
+                                        if (item.title == "대출") {
+                                          // TODO - 대출 액션
+                                          if (isCreditLoan) {
+                                            if (gameController.totalCash! <
+                                                    currentCreditLoanAmount ||
+                                                gameController.totalCash! < 0) {
+                                              return;
+                                            }
+                                            debugPrint("신용 대출 실행");
+                                            await gameController
+                                                .creditLoanAction(
+                                              title: item.title,
+                                              price: currentCreditLoanAmount
+                                                  .toInt(),
+                                            );
+                                          } else {
+                                            debugPrint("담보 대출 실행");
+                                            if (gameController.totalAsset! <
+                                                    currentCreditLoanAmount ||
+                                                gameController.totalAsset! <
+                                                    0) {
+                                              return;
+                                            }
+
+                                            await gameController
+                                                .mortgagesLoanAction(
+                                              title: item.title,
+                                              price: currentCreditLoanAmount
+                                                  .toInt(),
+                                            );
+                                          }
+                                        }
+
+                                        gameController.isActionChoicing = false;
+                                      },
+                                    ));
+                                  },
+                                  child: SizedBox(
+                                    width: 184,
+                                    height: 50,
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                            "assets/icons/button_long_orange.png"),
+                                        Center(
+                                          child: Text("대출하기",
+                                              style: Constants.largeTextStyle),
+                                        )
+                                      ],
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ];
+          ];
+        } else {
+          //TODO 대출 상환
+          return [
+            MCContainer(
+              borderRadius: 20,
+              gradient: gameController.currentBackgroundGradient,
+              strokePadding: const EdgeInsets.all(5),
+              width: 530,
+              height: height,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 24, left: 30, right: 10, bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                            gameController.curretnSpecificActionModel?.title ??
+                                "",
+                            style: Constants.titleTextStyle),
+                        const SizedBox(width: 12),
+                        Text(
+                            "금리: ${isCreditLoan ? gameController.currentLoanRate : gameController.currentLoanRate - 1}%",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 18)),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 230,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  singleChoiceButton(
+                                      title: "신용 대출",
+                                      isSelected: isCreditLoan,
+                                      onPressed: () {
+                                        setState(() {
+                                          isCreditLoan = true;
+                                        });
+                                      }),
+                                  const SizedBox(width: 12),
+                                  singleChoiceButton(
+                                      title: "담보 대출",
+                                      isSelected: !isCreditLoan,
+                                      onPressed: () {
+                                        setState(() {
+                                          isCreditLoan = false;
+                                        });
+                                      }),
+                                ],
+                              ),
+                              Text("대출총액",
+                                  style: Constants.defaultTextStyle
+                                      .copyWith(fontSize: 16)),
+                              const SizedBox(height: 4),
+                              amountTile(
+                                  amount: isCreditLoan
+                                      ? gameController.totalCreditLoan!
+                                          .toDouble()
+                                      : gameController.totalMortgagesLoan!
+                                          .toDouble()),
+                              const SizedBox(height: 6),
+                              if ((isCreditLoan &&
+                                      gameController.totalCreditLoan! > 0) ||
+                                  (!isCreditLoan &&
+                                      gameController.totalMortgagesLoan! > 0))
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 170,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          if ((isCreditLoan &&
+                                                  (gameController
+                                                              .totalCreditLoan ??
+                                                          0) !=
+                                                      0) ||
+                                              (!isCreditLoan &&
+                                                  (gameController
+                                                              .totalMortgagesLoan ??
+                                                          0) !=
+                                                      0))
+                                            Text("상환금액 정도",
+                                                style: Constants
+                                                    .defaultTextStyle
+                                                    .copyWith(fontSize: 16)),
+                                          if ((isCreditLoan &&
+                                                  (gameController
+                                                              .totalCreditLoan ??
+                                                          0) !=
+                                                      0) ||
+                                              (!isCreditLoan &&
+                                                  (gameController
+                                                              .totalMortgagesLoan ??
+                                                          0) !=
+                                                      0))
+                                            SfSliderTheme(
+                                              data: SfSliderThemeData(
+                                                activeTrackHeight: 3,
+                                                inactiveTrackHeight: 3,
+                                                trackCornerRadius: 2,
+                                                activeTrackColor: Colors.white
+                                                    .withOpacity(0.8),
+                                                inactiveTrackColor:
+                                                    const Color(0xFF8A3200),
+                                              ),
+                                              child: SfSlider(
+                                                value: isCreditLoan
+                                                    ? currentCreditLoanPaybackAmount
+                                                    : currentMortgagesLoanPaybackAmount,
+                                                min: 0,
+                                                max: isCreditLoan
+                                                    ? gameController
+                                                        .totalCreditLoan!
+                                                    : gameController
+                                                        .totalMortgagesLoan!,
+                                                stepSize: 10000,
+                                                enableTooltip: false,
+                                                showLabels: false,
+                                                showTicks: false,
+                                                thumbIcon: Container(
+                                                  width: 18,
+                                                  height: 18,
+                                                  decoration:
+                                                      const ShapeDecoration(
+                                                    gradient: Constants
+                                                        .orangeGradient,
+                                                    shape: OvalBorder(
+                                                      side: BorderSide(
+                                                          width: 0.5,
+                                                          color: Colors.white),
+                                                    ),
+                                                    shadows: [
+                                                      BoxShadow(
+                                                        color:
+                                                            Color(0x3F000000),
+                                                        blurRadius: 1,
+                                                        offset: Offset(0, 1),
+                                                        spreadRadius: 0,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    if (isCreditLoan) {
+                                                      currentCreditLoanPaybackAmount =
+                                                          value;
+                                                    } else {
+                                                      currentMortgagesLoanPaybackAmount =
+                                                          value;
+                                                    }
+                                                  });
+
+                                                  debugPrint(value.toString());
+                                                },
+                                              ),
+                                            ),
+                                          Row(
+                                            children: [
+                                              Text("0%",
+                                                  style: Constants
+                                                      .defaultTextStyle
+                                                      .copyWith(fontSize: 10)),
+                                              const Spacer(),
+                                              Text("100%",
+                                                  style: Constants
+                                                      .defaultTextStyle
+                                                      .copyWith(fontSize: 10)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                        "${(((isCreditLoan ? currentCreditLoanPaybackAmount : currentMortgagesLoanPaybackAmount) / (isCreditLoan ? gameController.totalCreditLoan! : gameController.totalMortgagesLoan!) * 100).toStringAsFixed(1))}%",
+                                        style: Constants.defaultTextStyle
+                                            .copyWith(fontSize: 18)),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Container(
+                          width: 1,
+                          height: 150,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 26),
+                        SizedBox(
+                          height: 150,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text("상환금액",
+                                      style: Constants.defaultTextStyle),
+                                  const SizedBox(height: 2),
+                                  amountTile(
+                                      amount: isCreditLoan
+                                          ? currentCreditLoanPaybackAmount
+                                          : currentMortgagesLoanPaybackAmount,
+                                      width: 156),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 32,
+                              ),
+                              if ((isCreditLoan &&
+                                      gameController.totalCreditLoan! > 0) ||
+                                  (!isCreditLoan &&
+                                      gameController.totalMortgagesLoan! > 0))
+                                Bounceable(
+                                    onTap: () {
+                                      Get.dialog(PurchaseAlertDialog(
+                                        title:
+                                            "${gameController.curretnSpecificActionModel?.title}",
+                                        subTitle:
+                                            "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
+                                        perPrice:
+                                            currentCreditLoanAmount.toInt(),
+                                        actionTitle: "상환하기",
+                                        primaryActionColor:
+                                            Constants.cardOrange,
+                                        onPurchase: (count) async {
+                                          //TODO - API - 대출 실행 금액 = currentAmount
+                                          final item = gameController
+                                              .curretnSpecificActionModel;
+                                          if (item == null) return;
+
+                                          // TODO - 상환 액션
+                                          if (isCreditLoan) {
+                                            if (gameController.totalCash! <
+                                                currentCreditLoanPaybackAmount
+                                                    .toInt()) return;
+                                            debugPrint("신용 대출 상환");
+                                            await gameController
+                                                .creditLoanPaybackAction(
+                                              title: item.title,
+                                              price:
+                                                  currentCreditLoanPaybackAmount
+                                                      .toInt(),
+                                            );
+                                          } else {
+                                            if (gameController.totalCash! <
+                                                currentMortgagesLoanPaybackAmount
+                                                    .toInt()) return;
+                                            debugPrint("담보 대출 상환");
+                                            await gameController
+                                                .mortgagesLoanPaybackAction(
+                                              title: item.title,
+                                              price:
+                                                  currentMortgagesLoanPaybackAmount
+                                                      .toInt(),
+                                            );
+                                          }
+
+                                          // TODO - 상환 액션
+
+                                          gameController.isActionChoicing =
+                                              false;
+                                        },
+                                      ));
+                                    },
+                                    child: SizedBox(
+                                      width: 184,
+                                      height: 50,
+                                      child: Stack(
+                                        children: [
+                                          Image.asset(
+                                              "assets/icons/button_long_orange.png"),
+                                          Center(
+                                            child: Text("대출하기",
+                                                style:
+                                                    Constants.largeTextStyle),
+                                          )
+                                        ],
+                                      ),
+                                    ))
+                              else
+                                SizedBox(
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "상환 가능한 대출이 없습니다.",
+                                      style: Constants.defaultTextStyle,
+                                    ),
+                                  ),
+                                )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        }
       case GameActionType.saving:
         return [
           //MARK: - 저축 활동
@@ -860,9 +1215,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
       final model = gameController.currentActionTypeModel;
       final specificActionModel = gameController.curretnSpecificActionModel;
 
-      if (currentLoanAmount < gameController.totalCash! / 2 ||
-          currentLoanAmount > gameController.totalCash! * 2) {
-        currentLoanAmount = gameController.totalCash! / 2;
+      if (currentCreditLoanAmount < gameController.totalCash! / 2 ||
+          currentCreditLoanAmount > gameController.totalCash! * 2) {
+        currentCreditLoanAmount = gameController.totalCash! / 2;
       }
 
       return Row(
