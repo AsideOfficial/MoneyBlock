@@ -255,82 +255,110 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         // crossAxisAlignment:
                                         //     CrossAxisAlignment.start,
                                         children: [
-                                          SizedBox(
-                                            width: 170,
-                                            child: SfSliderTheme(
-                                              data: SfSliderThemeData(
-                                                overlayRadius: 18,
-                                                activeTrackHeight: 3,
-                                                inactiveTrackHeight: 3,
-                                                trackCornerRadius: 2,
-                                                activeTrackColor: Colors.white
-                                                    .withOpacity(0.8),
-                                                inactiveTrackColor:
-                                                    const Color(0xFF8A3200),
-                                              ),
-                                              child: SfSlider(
-                                                value: isCreditLoan
-                                                    ? currentCreditLoanAmount
-                                                    : currentMortagagesLoanAmount,
-                                                min: gameController.totalCash! /
-                                                    2,
-                                                max: gameController.totalCash! *
-                                                    2,
-                                                stepSize: 10000,
-                                                enableTooltip: false,
-                                                showLabels: false,
-                                                showTicks: false,
-                                                thumbIcon: Container(
-                                                  width: 18,
-                                                  height: 18,
-                                                  decoration:
-                                                      const ShapeDecoration(
-                                                    gradient: Constants
-                                                        .orangeGradient,
-                                                    shape: OvalBorder(
-                                                      side: BorderSide(
-                                                          width: 0.5,
-                                                          color: Colors.white),
-                                                    ),
-                                                    shadows: [
-                                                      BoxShadow(
-                                                        color:
-                                                            Color(0x3F000000),
-                                                        blurRadius: 1,
-                                                        offset: Offset(0, 1),
-                                                        spreadRadius: 0,
-                                                      )
-                                                    ],
-                                                  ),
+                                          if ((isCreditLoan &&
+                                                  (gameController.totalCash! /
+                                                          2 <
+                                                      gameController
+                                                              .totalCash! *
+                                                          2)) ||
+                                              (!isCreditLoan &&
+                                                  (gameController.totalAsset! *
+                                                          0.1 <
+                                                      gameController
+                                                              .totalAsset! *
+                                                          0.9)))
+                                            SizedBox(
+                                              width: 170,
+                                              child: SfSliderTheme(
+                                                data: SfSliderThemeData(
+                                                  overlayRadius: 18,
+                                                  activeTrackHeight: 3,
+                                                  inactiveTrackHeight: 3,
+                                                  trackCornerRadius: 2,
+                                                  activeTrackColor: Colors.white
+                                                      .withOpacity(0.8),
+                                                  inactiveTrackColor:
+                                                      const Color(0xFF8A3200),
                                                 ),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    if (isCreditLoan) {
-                                                      currentCreditLoanAmount =
-                                                          value;
-                                                    } else {
-                                                      currentMortagagesLoanAmount =
-                                                          value;
-                                                    }
-                                                  });
+                                                child: SfSlider(
+                                                  value: isCreditLoan
+                                                      ? currentCreditLoanAmount
+                                                      : currentMortagagesLoanAmount,
+                                                  min: isCreditLoan
+                                                      ? gameController
+                                                              .totalCash! /
+                                                          2
+                                                      : gameController
+                                                              .totalAsset! *
+                                                          0.1,
+                                                  max: isCreditLoan
+                                                      ? gameController
+                                                              .totalCash! *
+                                                          2
+                                                      : gameController
+                                                              .totalAsset! *
+                                                          0.9,
+                                                  stepSize: 10000,
+                                                  enableTooltip: false,
+                                                  showLabels: false,
+                                                  showTicks: false,
+                                                  thumbIcon: Container(
+                                                    width: 18,
+                                                    height: 18,
+                                                    decoration:
+                                                        const ShapeDecoration(
+                                                      gradient: Constants
+                                                          .orangeGradient,
+                                                      shape: OvalBorder(
+                                                        side: BorderSide(
+                                                            width: 0.5,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      shadows: [
+                                                        BoxShadow(
+                                                          color:
+                                                              Color(0x3F000000),
+                                                          blurRadius: 1,
+                                                          offset: Offset(0, 1),
+                                                          spreadRadius: 0,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      if (isCreditLoan) {
+                                                        currentCreditLoanAmount =
+                                                            value;
+                                                      } else {
+                                                        currentMortagagesLoanAmount =
+                                                            value;
+                                                      }
+                                                    });
 
-                                                  debugPrint(value.toString());
-                                                },
+                                                    debugPrint(
+                                                        value.toString());
+                                                  },
+                                                ),
                                               ),
                                             ),
-                                          ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 12),
                                             child: Row(
                                               children: [
-                                                Text("0.5배",
+                                                Text(
+                                                    isCreditLoan
+                                                        ? "0.5배"
+                                                        : "10%",
                                                     style: Constants
                                                         .defaultTextStyle
                                                         .copyWith(
                                                             fontSize: 10)),
                                                 const Spacer(),
-                                                Text("2배",
+                                                Text(
+                                                    isCreditLoan ? "2배" : "90%",
                                                     style: Constants
                                                         .defaultTextStyle
                                                         .copyWith(
@@ -341,10 +369,16 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         ],
                                       ),
                                     ),
-                                    Text(
-                                        "${((currentCreditLoanAmount / gameController.totalCash!).toStringAsFixed(2))}배",
-                                        style: Constants.defaultTextStyle
-                                            .copyWith(fontSize: 18)),
+                                    if (isCreditLoan)
+                                      Text(
+                                          "${((currentCreditLoanAmount / gameController.totalCash!).toStringAsFixed(1))}배",
+                                          style: Constants.defaultTextStyle
+                                              .copyWith(fontSize: 18))
+                                    else
+                                      Text(
+                                          "${((currentMortagagesLoanAmount / gameController.totalAsset! * 100).toStringAsFixed(1))}%",
+                                          style: Constants.defaultTextStyle
+                                              .copyWith(fontSize: 18)),
                                   ],
                                 ),
                             ],
@@ -374,7 +408,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           style: Constants.defaultTextStyle),
                                       const SizedBox(width: 8),
                                       amountTile(
-                                          amount: currentCreditLoanAmount,
+                                          amount: isCreditLoan
+                                              ? currentCreditLoanAmount
+                                              : currentMortagagesLoanAmount,
                                           width: 100),
                                     ],
                                   ),
@@ -394,7 +430,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           "${gameController.curretnSpecificActionModel?.title}",
                                       subTitle:
                                           "${gameController.curretnSpecificActionModel?.title} 하시겠습니까?",
-                                      perPrice: currentCreditLoanAmount.toInt(),
+                                      perPrice: isCreditLoan
+                                          ? currentCreditLoanAmount.toInt()
+                                          : currentMortagagesLoanAmount.toInt(),
                                       actionTitle: "대출하기",
                                       primaryActionColor: Constants.cardOrange,
                                       onPurchase: (count) async {
@@ -418,16 +456,14 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           } else {
                                             debugPrint("담보 대출 실행");
                                             if (gameController.totalAsset! <
-                                                    currentCreditLoanAmount ||
-                                                gameController.totalAsset! <
-                                                    0) {
+                                                0) {
                                               return;
                                             }
 
                                             await gameController
                                                 .mortgagesLoanAction(
                                               title: item.title,
-                                              price: currentCreditLoanAmount
+                                              price: currentMortagagesLoanAmount
                                                   .toInt(),
                                             );
                                           }
@@ -564,12 +600,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           if ((isCreditLoan &&
                                                   (gameController
                                                               .totalCreditLoan ??
-                                                          0) !=
+                                                          0) >
                                                       0) ||
                                               (!isCreditLoan &&
                                                   (gameController
                                                               .totalMortgagesLoan ??
-                                                          0) !=
+                                                          0) >
                                                       0))
                                             SfSliderTheme(
                                               data: SfSliderThemeData(
@@ -839,53 +875,55 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   width: 180,
                                   child: Column(
                                     children: [
-                                      SfSliderTheme(
-                                        data: SfSliderThemeData(
-                                          activeTrackHeight: 3,
-                                          inactiveTrackHeight: 3,
-                                          trackCornerRadius: 2,
-                                          activeTrackColor:
-                                              Colors.white.withOpacity(0.8),
-                                          inactiveTrackColor:
-                                              const Color(0xFF257300),
-                                        ),
-                                        child: SfSlider(
-                                          value: currentAmount,
-                                          min: 0,
-                                          max: gameController.totalCash,
-                                          stepSize: 10000,
-                                          enableTooltip: false,
-                                          showLabels: false,
-                                          showTicks: false,
-                                          thumbIcon: Container(
-                                            width: 18,
-                                            height: 18,
-                                            decoration: const ShapeDecoration(
-                                              gradient: Constants.greenGradient,
-                                              shape: OvalBorder(
-                                                side: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.white),
-                                              ),
-                                              shadows: [
-                                                BoxShadow(
-                                                  color: Color(0x3F000000),
-                                                  blurRadius: 1,
-                                                  offset: Offset(0, 1),
-                                                  spreadRadius: 0,
-                                                )
-                                              ],
-                                            ),
+                                      if (gameController.totalCash! > 0)
+                                        SfSliderTheme(
+                                          data: SfSliderThemeData(
+                                            activeTrackHeight: 3,
+                                            inactiveTrackHeight: 3,
+                                            trackCornerRadius: 2,
+                                            activeTrackColor:
+                                                Colors.white.withOpacity(0.8),
+                                            inactiveTrackColor:
+                                                const Color(0xFF257300),
                                           ),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              currentAmount = value;
-                                            });
+                                          child: SfSlider(
+                                            value: currentAmount,
+                                            min: 0,
+                                            max: gameController.totalCash,
+                                            stepSize: 10000,
+                                            enableTooltip: false,
+                                            showLabels: false,
+                                            showTicks: false,
+                                            thumbIcon: Container(
+                                              width: 18,
+                                              height: 18,
+                                              decoration: const ShapeDecoration(
+                                                gradient:
+                                                    Constants.greenGradient,
+                                                shape: OvalBorder(
+                                                  side: BorderSide(
+                                                      width: 0.5,
+                                                      color: Colors.white),
+                                                ),
+                                                shadows: [
+                                                  BoxShadow(
+                                                    color: Color(0x3F000000),
+                                                    blurRadius: 1,
+                                                    offset: Offset(0, 1),
+                                                    spreadRadius: 0,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                currentAmount = value;
+                                              });
 
-                                            debugPrint(value.toString());
-                                          },
+                                              debugPrint(value.toString());
+                                            },
+                                          ),
                                         ),
-                                      ),
                                       Row(
                                         children: [
                                           Text("0%",

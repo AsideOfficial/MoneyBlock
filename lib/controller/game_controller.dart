@@ -466,7 +466,7 @@ class GameController extends GetxController {
 
   int? get totalMortgagesLoan {
     // 리스트를 순회하면서 price 합산
-    final myLongMortgagesList = currentRoom?.player?[myIndex].mortgagesLoan;
+    final myLongMortgagesList = currentRoom?.player?[myIndex].mortgageLoan;
     int total = 0;
 
     if (myLongMortgagesList != null) {
@@ -480,7 +480,7 @@ class GameController extends GetxController {
   int? get totalLoan {
     // 리스트를 순회하면서 price 합산
     final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
-    final myMortgagesLoanList = currentRoom?.player?[myIndex].mortgagesLoan;
+    final myMortgagesLoanList = currentRoom?.player?[myIndex].mortgageLoan;
     int total = 0;
     if (myCreditLoanList != null) {
       for (UserAction cashData in myCreditLoanList) {
@@ -505,7 +505,7 @@ class GameController extends GetxController {
     final myshortSavingList = currentRoom?.player?[myIndex].shortSaving;
     final myLongSavingList = currentRoom?.player?[myIndex].longSaving;
     final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
-    final myMortgagesList = currentRoom?.player?[myIndex].mortgagesLoan;
+    final myMortgagesList = currentRoom?.player?[myIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[myIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
@@ -553,7 +553,7 @@ class GameController extends GetxController {
     final myshortSavingList = currentRoom?.player?[playerIndex].shortSaving;
     final myLongSavingList = currentRoom?.player?[playerIndex].longSaving;
     final myCreditLoanList = currentRoom?.player?[playerIndex].creditLoan;
-    final myMortgagesList = currentRoom?.player?[playerIndex].mortgagesLoan;
+    final myMortgagesList = currentRoom?.player?[playerIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[playerIndex].investment;
     int total = 0;
     if (myLongSavingList != null) {
@@ -744,7 +744,7 @@ class GameController extends GetxController {
       userActions: [
         // cash ++ loan ++
         UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "mortgagesLoan", title: "대출 실행", price: price, qty: 1),
+        UserAction(type: "mortgageLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -760,8 +760,7 @@ class GameController extends GetxController {
       userActions: [
         // cash ++ loan ++
         UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(
-            type: "mortgagesLoan", title: "대출 상환", price: -price, qty: 1),
+        UserAction(type: "mortgageLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }

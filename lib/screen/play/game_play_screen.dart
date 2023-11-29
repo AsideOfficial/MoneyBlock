@@ -324,10 +324,10 @@ class LotteryAlert extends StatelessWidget {
       content: MCContainer(
         strokePadding: const EdgeInsets.all(3),
         gradient: Constants.yellowGradient,
-        width: 300,
-        height: 300,
+        width: 330,
+        height: 330,
         child: Padding(
-          padding: const EdgeInsets.only(top: 28, bottom: 18),
+          padding: const EdgeInsets.only(top: 28, bottom: 12),
           child: Column(
             children: [
               Text("행운복권 당첨!", style: Constants.titleTextStyle),

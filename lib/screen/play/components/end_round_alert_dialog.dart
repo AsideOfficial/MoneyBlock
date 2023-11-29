@@ -80,7 +80,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(
-                      left: 20, top: 20, bottom: 17, right: 20),
+                      left: 20, top: 20, bottom: 12, right: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -96,11 +96,11 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                         height: 1,
                         color: Constants.grey100,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 4),
                       Text("금리 증감 결과",
                           style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 24, color: Colors.black)),
-                      const SizedBox(height: 8),
+                              .copyWith(fontSize: 20, color: Colors.black)),
+                      const SizedBox(height: 4),
                       Text("저축금리",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardGreen)),
@@ -108,7 +108,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       RateVariationTile(
                           before: controller.previousSavingRate,
                           after: controller.currentSavingRate),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 4),
                       Text("대출금리",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardOrange)),
@@ -116,7 +116,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       RateVariationTile(
                           before: controller.previousLoanRate,
                           after: controller.currentLoanRate),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 4),
                       Text("투자변동률",
                           style: Constants.defaultTextStyle.copyWith(
                               fontSize: 16, color: Constants.cardRed)),
@@ -348,7 +348,7 @@ class RateVariationTile extends StatelessWidget {
           width: 64,
           child: Text("$before%",
               style: Constants.defaultTextStyle
-                  .copyWith(fontSize: 20, color: Constants.grey100)),
+                  .copyWith(fontSize: 16, color: Constants.grey100)),
         ),
         SizedBox(
             width: 14,
@@ -357,7 +357,7 @@ class RateVariationTile extends StatelessWidget {
         const SizedBox(width: 14),
         Text("$after%",
             style: Constants.defaultTextStyle.copyWith(
-                fontSize: 20,
+                fontSize: 16,
                 color: (before < after)
                     ? Constants.accentRed
                     : Constants.accentBlue)),
@@ -385,8 +385,8 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
       content: MCContainer(
         strokePadding: const EdgeInsets.all(8),
         gradient: Constants.mainGradient,
-        width: 306,
-        height: 256,
+        width: 320,
+        height: 300,
         child: Padding(
           padding: const EdgeInsets.only(top: 24, bottom: 18),
           child: GetX<GameController>(builder: (controller) {
