@@ -130,14 +130,14 @@ class _MyPageDialogState extends State<MyPageDialog> {
                                     borderRadius: 50,
                                     onChanged: (p0) {
                                       setState(() => nameError =
-                                          (p0.length < 3 || p0.length > 20));
+                                          (p0.length < 3 || p0.length > 8));
                                     },
                                   ),
                                   Row(
                                     children: [
                                       const SizedBox(width: 21.0),
                                       Text(
-                                        '3~20자 사이의 닉네임을 입력해주세요.',
+                                        '3~8자 사이의 닉네임을 입력해주세요.',
                                         style: TextStyle(
                                           color: nameError
                                               ? const Color(0xFFFF5943)
