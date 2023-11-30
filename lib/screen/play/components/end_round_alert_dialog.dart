@@ -332,7 +332,7 @@ class AssetVariationListTile extends StatelessWidget {
 }
 
 class RateVariationTile extends StatelessWidget {
-  final double before;
+  final double? before;
   final double after;
   const RateVariationTile({
     super.key,
@@ -346,7 +346,7 @@ class RateVariationTile extends StatelessWidget {
       children: [
         SizedBox(
           width: 64,
-          child: Text("$before%",
+          child: Text(before != null ? "$before%" : "",
               style: Constants.defaultTextStyle
                   .copyWith(fontSize: 16, color: Constants.grey100)),
         ),
@@ -358,7 +358,7 @@ class RateVariationTile extends StatelessWidget {
         Text("$after%",
             style: Constants.defaultTextStyle.copyWith(
                 fontSize: 16,
-                color: (before < after)
+                color: ((before != null) ? (before! < after) : (0 < after))
                     ? Constants.accentRed
                     : Constants.accentBlue)),
       ],

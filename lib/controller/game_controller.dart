@@ -188,9 +188,9 @@ class GameController extends GetxController {
     return currentRoom!.savingRateInfo![currentRoundIndex!];
   }
 
-  double get previousSavingRate {
+  double? get previousSavingRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return _currentRoom.value!.savingRateInfo![(currentRoundIndex!) - 1];
     }
@@ -200,9 +200,9 @@ class GameController extends GetxController {
     return currentRoom!.investmentRateInfo![currentRoundIndex!];
   }
 
-  double get previousInvestRate {
+  double? get previousInvestRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return _currentRoom.value!.investmentRateInfo![(currentRoundIndex!) - 1];
     }
@@ -212,9 +212,9 @@ class GameController extends GetxController {
     return currentRoom!.loanRateInfo![currentRoundIndex!];
   }
 
-  double get previousLoanRate {
+  double? get previousLoanRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return currentRoom!.loanRateInfo![(currentRoundIndex!) - 1];
     }
