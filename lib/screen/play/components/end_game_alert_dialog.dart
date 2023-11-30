@@ -295,6 +295,7 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                       onTap: () {
                         Get.back();
                         Get.back();
+                        Get.back();
                       },
                       child: SizedBox(
                         width: 230,
