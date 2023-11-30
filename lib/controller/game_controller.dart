@@ -252,7 +252,7 @@ class GameController extends GetxController {
     return random.nextInt(max);
   }
 
-  double previousRate({required GameActionType actionType}) {
+  double? previousRate({required GameActionType actionType}) {
     switch (actionType) {
       case GameActionType.saving:
         return previousSavingRate;
