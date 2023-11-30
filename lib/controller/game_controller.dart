@@ -188,9 +188,9 @@ class GameController extends GetxController {
     return currentRoom!.savingRateInfo![currentRoundIndex!];
   }
 
-  double get previousSavingRate {
+  double? get previousSavingRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return _currentRoom.value!.savingRateInfo![(currentRoundIndex!) - 1];
     }
@@ -200,9 +200,9 @@ class GameController extends GetxController {
     return currentRoom!.investmentRateInfo![currentRoundIndex!];
   }
 
-  double get previousInvestRate {
+  double? get previousInvestRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return _currentRoom.value!.investmentRateInfo![(currentRoundIndex!) - 1];
     }
@@ -212,9 +212,9 @@ class GameController extends GetxController {
     return currentRoom!.loanRateInfo![currentRoundIndex!];
   }
 
-  double get previousLoanRate {
+  double? get previousLoanRate {
     if (currentRoundIndex == 0) {
-      return 0;
+      return null;
     } else {
       return currentRoom!.loanRateInfo![(currentRoundIndex!) - 1];
     }
@@ -240,10 +240,10 @@ class GameController extends GetxController {
   }
 
   NewsArticle? get previousNews {
-    if ((currentRoundIndex ?? 0) > 0) {
-      return currentRoom?.news?[(currentRoundIndex ?? 0 - 1)];
+    if (currentRoundIndex! > 0) {
+      return currentRoom?.news?[currentRoundIndex! - 1];
     } else {
-      return currentRoom?.news?[0];
+      return null;
     }
   }
 
@@ -252,7 +252,7 @@ class GameController extends GetxController {
     return random.nextInt(max);
   }
 
-  double previousRate({required GameActionType actionType}) {
+  double? previousRate({required GameActionType actionType}) {
     switch (actionType) {
       case GameActionType.saving:
         return previousSavingRate;
@@ -383,8 +383,8 @@ class GameController extends GetxController {
   }
 
   int get myRanking {
-    //TODO - 내 순위 계산식
-    return 3;
+    final rankingList = currentRanking;
+    return rankingList.indexOf(currentRoom!.player![myIndex]) + 1;
   }
 
   int get myIncentive {
@@ -638,6 +638,7 @@ class GameController extends GetxController {
       // 플레이어 각각의 총 자산 구해서 리스트에 더함
       playersTotalAsset.add(playerTotalAsset(playerIndex: index));
     }
+    playersTotalAsset.sort((a, b) => b.compareTo(a));
 
     return playersTotalAsset;
     //TODO - playersTotalAsset 이 큰 순서대로 정렬한 List<Player> 반환

@@ -1235,20 +1235,24 @@ class _GameActionDialogState extends State<GameActionDialog> {
                         final rate =
                             gameController.currentActionTypeModel.rates?[index];
                         final actionType = gameController.currentActionType;
-                        double before =
+                        double? before =
                             gameController.previousRate(actionType: actionType);
                         double after =
                             gameController.currentRate(actionType: actionType);
-                        if (rate?.title == "저축금리") {
-                          before += 2;
-                        } else if (rate?.title == "담보대출") {
-                          before -= 1;
+                        if (before != null) {
+                          if (rate?.title == "저축금리") {
+                            before += 2;
+                          } else if (rate?.title == "담보대출") {
+                            before -= 1;
+                          }
                         }
 
                         return RateListTile2(
                             title: rate?.title ?? "",
                             rate: before,
-                            isHigherThanBefore: (before < after));
+                            isHigherThanBefore: (before != null)
+                                ? (before < after)
+                                : (0 < after));
                       }),
                 ],
               ),
@@ -1400,7 +1404,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
 
 class RateListTile2 extends StatelessWidget {
   final String title;
-  final double rate;
+  final double? rate;
   final bool isHigherThanBefore;
   const RateListTile2({
     super.key,
@@ -1423,7 +1427,7 @@ class RateListTile2 extends StatelessWidget {
                   Text(title,
                       style: Constants.defaultTextStyle
                           .copyWith(fontSize: 10, color: Constants.dark100)),
-                  Text("$rate%",
+                  Text(rate != null ? "$rate%" : "",
                       style: Constants.defaultTextStyle
                           .copyWith(fontSize: 10, color: Constants.dark100)),
                   const SizedBox(width: 0),
