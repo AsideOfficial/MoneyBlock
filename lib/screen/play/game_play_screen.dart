@@ -81,7 +81,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                       .myCharacterAvatarAssetString)),
                             ),
                             Text(
-                              "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : "${gameController.currentTurnPlayer!.name!.length < 5 ? gameController.currentTurnPlayer!.name : gameController.currentTurnPlayer!.name!.substring(0, 4)}"}'의 턴",
+                              "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : ((gameController.currentTurnPlayer?.name?.length ?? 0) < 5) ? gameController.currentTurnPlayer?.name ?? "" : gameController.currentTurnPlayer!.name!.substring(0, 4)}'의 턴",
                               style: Constants.largeTextStyle,
                             )
                           ]),

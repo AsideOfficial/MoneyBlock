@@ -28,10 +28,10 @@ class GameController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     debugPrint("[게임 컨트롤러 onInit 시작]");
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
     _currentRoom.value = roomData;
+    super.onInit();
     bindRoomStream(roomId);
     debugPrint("[게임 컨트롤러 onInit 종료]");
   }
@@ -177,14 +177,16 @@ class GameController extends GetxController {
 
   Player? get currentTurnPlayer {
     if (currentTurnIndex == null) return null;
+    if (currentRoom?.player == null) return null;
     int turn = 0;
     if (currentTurnIndex != 0) {
       turn = (currentTurnIndex! % (currentRoom!.player?.length ?? 2));
     }
-    return currentRoom?.player?[turn];
+    return currentRoom!.player![turn];
   }
 
   double get currentSavingRate {
+    if (currentRoom == null) return 0;
     return currentRoom!.savingRateInfo![currentRoundIndex!];
   }
 
@@ -362,6 +364,7 @@ class GameController extends GetxController {
   // MARK: - 계산 비즈니스 로직
 
   double get currentTotalInvestmentRate {
+    if (currentRoom == null) return 0;
     double result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
     switch (currentRound) {
       case 1:
