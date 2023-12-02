@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
+import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
 
 class WaitingRoomController extends GetxController {
@@ -29,5 +32,28 @@ class WaitingRoomController extends GetxController {
 
   _roomDataHandler(RoomData? room) {
     debugPrint("_waitingRoomDataHandler 트리거 -");
+
+    if (room != null && room.isPlaying) {
+      Map<String, bool> participantsState = {};
+
+      for (Player player in room.player ?? []) {
+        participantsState[player.uid] = player.isReady;
+      }
+      final myIndex = participantsState.keys
+          .toList()
+          .indexOf(FirebaseAuth.instance.currentUser!.uid);
+      Get.to(
+        () => const GamePlayScreen(),
+        binding: BindingsBuilder(() {
+          Get.put(
+            GameController(
+              roomId: roomId,
+              myIndex: myIndex,
+            ),
+          );
+        }),
+        transition: Transition.fadeIn,
+      );
+    }
   }
 }

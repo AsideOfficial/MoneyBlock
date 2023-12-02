@@ -113,20 +113,20 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
               .toList()
               .indexOf(FirebaseAuth.instance.currentUser!.uid);
 
-          if (roomData != null && roomData.isPlaying) {
-            Get.to(
-              const GamePlayScreen(),
-              binding: BindingsBuilder(() {
-                Get.put(
-                  GameController(
-                    roomId: roomID,
-                    myIndex: myIndex,
-                  ),
-                );
-              }),
-              transition: Transition.fadeIn,
-            );
-          }
+          // if (roomData != null && roomData.isPlaying) {
+          //   Get.to(
+          //     () => const GamePlayScreen(),
+          //     binding: BindingsBuilder(() {
+          //       Get.put(
+          //         GameController(
+          //           roomId: roomID,
+          //           myIndex: myIndex,
+          //         ),
+          //       );
+          //     }),
+          //     transition: Transition.fadeIn,
+          //   );
+          // }
 
           if (roomData == null) {
             return Stack(

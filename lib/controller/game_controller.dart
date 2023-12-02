@@ -39,7 +39,9 @@ class GameController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
+    Future.delayed(const Duration(seconds: 1), () {
+      Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
+    });
   }
 
   final _curretnActionType = GameActionType.expend.obs;
