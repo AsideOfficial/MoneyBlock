@@ -1292,83 +1292,89 @@ class _GameActionDialogState extends State<GameActionDialog> {
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (gameController) {
       final model = gameController.currentActionTypeModel;
-      final specificActionModel = gameController.curretnSpecificActionModel;
 
       if (currentCreditLoanAmount < gameController.totalCash! / 2 ||
           currentCreditLoanAmount > gameController.totalCash! * 2) {
         currentCreditLoanAmount = gameController.totalCash! / 2;
       }
 
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //MARK: - 액션 종류 선택
-              MCContainer(
-                borderRadius: 20,
-                gradient: gameController.currentBackgroundGradient,
-                strokePadding: const EdgeInsets.all(5),
-                width: 170,
-                height: height,
-                // alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: model.actions.length,
-                      // padding: const EdgeInsets.symmetric(vertical: 12),
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        final specificAction = model.actions[index];
-                        bool? isSelected = false;
-
-                        if (specificAction.title ==
-                            gameController.curretnSpecificActionModel?.title) {
-                          isSelected = true;
-                        } else {
-                          isSelected = false;
-                        }
-
-                        return Padding(
-                          padding: const EdgeInsets.all(2.5),
-                          child: ActionChoiceButton(
-                            isSelected: isSelected,
-                            title: model.actions[index].title,
-                            onTap: () {
-                              gameController.specificActionButtonTap(index);
-                            },
-                          ),
-                        );
-                      },
+              Stack(
+                children: [
+                  //MARK: - 액션 종류 선택
+                  MCContainer(
+                    borderRadius: 20,
+                    gradient: gameController.currentBackgroundGradient,
+                    strokePadding: const EdgeInsets.all(5),
+                    width: 170,
+                    height: height,
+                    // alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: model.actions.length,
+                          // padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            final specificAction = model.actions[index];
+                            bool? isSelected = false;
+          
+                            if (specificAction.title ==
+                                gameController.curretnSpecificActionModel?.title) {
+                              isSelected = true;
+                            } else {
+                              isSelected = false;
+                            }
+          
+                            return Padding(
+                              padding: const EdgeInsets.all(2.5),
+                              child: ActionChoiceButton(
+                                isSelected: isSelected,
+                                title: model.actions[index].title,
+                                onTap: () {
+                                  gameController.specificActionButtonTap(index);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(-14, -14),
-                child: Bounceable(
-                  scaleFactor: 0.8,
-                  onTap: () => gameController.isActionChoicing = false,
-                  child: Image.asset(
-                    gameController.currentBackButtonAssetString,
-                    width: 46.0,
-                    height: 46.0,
                   ),
-                ),
+                  Transform.translate(
+                    offset: const Offset(-14, -14),
+                    child: Bounceable(
+                      scaleFactor: 0.8,
+                      onTap: () => gameController.isActionChoicing = false,
+                      child: Image.asset(
+                        gameController.currentBackButtonAssetString,
+                        width: 46.0,
+                        height: 46.0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(width: 12),
+              if (gameController.curretnSpecificActionModel == null)
+                ...actionDescriptionContainer(
+                    gameController.currentActionType, gameController)
+              else
+                ...actionChoiceContainer(
+                    gameController.currentActionType, gameController),
             ],
           ),
-          const SizedBox(width: 12),
-          if (gameController.curretnSpecificActionModel == null)
-            ...actionDescriptionContainer(
-                gameController.currentActionType, gameController)
-          else
-            ...actionChoiceContainer(
-                gameController.currentActionType, gameController),
-        ],
+        ),
       );
     });
   }

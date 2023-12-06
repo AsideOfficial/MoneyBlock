@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
@@ -38,7 +37,6 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
   int totalAmount = 0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     totalAmount = widget.perPrice;
   }

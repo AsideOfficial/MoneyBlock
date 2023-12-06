@@ -68,234 +68,237 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
         shadowColor: Colors.transparent,
         contentPadding: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
-        content: SizedBox(
-          height: 310,
-          child: Row(
-            children: [
-              Container(
-                width: 230,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: Constants.grey00Gradient,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, top: 20, bottom: 12, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("지난 뉴스",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 24, color: Colors.black)),
-                      const Spacer(),
-                      Text(controller.previousNews?.headline ?? "",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 16, color: Colors.black)),
-                      const Spacer(),
-                      Container(
-                        height: 1,
-                        color: Constants.grey100,
-                      ),
-                      const SizedBox(height: 4),
-                      Text("금리 증감 결과",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 20, color: Colors.black)),
-                      const SizedBox(height: 4),
-                      Text("저축금리",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardGreen)),
-                      const SizedBox(height: 2),
-                      RateVariationTile(
-                          before: controller.previousSavingRate,
-                          after: controller.currentSavingRate),
-                      const SizedBox(height: 4),
-                      Text("대출금리",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardOrange)),
-                      const SizedBox(height: 2),
-                      RateVariationTile(
-                          before: controller.previousLoanRate,
-                          after: controller.currentLoanRate),
-                      const SizedBox(height: 4),
-                      Text("투자변동률",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.cardRed)),
-                      const SizedBox(height: 2),
-                      RateVariationTile(
-                          before: controller.previousInvestRate,
-                          after: controller.currentInvestRate),
-                    ],
+        content: SingleChildScrollView(
+          child: SizedBox(
+            height: 310,
+            child: Row(
+              children: [
+                Container(
+                  width: 230,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: Constants.grey00Gradient,
                   ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                width: 230,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: Constants.grey00Gradient,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, top: 20, bottom: 23, right: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("라운드 정산",
-                          style: Constants.defaultTextStyle
-                              .copyWith(fontSize: 24, color: Colors.black)),
-                      const SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Text("지난 총 자산",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 14, color: Colors.black)),
-                          const Spacer(),
-                          Text("${widget.previousDataList[0].commaString}원",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 14, color: Colors.black)),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 20),
-                      AssetVariationListTile(
-                          title: "현금", variation: widget.previousDataList[1]),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 4),
-                      AssetVariationListTile(
-                          title: "저축", variation: widget.previousDataList[2]),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 4),
-                      AssetVariationListTile(
-                          title: "투자", variation: widget.previousDataList[3]),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 4),
-                      AssetVariationListTile(
-                          title: "대출", variation: widget.previousDataList[4]),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 4),
-                      AssetVariationListTile(
-                          title: "세금", variation: widget.previousDataList[5]),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 4),
-                      // const AssetVariationListTile(
-                      //     title: "인센티브", variation: 400000),
-                      // const SizedBox(height: 4),
-                      // Container(height: 1, color: Constants.grey100),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Text("현재 총 자산",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 14, color: Colors.black)),
-                          const Spacer(),
-                          Text("${controller.totalAsset?.commaString}원",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 14, color: Colors.black)),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Container(height: 1, color: Constants.grey100),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Container(
-                    width: 210,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: Constants.grey00Gradient,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, top: 20, bottom: 23, right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("현재 순위",
-                              style: Constants.defaultTextStyle
-                                  .copyWith(fontSize: 24, color: Colors.black)),
-                          const SizedBox(height: 15),
-                          Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount:
-                                  controller.currentRoom?.player?.length ?? 0,
-                              itemBuilder: (context, index) {
-                                //TODO - 순위 데이터 리스트 연동 및 정렬
-                                final player = controller.currentRanking[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 20,
-                                        child: Text("${index + 1}.",
-                                            style: Constants.defaultTextStyle
-                                                .copyWith(
-                                                    fontSize: 20,
-                                                    color: Colors.black)),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Image.asset(controller
-                                              .characterAvatarAssetString(
-                                                  characterIndex:
-                                                      player.characterIndex!))),
-                                      const SizedBox(width: 10),
-                                      SizedBox(
-                                        width: 86,
-                                        child: Text(player.name ?? "",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: Constants.defaultTextStyle
-                                                .copyWith(
-                                                    fontSize: 20,
-                                                    color: Colors.black)),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                        ],
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, top: 20, bottom: 12, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("지난 뉴스",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 24, color: Colors.black)),
+                        const Spacer(),
+                        Text(controller.previousNews?.headline ?? "",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 16, color: Colors.black)),
+                        const Spacer(),
+                        Container(
+                          height: 1,
+                          color: Constants.grey100,
+                        ),
+                        const SizedBox(height: 4),
+                        Text("금리 증감 결과",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 20, color: Colors.black)),
+                        const SizedBox(height: 4),
+                        Text("저축금리",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.cardGreen)),
+                        const SizedBox(height: 2),
+                        RateVariationTile(
+                            before: controller.previousSavingRate,
+                            after: controller.currentSavingRate),
+                        const SizedBox(height: 4),
+                        Text("대출금리",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.cardOrange)),
+                        const SizedBox(height: 2),
+                        RateVariationTile(
+                            before: controller.previousLoanRate,
+                            after: controller.currentLoanRate),
+                        const SizedBox(height: 4),
+                        Text("투자변동률",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.cardRed)),
+                        const SizedBox(height: 2),
+                        RateVariationTile(
+                            before: controller.previousInvestRate,
+                            after: controller.currentInvestRate),
+                      ],
                     ),
                   ),
-                  Transform.translate(
-                    offset: const Offset(14, -14),
-                    child: Bounceable(
-                      scaleFactor: 0.8,
-                      onTap: () {
-                        Get.back();
-                        Get.dialog(
-                          const NewRoundDialog(),
-                          barrierDismissible: false,
-                        );
-                      },
-                      child: Image.asset(
-                        "assets/icons/button_forward.png",
-                        width: 46.0,
-                        height: 46.0,
-                      ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 230,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: Constants.grey00Gradient,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, top: 20, bottom: 23, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("라운드 정산",
+                            style: Constants.defaultTextStyle
+                                .copyWith(fontSize: 24, color: Colors.black)),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            Text("지난 총 자산",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 14, color: Colors.black)),
+                            const Spacer(),
+                            Text("${widget.previousDataList[0].commaString}원",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 14, color: Colors.black)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 20),
+                        AssetVariationListTile(
+                            title: "현금", variation: widget.previousDataList[1]),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 4),
+                        AssetVariationListTile(
+                            title: "저축", variation: widget.previousDataList[2]),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 4),
+                        AssetVariationListTile(
+                            title: "투자", variation: widget.previousDataList[3]),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 4),
+                        AssetVariationListTile(
+                            title: "대출", variation: widget.previousDataList[4]),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 4),
+                        AssetVariationListTile(
+                            title: "세금", variation: widget.previousDataList[5]),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 4),
+                        // const AssetVariationListTile(
+                        //     title: "인센티브", variation: 400000),
+                        // const SizedBox(height: 4),
+                        // Container(height: 1, color: Constants.grey100),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            Text("현재 총 자산",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 14, color: Colors.black)),
+                            const Spacer(),
+                            Text("${controller.totalAsset?.commaString}원",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 14, color: Colors.black)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Container(height: 1, color: Constants.grey100),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(width: 10),
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      width: 210,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: Constants.grey00Gradient,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, top: 20, bottom: 23, right: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("현재 순위",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 24, color: Colors.black)),
+                            const SizedBox(height: 15),
+                            Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount:
+                                    controller.currentRoom?.player?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  //TODO - 순위 데이터 리스트 연동 및 정렬
+                                  final player =
+                                      controller.currentRanking[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                          child: Text("${index + 1}.",
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(
+                                                      fontSize: 20,
+                                                      color: Colors.black)),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                            child: Image.asset(controller
+                                                .characterAvatarAssetString(
+                                                    characterIndex: player
+                                                        .characterIndex!))),
+                                        const SizedBox(width: 10),
+                                        SizedBox(
+                                          width: 86,
+                                          child: Text(player.name ?? "",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: Constants.defaultTextStyle
+                                                  .copyWith(
+                                                      fontSize: 20,
+                                                      color: Colors.black)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset: const Offset(14, -14),
+                      child: Bounceable(
+                        scaleFactor: 0.8,
+                        onTap: () {
+                          Get.back();
+                          Get.dialog(
+                            const NewRoundDialog(),
+                            barrierDismissible: false,
+                          );
+                        },
+                        child: Image.asset(
+                          "assets/icons/button_forward.png",
+                          width: 46.0,
+                          height: 46.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -475,50 +478,57 @@ class _NewsDialogState extends State<NewsDialog> {
                 return Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("뉴스",
-                            style: Constants.titleTextStyle
-                                .copyWith(color: Colors.black)),
-                        const SizedBox(height: 12),
-                        Text('"${controller.currentNews?.headline}"',
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("뉴스",
+                              style: Constants.titleTextStyle
+                                  .copyWith(color: Colors.black)),
+                          const SizedBox(height: 12),
+                          Text(
+                            '"${controller.currentNews?.headline}"',
                             style: Constants.defaultTextStyle
-                                .copyWith(color: Colors.black, fontSize: 18)),
-                        const SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
+                                .copyWith(color: Colors.black, fontSize: 18),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: Text(
                                   controller.currentNews?.article1 ?? "",
                                   style: Constants.defaultTextStyle.copyWith(
                                       color: Colors.black,
                                       fontSize: 14,
-                                      height: 1.25)),
-                            ),
-                            const SizedBox(width: 30),
-                            Expanded(
-                              child: Text(
+                                      height: 1.25),
+                                ),
+                              ),
+                              const SizedBox(width: 30),
+                              Flexible(
+                                child: Text(
                                   controller.currentNews?.article2 ?? '',
                                   style: Constants.defaultTextStyle.copyWith(
                                       color: Colors.black,
                                       fontSize: 14,
-                                      height: 1.25)),
-                            ),
-                            const SizedBox(width: 30),
-                            Expanded(
-                              child: Text(
+                                      height: 1.25),
+                                ),
+                              ),
+                              const SizedBox(width: 30),
+                              Flexible(
+                                child: Text(
                                   controller.currentNews?.article3 ?? "",
                                   style: Constants.defaultTextStyle.copyWith(
                                       color: Colors.black,
                                       fontSize: 14,
-                                      height: 1.25)),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                      ],
+                                      height: 1.25),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 60.0),
+                        ],
+                      ),
                     ),
                     Bounceable(
                       onTap: () {

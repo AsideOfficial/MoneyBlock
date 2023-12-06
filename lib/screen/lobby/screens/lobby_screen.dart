@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -77,8 +79,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
         children: [
           Image.asset(
             'assets/images/main_illustration.png',
-            width: double.infinity,
-            fit: BoxFit.fitWidth,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            fit: BoxFit.cover,
           ),
           if (isFetching)
             SafeArea(

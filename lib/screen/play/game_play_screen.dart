@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
+import 'package:marquee/marquee.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
@@ -23,15 +24,6 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
-  // bool isActionChoicing = true;
-  // GameActionType currentActionType = GameActionType.saving;
-
-  // void onActionButtonTap(GameActionType action) {
-  //   setState(() {
-  //     currentActionType = action;
-  //     isActionChoicing = true;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +65,34 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 40),
-                          child: Row(children: [
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: SizedBox(
-                                  child: Image.asset(gameController
-                                      .myCharacterAvatarAssetString)),
-                            ),
-                            Text(
-                              "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : ((gameController.currentTurnPlayer?.name?.length ?? 0) < 5) ? gameController.currentTurnPlayer?.name ?? "" : gameController.currentTurnPlayer!.name!.substring(0, 4)}'의 턴",
-                              style: Constants.largeTextStyle,
-                            )
-                          ]),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: SizedBox(
+                                    child: Image.asset(gameController
+                                        .myCharacterAvatarAssetString)),
+                              ),
+                              Expanded(
+                                child: Marquee(
+                                  text:
+                                      "라운드${gameController.currentRound} '${gameController.isMyTurn ? "나" : ((gameController.currentTurnPlayer?.name?.length ?? 0) < 5) ? gameController.currentTurnPlayer?.name ?? "" : gameController.currentTurnPlayer!.name!.substring(0, 4)}'의 턴",
+                                  style: Constants.largeTextStyle,
+                                  scrollAxis: Axis.horizontal,
+                                  blankSpace: 10.0,
+                                  velocity: 30.0,
+                                  pauseAfterRound: const Duration(seconds: 1),
+                                  startPadding: 10.0,
+                                  accelerationDuration:
+                                      const Duration(seconds: 1),
+                                  accelerationCurve: Curves.linear,
+                                  decelerationDuration:
+                                      const Duration(milliseconds: 500),
+                                  decelerationCurve: Curves.easeOut,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -294,24 +302,26 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
             //MARK : - Top Layer (나의 자산 현황 테이블)
             AnimatedPositioned(
-                curve: Curves.decelerate,
-                duration: const Duration(milliseconds: 400),
-                top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
-                child: GestureDetector(
-                    onPanEnd: (details) {
-                      if (details.velocity.pixelsPerSecond.dy > -100) {
-                        setState(() {
-                          isSwipeUp = true;
-                        });
-                      } else {
-                        setState(() {
-                          isSwipeUp = false;
-                        });
-                      }
-                    },
-                    child: MyAssetSheet(
-                      isSwipeUp: isSwipeUp,
-                    )))
+              curve: Curves.decelerate,
+              duration: const Duration(milliseconds: 400),
+              top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
+              child: GestureDetector(
+                onPanEnd: (details) {
+                  if (details.velocity.pixelsPerSecond.dy > -100) {
+                    setState(() {
+                      isSwipeUp = true;
+                    });
+                  } else {
+                    setState(() {
+                      isSwipeUp = false;
+                    });
+                  }
+                },
+                child: MyAssetSheet(
+                  isSwipeUp: isSwipeUp,
+                ),
+              ),
+            ),
           ],
         );
       })),

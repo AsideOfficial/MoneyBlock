@@ -53,112 +53,115 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
       shadowColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
-      content: SizedBox(
-        height: 330,
-        child: Row(
-          children: [
-            const SizedBox(width: 100),
-            Container(
-              width: 230,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: Constants.grey00Gradient,
+      content: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          height: 330,
+          child: Row(
+            children: [
+              const SizedBox(width: 100),
+              Container(
+                width: 230,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: Constants.grey00Gradient,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, top: 20, bottom: 12, right: 20),
+                  child: GetX<GameController>(builder: (controller) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("최종 정산 금액",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 24, color: Constants.dark100)),
+        
+                        const SizedBox(height: 6),
+        
+                        Text("보유현금",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.dark100)),
+                        const SizedBox(height: 2),
+                        Text(controller.totalCash?.commaString ?? "",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: const Color(0xFFEA8C00))),
+                        const SizedBox(height: 6),
+                        Text("저축자산",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.dark100)),
+                        const SizedBox(height: 2),
+                        Text("+${controller.totalSaving?.commaString}",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.accentRed)),
+                        const SizedBox(height: 6),
+                        Text("투자자산",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.dark100)),
+                        const SizedBox(height: 2),
+                        Text("+${controller.totalInvestment?.commaString}",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.accentRed)),
+                        const SizedBox(height: 6),
+                        Text("대출금",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.dark100)),
+                        const SizedBox(height: 2),
+                        Text("-${controller.totalLoan?.commaString}",
+                            style: Constants.defaultTextStyle.copyWith(
+                                fontSize: 16, color: Constants.accentBlue)),
+                        // const RateVariationTile(before: 3, after: 5),
+        
+                        const SizedBox(height: 6),
+                        // const RateVariationTile(before: 5, after: 4),
+                        // const SizedBox(height: 10),
+                        Container(height: 1, color: Constants.grey100),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text("총",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 20, color: Constants.dark100)),
+                            const Spacer(),
+                            Text("${controller.totalAsset?.commaString}원",
+                                style: Constants.defaultTextStyle.copyWith(
+                                    fontSize: 20, color: Constants.dark100)),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
+                ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, top: 20, bottom: 12, right: 20),
-                child: GetX<GameController>(builder: (controller) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("최종 정산 금액",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 24, color: Constants.dark100)),
-
-                      const SizedBox(height: 6),
-
-                      Text("보유현금",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.dark100)),
-                      const SizedBox(height: 2),
-                      Text(controller.totalCash?.commaString ?? "",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: const Color(0xFFEA8C00))),
-                      const SizedBox(height: 6),
-                      Text("저축자산",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.dark100)),
-                      const SizedBox(height: 2),
-                      Text("+${controller.totalSaving?.commaString}",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.accentRed)),
-                      const SizedBox(height: 6),
-                      Text("투자자산",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.dark100)),
-                      const SizedBox(height: 2),
-                      Text("+${controller.totalInvestment?.commaString}",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.accentRed)),
-                      const SizedBox(height: 6),
-                      Text("대출금",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.dark100)),
-                      const SizedBox(height: 2),
-                      Text("-${controller.totalLoan?.commaString}",
-                          style: Constants.defaultTextStyle.copyWith(
-                              fontSize: 16, color: Constants.accentBlue)),
-                      // const RateVariationTile(before: 3, after: 5),
-
-                      const SizedBox(height: 6),
-                      // const RateVariationTile(before: 5, after: 4),
-                      // const SizedBox(height: 10),
-                      Container(height: 1, color: Constants.grey100),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Text("총",
-                              style: Constants.defaultTextStyle.copyWith(
-                                  fontSize: 20, color: Constants.dark100)),
-                          const Spacer(),
-                          Text("${controller.totalAsset?.commaString}원",
-                              style: Constants.defaultTextStyle.copyWith(
-                                  fontSize: 20, color: Constants.dark100)),
-                        ],
-                      ),
-                    ],
-                  );
-                }),
+              const SizedBox(width: 10),
+              Column(
+                children: [
+                  const Spacer(),
+                  Bounceable(
+                      onTap: () {
+                        Get.back();
+                        Get.dialog(const FinalResultDialog(),
+                            barrierDismissible: false, useSafeArea: false);
+                      },
+                      child: SizedBox(
+                        width: 110,
+                        height: 50,
+                        child: Stack(
+                          children: [
+                            Image.asset("assets/components/confirm_button.png"),
+                            Center(
+                              child: Text(
+                                "확인",
+                                style: Constants.largeTextStyle,
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+                ],
               ),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              children: [
-                const Spacer(),
-                Bounceable(
-                    onTap: () {
-                      Get.back();
-                      Get.dialog(const FinalResultDialog(),
-                          barrierDismissible: false, useSafeArea: false);
-                    },
-                    child: SizedBox(
-                      width: 110,
-                      height: 50,
-                      child: Stack(
-                        children: [
-                          Image.asset("assets/components/confirm_button.png"),
-                          Center(
-                            child: Text(
-                              "확인",
-                              style: Constants.largeTextStyle,
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -181,147 +184,150 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
       shadowColor: Colors.transparent,
       contentPadding: EdgeInsets.zero,
       backgroundColor: Colors.transparent,
-      content: Container(
-        width: 540,
-        height: 330,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: const DecorationImage(
-                image:
-                    AssetImage("assets/components/final_result_container.png"),
-                fit: BoxFit.cover)),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Container(
-            decoration: ShapeDecoration(
-              color: Colors.white.withOpacity(0.800000011920929),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(11),
-              ),
-              shadows: const [
-                BoxShadow(
-                  color: Color(0x3F000000),
-                  blurRadius: 5,
-                  offset: Offset(0, 2),
-                  spreadRadius: 1,
-                )
-              ],
-            ),
-            child: GetX<GameController>(builder: (controller) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                    top: 10, bottom: 8, left: 21, right: 21),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("최종 결과",
-                        style: Constants.titleTextStyle
-                            .copyWith(color: Colors.black)),
-                    const SizedBox(height: 18),
-                    Expanded(
-                      child: SizedBox(
-                        height: 72,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ListView.separated(
-                              padding: EdgeInsets.zero,
-                              separatorBuilder: (context, index) {
-                                return Container(
-                                  // color: Colors.blue,
-                                  width: 40,
-                                );
-                              },
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  (controller.currentRoom!.player!.length < 4)
-                                      ? controller.currentRoom!.player!.length
-                                      : 3,
-                              itemBuilder: (context, index) {
-                                final player = controller.currentRanking[index];
-                                final asset =
-                                    controller.currentRankingAssetList[index];
-                                return VictoryStandCard(
-                                  name: player.name ?? "",
-                                  ranking: index + 1,
-                                  totalAsset: asset,
-                                  assetString:
-                                      controller.characterAvatarAssetString(
-                                          characterIndex:
-                                              player.characterIndex ?? 0),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // const SizedBox(height: 10),
-                    Container(height: 1, color: Constants.grey100),
-                    const SizedBox(height: 10),
-                    if ((controller.currentRoom?.player?.length ?? 0) > 3)
-                      Row(
-                        children: [
-                          Text("4위",
-                              style: Constants.largeTextStyle
-                                  .copyWith(color: Colors.black)),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: 34,
-                            // height: 70,
-                            child: Image.asset(
-                                controller.characterAvatarAssetString(
-                                    characterIndex: controller
-                                        .currentRanking[3].characterIndex!)),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(controller.currentRanking[3].name ?? "",
-                              style: Constants.largeTextStyle
-                                  .copyWith(color: Colors.black)),
-                          const SizedBox(width: 10),
-                          Text(
-                              "${(controller.currentRankingAssetList[3]).commaString}원",
-                              style: Constants.largeTextStyle
-                                  .copyWith(color: Colors.black)),
-                          const SizedBox(width: 10),
-                        ],
-                      ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Bounceable(
-                      onTap: () {
-                        Get.back();
-                        Get.back();
-                        Get.back();
-                      },
-                      child: SizedBox(
-                        width: 230,
-                        height: 50,
-                        child: Stack(
-                          children: [
-                            Image.asset(
-                              "assets/components/continue_button.png",
-                              fit: BoxFit.cover,
-                            ),
-                            Center(
-                              child: Text("확인",
-                                  style: Constants.largeTextStyle
-                                      .copyWith(fontSize: 22)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    )
-                  ],
+      content: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          width: 540,
+          height: 330,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: const DecorationImage(
+                  image:
+                      AssetImage("assets/components/final_result_container.png"),
+                  fit: BoxFit.cover)),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Container(
+              decoration: ShapeDecoration(
+                color: Colors.white.withOpacity(0.800000011920929),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11),
                 ),
-              );
-            }),
+                shadows: const [
+                  BoxShadow(
+                    color: Color(0x3F000000),
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                    spreadRadius: 1,
+                  )
+                ],
+              ),
+              child: GetX<GameController>(builder: (controller) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 8, left: 21, right: 21),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("최종 결과",
+                          style: Constants.titleTextStyle
+                              .copyWith(color: Colors.black)),
+                      const SizedBox(height: 18),
+                      Expanded(
+                        child: SizedBox(
+                          height: 72,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ListView.separated(
+                                padding: EdgeInsets.zero,
+                                separatorBuilder: (context, index) {
+                                  return Container(
+                                    // color: Colors.blue,
+                                    width: 40,
+                                  );
+                                },
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount:
+                                    (controller.currentRoom!.player!.length < 4)
+                                        ? controller.currentRoom!.player!.length
+                                        : 3,
+                                itemBuilder: (context, index) {
+                                  final player = controller.currentRanking[index];
+                                  final asset =
+                                      controller.currentRankingAssetList[index];
+                                  return VictoryStandCard(
+                                    name: player.name ?? "",
+                                    ranking: index + 1,
+                                    totalAsset: asset,
+                                    assetString:
+                                        controller.characterAvatarAssetString(
+                                            characterIndex:
+                                                player.characterIndex ?? 0),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // const SizedBox(height: 10),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 10),
+                      if ((controller.currentRoom?.player?.length ?? 0) > 3)
+                        Row(
+                          children: [
+                            Text("4위",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 34,
+                              // height: 70,
+                              child: Image.asset(
+                                  controller.characterAvatarAssetString(
+                                      characterIndex: controller
+                                          .currentRanking[3].characterIndex!)),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(controller.currentRanking[3].name ?? "",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                            Text(
+                                "${(controller.currentRankingAssetList[3]).commaString}원",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Bounceable(
+                        onTap: () {
+                          Get.back();
+                          Get.back();
+                          Get.back();
+                        },
+                        child: SizedBox(
+                          width: 230,
+                          height: 50,
+                          child: Stack(
+                            children: [
+                              Image.asset(
+                                "assets/components/continue_button.png",
+                                fit: BoxFit.cover,
+                              ),
+                              Center(
+                                child: Text("확인",
+                                    style: Constants.largeTextStyle
+                                        .copyWith(fontSize: 22)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      )
+                    ],
+                  ),
+                );
+              }),
+            ),
           ),
         ),
       ),

@@ -28,6 +28,8 @@ class StartScreen extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/main_illustration.png',
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     fit: BoxFit.cover,
                   ),
                   Image.asset(
