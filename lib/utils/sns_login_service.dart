@@ -29,6 +29,7 @@ class KakaoLoginService {
   }
 
   static Future<void> loginWithKakaoAccount() async {
+    print(await kakao.KakaoSdk.origin);
     try {
       await kakao.UserApi.instance.loginWithKakaoAccount();
       debugPrint('카카오계정으로 로그인 성공');

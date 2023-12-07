@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "11046090334-ccl4hrs0cciii3vmd55av5klanh7u8k4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "363f86072a2108408c98d43fb6f3300bd0b6997f"
+          }
+        },
+        {
           "client_id": "11046090334-jadvb007n7d9c74qccls0tkfmghutssr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
