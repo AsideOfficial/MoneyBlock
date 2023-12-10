@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:money_cycle/screen/lobby/screens/lobby_screen.dart';
+import 'package:money_cycle/screen/lobby/screens/test_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -16,9 +17,9 @@ class MainScreen extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            return const LobbyScreen();
+            return const TestScreen();
           } else {
-            return const StartScreen();
+            return const TestScreen();
           }
         }),
       ),
