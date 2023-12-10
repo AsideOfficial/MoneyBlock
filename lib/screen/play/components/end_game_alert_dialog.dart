@@ -3,6 +3,7 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/screen/main_screen.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -293,9 +294,7 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                     ),
                     Bounceable(
                       onTap: () {
-                        Get.back();
-                        Get.back();
-                        Get.back();
+                        Get.offAllNamed(MainScreen.routeName);
                       },
                       child: SizedBox(
                         width: 230,
