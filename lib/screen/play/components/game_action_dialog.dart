@@ -414,12 +414,6 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           width: 100),
                                     ],
                                   ),
-                                  const SizedBox(height: 2),
-                                  const Text(
-                                    "※다음 턴에 주어지는 이자입니다.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  ),
                                 ],
                               ),
                               const SizedBox(height: 32),
@@ -540,7 +534,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               Row(
                                 children: [
                                   singleChoiceButton(
-                                      title: "신용 대출",
+                                      title: "신용 상환",
                                       isSelected: isCreditLoan,
                                       onPressed: () {
                                         setState(() {
@@ -549,7 +543,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       }),
                                   const SizedBox(width: 12),
                                   singleChoiceButton(
-                                      title: "담보 대출",
+                                      title: "담보 상환",
                                       isSelected: !isCreditLoan,
                                       onPressed: () {
                                         setState(() {
@@ -792,7 +786,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                           Image.asset(
                                               "assets/icons/button_long_orange.png"),
                                           Center(
-                                            child: Text("대출하기",
+                                            child: Text("상환하기",
                                                 style:
                                                     Constants.largeTextStyle),
                                           )
@@ -942,7 +936,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   ),
                                 ),
                                 Text(
-                                    "${((currentAmount / cash) * 100).toInt()}%",
+                                    "${((currentAmount / gameController.totalCash!) * 100).toInt()}%",
                                     style: Constants.defaultTextStyle
                                         .copyWith(fontSize: 18)),
                               ],

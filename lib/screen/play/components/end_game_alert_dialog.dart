@@ -3,8 +3,11 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/screen/main_screen.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
+
+import '../../../models/game/player.dart';
 
 class EndGameAlertDialog extends StatefulWidget {
   const EndGameAlertDialog({super.key});
@@ -76,9 +79,9 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                         Text("최종 정산 금액",
                             style: Constants.defaultTextStyle.copyWith(
                                 fontSize: 24, color: Constants.dark100)),
-        
+
                         const SizedBox(height: 6),
-        
+
                         Text("보유현금",
                             style: Constants.defaultTextStyle.copyWith(
                                 fontSize: 16, color: Constants.dark100)),
@@ -111,7 +114,7 @@ class _FinalCalculateDialogState extends State<FinalCalculateDialog> {
                             style: Constants.defaultTextStyle.copyWith(
                                 fontSize: 16, color: Constants.accentBlue)),
                         // const RateVariationTile(before: 3, after: 5),
-        
+
                         const SizedBox(height: 6),
                         // const RateVariationTile(before: 5, after: 4),
                         // const SizedBox(height: 10),
@@ -178,6 +181,11 @@ class FinalResultDialog extends StatefulWidget {
 }
 
 class _FinalResultDialogState extends State<FinalResultDialog> {
+  List<Player> playerRankingList =
+      Get.find<GameController>().getCurrentRanking();
+  List<int> playerRankingAssetList =
+      Get.find<GameController>().getCurrentRankingAssetList();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -192,8 +200,8 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: const DecorationImage(
-                  image:
-                      AssetImage("assets/components/final_result_container.png"),
+                  image: AssetImage(
+                      "assets/components/final_result_container.png"),
                   fit: BoxFit.cover)),
           child: Padding(
             padding: const EdgeInsets.all(14),
@@ -245,7 +253,8 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                                         ? controller.currentRoom!.player!.length
                                         : 3,
                                 itemBuilder: (context, index) {
-                                  final player = controller.currentRanking[index];
+                                  final player =
+                                      controller.currentRanking[index];
                                   final asset =
                                       controller.currentRankingAssetList[index];
                                   return VictoryStandCard(
@@ -269,17 +278,34 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                       if ((controller.currentRoom?.player?.length ?? 0) > 3)
                         Row(
                           children: [
-                            Text("4위",
-                                style: Constants.largeTextStyle
-                                    .copyWith(color: Colors.black)),
-                            const SizedBox(width: 10),
-                            SizedBox(
-                              width: 34,
-                              // height: 70,
-                              child: Image.asset(
-                                  controller.characterAvatarAssetString(
-                                      characterIndex: controller
-                                          .currentRanking[3].characterIndex!)),
+                            ListView.separated(
+                              padding: EdgeInsets.zero,
+                              separatorBuilder: (context, index) {
+                                return Container(
+                                  // color: Colors.blue,
+                                  width: 40,
+                                );
+                              },
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  (controller.currentRoom!.player!.length < 4)
+                                      ? controller.currentRoom!.player!.length
+                                      : 3,
+                              itemBuilder: (context, index) {
+                                final player = playerRankingList[index];
+                                final asset = playerRankingAssetList[index];
+                                return VictoryStandCard(
+                                  name: player.name ?? "",
+                                  ranking: index + 1,
+                                  totalAsset: asset,
+                                  assetString:
+                                      controller.characterAvatarAssetString(
+                                          characterIndex:
+                                              player.characterIndex ?? 0),
+                                );
+                              },
                             ),
                             const SizedBox(width: 10),
                             Text(controller.currentRanking[3].name ?? "",
@@ -296,11 +322,41 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                       const SizedBox(
                         height: 4,
                       ),
+                      // const SizedBox(height: 10),
+                      Container(height: 1, color: Constants.grey100),
+                      const SizedBox(height: 10),
+                      if ((controller.currentRoom?.player?.length ?? 0) > 3)
+                        Row(
+                          children: [
+                            Text("4위",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 34,
+                              // height: 70,
+                              child: Image.asset(
+                                  controller.characterAvatarAssetString(
+                                      characterIndex: playerRankingList[3]
+                                          .characterIndex!)),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(playerRankingList[3].name ?? "",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                            Text("${(playerRankingAssetList[3]).commaString}원",
+                                style: Constants.largeTextStyle
+                                    .copyWith(color: Colors.black)),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+                      const SizedBox(
+                        height: 4,
+                      ),
                       Bounceable(
                         onTap: () {
-                          Get.back();
-                          Get.back();
-                          Get.back();
+                          Get.offAllNamed(MainScreen.routeName);
                         },
                         child: SizedBox(
                           width: 230,

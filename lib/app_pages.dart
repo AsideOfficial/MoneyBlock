@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/lobby/screens/create_room_screen.dart';
+import 'package:money_cycle/screen/main_screen.dart';
 import 'package:money_cycle/screen/play/game_play_screen.dart';
 import 'package:money_cycle/screen/lobby/screens/participate_room_screen.dart';
 import 'package:money_cycle/screen/lobby/screens/waiting_room_screen.dart';
 
 class AppPages {
   static final routes = [
+    GetPage(name: MainScreen.routeName, page: () => const MainScreen()),
     GetPage(name: "/play", page: () => const GamePlayScreen()),
     GetPage(
       name: "/create_room",
