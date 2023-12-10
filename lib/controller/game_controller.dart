@@ -146,6 +146,8 @@ class GameController extends GetxController {
         name: "라운드 종료 다이얼로그",
         barrierDismissible: false,
       );
+    } else if (index > 3) {
+      Get.dialog(const EndGameAlertDialog());
     }
   }
 
@@ -407,6 +409,7 @@ class GameController extends GetxController {
     return incentive;
   }
 
+  // MARK: - 합산 액
   int? get totalCash {
     // 리스트를 순회하면서 price 합산
     final myCashList = currentRoom?.player?[myIndex].cash;
@@ -419,7 +422,6 @@ class GameController extends GetxController {
     return total;
   }
 
-  // 합산 액
   int? get totalInvestment {
     // 리스트를 순회하면서 price 합산
     final myCashList = currentRoom?.player?[myIndex].investment;
