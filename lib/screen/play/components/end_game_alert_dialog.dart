@@ -7,6 +7,8 @@ import 'package:money_cycle/screen/main_screen.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
+import '../../../models/game/player.dart';
+
 class EndGameAlertDialog extends StatefulWidget {
   const EndGameAlertDialog({super.key});
 
@@ -176,6 +178,11 @@ class FinalResultDialog extends StatefulWidget {
 }
 
 class _FinalResultDialogState extends State<FinalResultDialog> {
+  List<Player> playerRankingList =
+      Get.find<GameController>().getCurrentRanking();
+  List<int> playerRankingAssetList =
+      Get.find<GameController>().getCurrentRankingAssetList();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -241,9 +248,8 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                                       ? controller.currentRoom!.player!.length
                                       : 3,
                               itemBuilder: (context, index) {
-                                final player = controller.currentRanking[index];
-                                final asset =
-                                    controller.currentRankingAssetList[index];
+                                final player = playerRankingList[index];
+                                final asset = playerRankingAssetList[index];
                                 return VictoryStandCard(
                                   name: player.name ?? "",
                                   ranking: index + 1,
@@ -274,16 +280,15 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                             // height: 70,
                             child: Image.asset(
                                 controller.characterAvatarAssetString(
-                                    characterIndex: controller
-                                        .currentRanking[3].characterIndex!)),
+                                    characterIndex:
+                                        playerRankingList[3].characterIndex!)),
                           ),
                           const SizedBox(width: 10),
-                          Text(controller.currentRanking[3].name ?? "",
+                          Text(playerRankingList[3].name ?? "",
                               style: Constants.largeTextStyle
                                   .copyWith(color: Colors.black)),
                           const SizedBox(width: 10),
-                          Text(
-                              "${(controller.currentRankingAssetList[3]).commaString}원",
+                          Text("${(playerRankingAssetList[3]).commaString}원",
                               style: Constants.largeTextStyle
                                   .copyWith(color: Colors.black)),
                           const SizedBox(width: 10),

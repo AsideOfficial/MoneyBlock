@@ -8,6 +8,8 @@ import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
+import '../../../models/game/player.dart';
+
 class EndRoundAlertDialog extends StatefulWidget {
   const EndRoundAlertDialog({super.key});
 
@@ -61,6 +63,10 @@ class EconomicNewsDialog extends StatefulWidget {
 }
 
 class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
+  List<Player> playerRankingList =
+      Get.find<GameController>().getCurrentRanking();
+  int myIncentive = Get.find<GameController>().getMyIncentive();
+
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (controller) {
@@ -233,7 +239,7 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                   controller.currentRoom?.player?.length ?? 0,
                               itemBuilder: (context, index) {
                                 //TODO - 순위 데이터 리스트 연동 및 정렬
-                                final player = controller.currentRanking[index];
+                                final player = playerRankingList[index];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Row(
@@ -282,7 +288,9 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                       onTap: () {
                         Get.back();
                         Get.dialog(
-                          const NewRoundDialog(),
+                          NewRoundDialog(
+                            incentive: myIncentive,
+                          ),
                           barrierDismissible: false,
                         );
                       },
@@ -367,8 +375,10 @@ class RateVariationTile extends StatelessWidget {
 }
 
 class NewRoundDialog extends StatefulWidget {
+  final int incentive;
   const NewRoundDialog({
     super.key,
+    required this.incentive,
   });
 
   @override
@@ -400,7 +410,7 @@ class _NewRoundDialogState extends State<NewRoundDialog> {
                 Text("월급: + 2,000,000 원",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
                 const SizedBox(height: 6),
-                Text("인센티브: + ${controller.myIncentive.commaString} 원",
+                Text("인센티브: + ${widget.incentive.commaString} 원",
                     style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
                 const SizedBox(height: 6),
                 Text("플레이어는 월급과 인센티브를 받습니다.",

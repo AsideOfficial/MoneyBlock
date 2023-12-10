@@ -394,7 +394,27 @@ class GameController extends GetxController {
     return rankingList.indexOf(currentRoom!.player![myIndex]) + 1;
   }
 
+  int getMyRanking() {
+    final rankingList = currentRanking;
+    return rankingList.indexOf(currentRoom!.player![myIndex]) + 1;
+  }
+
   int get myIncentive {
+    int incentive = 0;
+    switch (myRanking) {
+      case 1:
+        incentive = 400000;
+      case 2:
+        incentive = 300000;
+      case 3:
+        incentive = 200000;
+      case 4:
+        incentive = 100000;
+    }
+    return incentive;
+  }
+
+  int getMyIncentive() {
     int incentive = 0;
     switch (myRanking) {
       case 1:
@@ -635,7 +655,17 @@ class GameController extends GetxController {
     }
     List<Player> playerRankingList = sortBySizes(players, playersTotalAsset);
     return playerRankingList;
-    //TODO - playersTotalAsset 이 큰 순서대로 정렬한 List<Player> 반환
+  }
+
+  List<Player> getCurrentRanking() {
+    final players = currentRoom!.player!;
+    final List<int> playersTotalAsset = [];
+    for (int index = 0; index < players.length; index++) {
+      // 플레이어 각각의 총 자산 구해서 리스트에 더함
+      playersTotalAsset.add(playerTotalAsset(playerIndex: index));
+    }
+    List<Player> playerRankingList = sortBySizes(players, playersTotalAsset);
+    return playerRankingList;
   }
 
   List<int> get currentRankingAssetList {
@@ -648,7 +678,18 @@ class GameController extends GetxController {
     playersTotalAsset.sort((a, b) => b.compareTo(a));
 
     return playersTotalAsset;
-    //TODO - playersTotalAsset 이 큰 순서대로 정렬한 List<Player> 반환
+  }
+
+  List<int> getCurrentRankingAssetList() {
+    final players = currentRoom!.player!;
+    final List<int> playersTotalAsset = [];
+    for (int index = 0; index < players.length; index++) {
+      // 플레이어 각각의 총 자산 구해서 리스트에 더함
+      playersTotalAsset.add(playerTotalAsset(playerIndex: index));
+    }
+    playersTotalAsset.sort((a, b) => b.compareTo(a));
+
+    return playersTotalAsset;
   }
 
   List<Player> sortBySizes(List<Player> names, List<int> sizes) {
