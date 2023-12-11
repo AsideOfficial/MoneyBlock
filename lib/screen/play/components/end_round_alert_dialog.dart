@@ -70,12 +70,13 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
   @override
   Widget build(BuildContext context) {
     return GetX<GameController>(builder: (controller) {
-      return AlertDialog(
-        shadowColor: Colors.transparent,
-        contentPadding: EdgeInsets.zero,
-        backgroundColor: Colors.transparent,
-        content: SingleChildScrollView(
-          child: SizedBox(
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: AlertDialog(
+          shadowColor: Colors.transparent,
+          contentPadding: EdgeInsets.zero,
+          backgroundColor: Colors.transparent,
+          content: SizedBox(
             height: 310,
             child: Row(
               children: [

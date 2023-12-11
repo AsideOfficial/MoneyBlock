@@ -6,9 +6,7 @@ import 'package:money_cycle/start/start_screen.dart';
 
 class MainScreen extends StatelessWidget {
   static const routeName = "/";
-  const MainScreen({
-    super.key,
-  });
+  const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +15,9 @@ class MainScreen extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            return const TestScreen();
+            return const LobbyScreen();
           } else {
-            return const TestScreen();
+            return const StartScreen();
           }
         }),
       ),
