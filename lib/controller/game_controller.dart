@@ -140,6 +140,9 @@ class GameController extends GetxController {
     if (index == null) return;
     if (index >= 1 && index < 3) {
       // 1.5초 동안 기다리기
+      if (isVacation) {
+        Get.back();
+      }
       await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
       Get.dialog(
         const EndRoundAlertDialog(),
@@ -156,6 +159,9 @@ class GameController extends GetxController {
     debugPrint("_endGameHandler 트리거 - 게임 종료 여부 : $isEnd");
     if (isEnd == null) return;
     if (isEnd == true) {
+      if (isVacation) {
+        Get.back();
+      }
       await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
       Get.dialog(const EndGameAlertDialog(),
           barrierDismissible: false, name: "게임 종료 다이얼로그");

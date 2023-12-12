@@ -273,7 +273,8 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                         ),
                       ),
                       // const SizedBox(height: 10),
-                      Container(height: 1, color: Constants.grey100),
+                      if ((controller.currentRoom?.player?.length ?? 0) > 3)
+                        Container(height: 1, color: Constants.grey100),
                       const SizedBox(height: 10),
                       if ((controller.currentRoom?.player?.length ?? 0) > 3)
                         Row(
@@ -323,7 +324,7 @@ class _FinalResultDialogState extends State<FinalResultDialog> {
                         height: 4,
                       ),
                       // const SizedBox(height: 10),
-                      Container(height: 1, color: Constants.grey100),
+
                       const SizedBox(height: 10),
                       if ((controller.currentRoom?.player?.length ?? 0) > 3)
                         Row(

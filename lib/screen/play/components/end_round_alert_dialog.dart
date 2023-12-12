@@ -6,6 +6,7 @@ import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
+import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
 import '../../../models/game/player.dart';
@@ -543,6 +544,11 @@ class _NewsDialogState extends State<NewsDialog> {
                     Bounceable(
                       onTap: () {
                         Get.back();
+                        if (controller.isVacation) {
+                          const inVacationAlert = InVacationAlert();
+                          Get.dialog(inVacationAlert,
+                              barrierDismissible: false, useSafeArea: false);
+                        }
                       },
                       child: Stack(
                         alignment: Alignment.center,
