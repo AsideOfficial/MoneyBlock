@@ -132,33 +132,33 @@ final expendModel = GameAction(
   actions: [
     SpecifitGameAction(title: '소비', items: [
       GameActionItem(
-          title: "저축관리\n어드바이저", description: "소비 상품 1에 대한 설명", price: 100000),
+          title: "저축관리\n어드바이저", description: "금리우대 혜약", price: 100000),
       GameActionItem(
-          title: "투자관리\n어드바이저", description: "소비 상품 1에 대한 설명", price: 300000),
+          title: "투자관리\n어드바이저", description: "투자상승률 우대 혜택", price: 300000),
       GameActionItem(
-          title: "주사위\n특권", description: "소비 상품 1에 대한 설명", price: 500000),
+          title: "주사위\n특권", description: "홀짝 골라서 그 중에서만 결과값 나오도록", price: 500000),
       GameActionItem(
-          title: "주사위\n1회권", description: "소비 상품 1에 대한 설명", price: 1000000),
+          title: "주사위\n1회권", description: "라운즈 중, 한번 더 주사위 굴리고 한 턴 더 진행하기 가능", price: 1000000),
     ]),
     SpecifitGameAction(title: '보험', items: [
       GameActionItem(
-          title: "민영보험1", description: "보험 상품 1에 대한 설명", price: 100000),
+          title: "민영보험 1", description: "행운복권에서 불운 1번 피하기 가능", price: 100000),
       GameActionItem(
-          title: "민영보험2", description: "보험 상품 2에 대한 설명", price: 300000),
+          title: "민영보험 2", description: "행운복권에서 불운 무제한 피하기 가능", price: 300000),
       GameActionItem(
-          title: "사회보장보험1", description: "보험 상품 3에 대한 설명", price: 70000),
+          title: "사회보장\n보험 1", description: "무급휴가 칸에서 쉬지 않고 게임진행 가능", price: 70000),
       GameActionItem(
-          title: "사회보장보험2", description: "보험 상품 4에 대한 설명", price: 300000),
+          title: "사회보장\n보험 2", description: "마이너스 투자수익률시 0%로 손실 보전", price: 300000),
     ]),
     SpecifitGameAction(title: '기부', items: [
       GameActionItem(
-          title: "기부공재1", description: "기부 상품 1에 대한 설명", price: 100000),
+          title: "기부금 공제 1", description: "한 라운드에서 기부 금액만큼 세금감면", price: 100000),
       GameActionItem(
-          title: "기부공재2", description: "기부 상품 2에 대한 설명", price: 300000),
+          title: "기부금 공제 2", description: "한 라운드에서 기부 금액만큼 세금감면", price: 300000),
       GameActionItem(
-          title: "기부공재3", description: "기부 상품 3에 대한 설명", price: 100000),
+          title: "기부금 공제 3", description: "한 라운드에서 3% 세금감면", price: 100000),
       GameActionItem(
-          title: "기부공재4", description: "기부 상품 4에 대한 설명", price: 300000),
+          title: "기부금 공제 4", description: "한 라운드에서 7% 세금감면", price: 300000),
     ]),
   ],
 );

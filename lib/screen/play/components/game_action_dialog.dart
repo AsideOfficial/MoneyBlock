@@ -228,7 +228,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             }),
                                       ],
                                     ),
-                                    Text(isCreditLoan ? "보유현금" : "담보대출 가능금액",
+                                    Text(isCreditLoan ? "보유현금" : "자산가치",
                                         style: Constants.defaultTextStyle
                                             .copyWith(fontSize: 16)),
                                     const SizedBox(height: 4),
