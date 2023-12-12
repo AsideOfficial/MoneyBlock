@@ -228,7 +228,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                             }),
                                       ],
                                     ),
-                                    Text(isCreditLoan ? "보유현금" : "자산가치",
+                                    Text(isCreditLoan ? "보유현금" : "담보대출 가능금액",
                                         style: Constants.defaultTextStyle
                                             .copyWith(fontSize: 16)),
                                     const SizedBox(height: 4),
@@ -236,7 +236,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         amount: isCreditLoan
                                             ? gameController.totalCash!
                                                 .toDouble()
-                                            : gameController.totalAsset!
+                                            : gameController
+                                                .mortgageLoanAvailableAmount
                                                 .toDouble()),
                                   ],
                                 ),
@@ -245,7 +246,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                               if ((isCreditLoan &&
                                       gameController.totalCash! > 0) ||
                                   (!isCreditLoan &&
-                                      gameController.totalAsset! > 0))
+                                      gameController
+                                              .mortgageLoanAvailableAmount >
+                                          0))
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -262,11 +265,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                                               .totalCash! *
                                                           2)) ||
                                               (!isCreditLoan &&
-                                                  (gameController.totalAsset! *
-                                                          0.1 <
-                                                      gameController
-                                                              .totalAsset! *
-                                                          0.9)))
+                                                  (gameController
+                                                          .mortgageLoanAvailableAmount !=
+                                                      0)))
                                             SizedBox(
                                               width: 170,
                                               child: SfSliderTheme(
@@ -289,14 +290,14 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                                               .totalCash! /
                                                           2
                                                       : gameController
-                                                              .totalAsset! *
+                                                              .mortgageLoanAvailableAmount *
                                                           0.1,
                                                   max: isCreditLoan
                                                       ? gameController
                                                               .totalCash! *
                                                           2
                                                       : gameController
-                                                              .totalAsset! *
+                                                              .mortgageLoanAvailableAmount *
                                                           0.9,
                                                   stepSize: 10000,
                                                   enableTooltip: false,
@@ -376,7 +377,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                               .copyWith(fontSize: 18))
                                     else
                                       Text(
-                                          "${((currentMortagagesLoanAmount / gameController.totalAsset! * 100).toStringAsFixed(1))}%",
+                                          "${((currentMortagagesLoanAmount / gameController.mortgageLoanAvailableAmount * 100).toStringAsFixed(1))}%",
                                           style: Constants.defaultTextStyle
                                               .copyWith(fontSize: 18)),
                                   ],
@@ -1322,14 +1323,15 @@ class _GameActionDialogState extends State<GameActionDialog> {
                           itemBuilder: (context, index) {
                             final specificAction = model.actions[index];
                             bool? isSelected = false;
-          
+
                             if (specificAction.title ==
-                                gameController.curretnSpecificActionModel?.title) {
+                                gameController
+                                    .curretnSpecificActionModel?.title) {
                               isSelected = true;
                             } else {
                               isSelected = false;
                             }
-          
+
                             return Padding(
                               padding: const EdgeInsets.all(2.5),
                               child: ActionChoiceButton(

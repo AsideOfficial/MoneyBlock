@@ -646,6 +646,16 @@ class GameController extends GetxController {
     return total;
   }
 
+  int get mortgageLoanAvailableAmount {
+    final result =
+        (totalSaving ?? 0) + (totalInvestment ?? 0) - (totalLoan ?? 0);
+    if (result < 0) {
+      return 0;
+    } else {
+      return result;
+    }
+  }
+
   List<Player> get currentRanking {
     final players = currentRoom!.player!;
     final List<int> playersTotalAsset = [];
