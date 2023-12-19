@@ -56,7 +56,6 @@ class _SignUpDailogState extends State<SignUpDailog> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
             child: Stack(
               alignment: Alignment.topRight,
               children: [

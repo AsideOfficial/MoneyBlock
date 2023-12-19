@@ -71,7 +71,6 @@ class _SignInDialogState extends State<SignInDialog> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
             child: Stack(
               alignment: Alignment.topRight,
               children: [
@@ -84,6 +83,7 @@ class _SignInDialogState extends State<SignInDialog> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("이메일 로그인", style: Constants.titleTextStyle),
                           const SizedBox(height: 16),
