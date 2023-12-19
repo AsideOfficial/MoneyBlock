@@ -6,6 +6,7 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:money_cycle/app_pages.dart';
 import 'package:money_cycle/firebase_options.dart';
 import 'package:money_cycle/screen/main_screen.dart';
+import 'package:wakelock/wakelock.dart';
 
 FirebaseApp? firebaseApp;
 
@@ -14,6 +15,10 @@ void main() async {
   firebaseApp = await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  Wakelock.enable();
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   KakaoSdk.init(nativeAppKey: 'e9dee5f46be050bdeb181932b2a38718');
 

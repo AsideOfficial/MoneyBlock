@@ -112,105 +112,103 @@ class _LobbyScreenState extends State<LobbyScreen> {
               tapComplete: () => getUserData(),
             )
           else
-            SafeArea(
-              child: Center(
-                child: MCContainer(
-                  strokePadding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 32.0),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.height * 3 / 4) +
-                            124.0,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Obx(
-                              () => Image.asset(
-                                ProfileImage.profileImages[
-                                    Get.find<MCUserController>()
-                                        .user!
-                                        .value
-                                        .profileImageIndex],
-                                width: 50.0,
-                                height: 50.0,
-                              ),
+            Center(
+              child: MCContainer(
+                strokePadding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 32.0),
+                    SizedBox(
+                      width:
+                          (MediaQuery.of(context).size.height * 3 / 4) + 124.0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(
+                            () => Image.asset(
+                              ProfileImage.profileImages[
+                                  Get.find<MCUserController>()
+                                      .user!
+                                      .value
+                                      .profileImageIndex],
+                              width: 50.0,
+                              height: 50.0,
                             ),
-                            const SizedBox(width: 24.0),
-                            Obx(
-                              () => Text(
-                                Get.find<MCUserController>().user!.value.nickNm,
-                                style: Constants.defaultTextStyle
-                                    .copyWith(fontSize: 20),
-                              ),
+                          ),
+                          const SizedBox(width: 24.0),
+                          Obx(
+                            () => Text(
+                              Get.find<MCUserController>().user!.value.nickNm,
+                              style: Constants.defaultTextStyle
+                                  .copyWith(fontSize: 20),
                             ),
-                            const Spacer(),
-                            toolButton(
-                              iconUrl: 'assets/icons/my_page_button.png',
-                              label: '마이페이지',
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return MyPageDialog(
-                                      onUpdate: getUserData,
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 22.0),
-                            toolButton(
-                              iconUrl: 'assets/icons/logout_button.png',
-                              label: '계정관리',
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const LogoutDialog();
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                          ),
+                          const Spacer(),
+                          toolButton(
+                            iconUrl: 'assets/icons/my_page_button.png',
+                            label: '마이페이지',
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return MyPageDialog(
+                                    onUpdate: getUserData,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 22.0),
+                          toolButton(
+                            iconUrl: 'assets/icons/logout_button.png',
+                            label: '계정관리',
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const LogoutDialog();
+                                },
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 32.0),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Bounceable(
-                              onTap: () {
-                                Get.toNamed('/create_room');
-                              },
-                              child: Image.asset(
-                                'assets/components/create_room_button.png',
-                                height:
-                                    MediaQuery.of(context).size.height * 3 / 8,
-                                fit: BoxFit.fitHeight,
-                              ),
+                    ),
+                    const SizedBox(height: 32.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Bounceable(
+                            onTap: () {
+                              Get.toNamed('/create_room');
+                            },
+                            child: Image.asset(
+                              'assets/components/create_room_button.png',
+                              height:
+                                  MediaQuery.of(context).size.height * 3 / 8,
+                              fit: BoxFit.fitHeight,
                             ),
-                            const SizedBox(width: 16.0),
-                            Bounceable(
-                              onTap: () {
-                                Get.toNamed('/participate_room');
-                              },
-                              child: Image.asset(
-                                'assets/components/participate_room_button.png',
-                                height:
-                                    MediaQuery.of(context).size.height * 3 / 8,
-                                fit: BoxFit.fitHeight,
-                              ),
+                          ),
+                          const SizedBox(width: 16.0),
+                          Bounceable(
+                            onTap: () {
+                              Get.toNamed('/participate_room');
+                            },
+                            child: Image.asset(
+                              'assets/components/participate_room_button.png',
+                              height:
+                                  MediaQuery.of(context).size.height * 3 / 8,
+                              fit: BoxFit.fitHeight,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 32.0),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 32.0),
+                  ],
                 ),
               ),
             ),
