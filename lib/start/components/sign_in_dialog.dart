@@ -83,23 +83,26 @@ class _SignInDialogState extends State<SignInDialog> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text("이메일 로그인", style: Constants.titleTextStyle),
-                          const SizedBox(height: 16),
-                          MCTextField(
-                            controller: emailController,
-                            hintText: "이메일",
-                            textInputAction: TextInputAction.next,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              MCTextField(
+                                controller: emailController,
+                                hintText: "이메일",
+                                textInputAction: TextInputAction.next,
+                              ),
+                              const SizedBox(height: 8),
+                              MCTextField(
+                                controller: passwordController,
+                                hintText: "비밀번호",
+                                textInputAction: TextInputAction.done,
+                                obscureText: true,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          MCTextField(
-                            controller: passwordController,
-                            hintText: "비밀번호",
-                            textInputAction: TextInputAction.done,
-                            obscureText: true,
-                          ),
-                          const SizedBox(height: 12),
                           MCButton(
                             isLoading: isLoading,
                             width: 184,
@@ -128,7 +131,6 @@ class _SignInDialogState extends State<SignInDialog> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               MCBounceableButton(
-                                height: 44,
                                 title: "비밀번호를 잊어버렸나요?",
                                 onPressed: () {
                                   Get.back();
@@ -141,11 +143,9 @@ class _SignInDialogState extends State<SignInDialog> {
                               ),
                               Text(
                                 '또는',
-                                style: Constants.dialogSecondaryTextStyle
-                                    .copyWith(decoration: null),
+                                style: Constants.dialogSecondaryTextStyle,
                               ),
                               MCBounceableButton(
-                                height: 44,
                                 title: "회원가입하기",
                                 onPressed: () {
                                   Get.back();
@@ -157,7 +157,7 @@ class _SignInDialogState extends State<SignInDialog> {
                                 },
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
