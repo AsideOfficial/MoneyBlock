@@ -306,6 +306,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               duration: const Duration(milliseconds: 400),
               top: !isSwipeUp ? size.height * 0.04 : size.height * 0.83,
               child: GestureDetector(
+                onTap: () {
+                  // if (!isSwipeUp) {
+                  //   setState(() {
+                  //     isSwipeUp = true;
+                  //   });
+                  // } else {
+                  //   setState(() {
+                  //     isSwipeUp = false;
+                  //   });
+                  // }
+                },
                 onPanEnd: (details) {
                   if (details.velocity.pixelsPerSecond.dy > -100) {
                     setState(() {
@@ -318,6 +329,18 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   }
                 },
                 child: MyAssetSheet(
+                  onTopPressed: () {
+                    debugPrint("wow");
+                    if (!isSwipeUp) {
+                      setState(() {
+                        isSwipeUp = true;
+                      });
+                    } else {
+                      setState(() {
+                        isSwipeUp = false;
+                      });
+                    }
+                  },
                   isSwipeUp: isSwipeUp,
                 ),
               ),

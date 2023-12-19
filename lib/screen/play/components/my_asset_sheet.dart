@@ -8,9 +8,11 @@ import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
 class MyAssetSheet extends StatefulWidget {
-  const MyAssetSheet({Key? key, required this.isSwipeUp}) : super(key: key);
+  const MyAssetSheet(
+      {super.key, required this.isSwipeUp, required this.onTopPressed});
 
   final bool isSwipeUp;
+  final Function() onTopPressed;
 
   @override
   State<MyAssetSheet> createState() => _MyAssetSheetState();
@@ -42,31 +44,44 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                 padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                 child: Column(
                   children: [
-                    Row(
+                    Stack(
+                      // fit: StackFit.expand,
                       children: [
-                        Text(
-                          "나의 자산현황",
-                          style: Constants.largeTextStyle
-                              .copyWith(color: const Color(0xFF583590)),
+                        GestureDetector(
+                          onTap: widget.onTopPressed,
+                          child: Container(
+                            color: Colors.transparent,
+                            width: 1000,
+                            height: 38,
+                          ),
                         ),
-                        const Spacer(),
-                        AssetBar(
-                          assetType: AssetType.cash,
-                          amount: gameController.totalCash ?? 0,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        AssetBar(
-                          assetType: AssetType.saving,
-                          amount: gameController.totalSaving ?? 0,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        AssetBar(
-                          assetType: AssetType.loan,
-                          amount: gameController.totalLoan ?? 0,
+                        Row(
+                          children: [
+                            Text(
+                              "나의 자산현황",
+                              style: Constants.largeTextStyle
+                                  .copyWith(color: const Color(0xFF583590)),
+                            ),
+                            const Spacer(),
+                            AssetBar(
+                              assetType: AssetType.cash,
+                              amount: gameController.totalCash ?? 0,
+                            ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            AssetBar(
+                              assetType: AssetType.saving,
+                              amount: gameController.totalSaving ?? 0,
+                            ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            AssetBar(
+                              assetType: AssetType.loan,
+                              amount: gameController.totalLoan ?? 0,
+                            ),
+                          ],
                         ),
                       ],
                     ),
