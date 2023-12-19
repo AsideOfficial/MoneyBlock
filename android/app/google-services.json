@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "11046090334-15h2ltn2h6o2rhm22n0ua4v9kusclbqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "d29af0778c22cb8a14549ab6d04d536e8f5d80f9"
+          }
+        },
+        {
           "client_id": "11046090334-64opung6m1snq0f7g2chcicvg7h2og48.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
