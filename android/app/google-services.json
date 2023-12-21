@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "11046090334",
+    "firebase_url": "https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "moneycycle-5f900",
+    "storage_bucket": "moneycycle-5f900.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11046090334:android:05ab03bddfa2f848e3a6cf",
+        "android_client_info": {
+          "package_name": "com.story_dx.money_cycle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11046090334-15h2ltn2h6o2rhm22n0ua4v9kusclbqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "d29af0778c22cb8a14549ab6d04d536e8f5d80f9"
+          }
+        },
+        {
+          "client_id": "11046090334-64opung6m1snq0f7g2chcicvg7h2og48.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "b31f426ab563cd6124541e21e9fe3ff06a403d9d"
+          }
+        },
+        {
+          "client_id": "11046090334-ccl4hrs0cciii3vmd55av5klanh7u8k4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "363f86072a2108408c98d43fb6f3300bd0b6997f"
+          }
+        },
+        {
+          "client_id": "11046090334-jadvb007n7d9c74qccls0tkfmghutssr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.story_dx.money_cycle",
+            "certificate_hash": "8d3f2df2448498dd5b7dc6423091dbe085caa243"
+          }
+        },
+        {
+          "client_id": "11046090334-0lr250cj3g1381ec0eugulbvpluhrr1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKzVylYD8i-Qn4CTmAR8iJVDtmUEnLkAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11046090334-0lr250cj3g1381ec0eugulbvpluhrr1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "11046090334-ascse69hjnp93bvdiv6skfb6b2uo9skj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.aside.moneyCycle"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

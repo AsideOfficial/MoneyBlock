@@ -1,4 +1,4 @@
-# money_block
+# money_cycle
 
 Board game app for financial education.
 

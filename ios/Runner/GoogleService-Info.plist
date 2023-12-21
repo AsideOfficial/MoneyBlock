@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>11046090334-jnl1qlhau488i7g7e6pi57n3skdi9a5m.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.11046090334-jnl1qlhau488i7g7e6pi57n3skdi9a5m</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>11046090334-64opung6m1snq0f7g2chcicvg7h2og48.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAKGQrwIdOqiW86mzuXUQfO85G4m-mhf8E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>11046090334</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.storyDx.moneyCycle</string>
+	<key>PROJECT_ID</key>
+	<string>moneycycle-5f900</string>
+	<key>STORAGE_BUCKET</key>
+	<string>moneycycle-5f900.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:11046090334:ios:d31ea4efe7d8fdaae3a6cf</string>
+	<key>DATABASE_URL</key>
+	<string>https://moneycycle-5f900-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
