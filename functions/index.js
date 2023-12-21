@@ -89,6 +89,7 @@ exports.createRoom = onRequest(async (req, res) => {
         owner.investment = [0];
         owner.isVacation = false;
         owner.vacationCount = 0;
+        owner.insurance = [0];
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
@@ -191,6 +192,7 @@ exports.enterRoom = onRequest(async (req, res) => {
         user.investment = [0];
         user.isVacation = false;
         user.vacationCount = 0;
+        user.insurance = [0];
 
         playerList.push(user);
 
@@ -515,6 +517,63 @@ exports.useVacation = onRequest(async (req, res) => {
 
         const room_data = await db.ref('Room').child(roomId).once('value');
         return res.status(200).json({ roomId: roomId, data: room_data });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.lottery = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId, playerIndex } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        if (playerIndex === undefined || typeof playerIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'playerIndex' });
+        }
+
+        const userRef = db.ref('Room').child(roomId).child('player').child(`${playerIndex}`);
+        const lotteryRef = db.ref('contentsData').child(2).child('categories');
+        const lotteryListRef = await lotteryRef.once('value');
+        const lotteryList = lotteryListRef.val();
+
+        // 유저 보험 조회
+        const insuranceRef = await userRef.child('insurance').once('value');
+        const insurance = insuranceRef.val();
+
+        // 보험 리스트에 title이 민영보험2인 항목이 있는 경우
+        const isPrivateInsurance2 = insurance.some(insurance => insurance.title === '민영보험2');
+        if (isPrivateInsurance2) {
+            // 행운복권 반환(불운 미포함)
+            const lotteryListFiltered = lotteryList.filter(lottery => lottery.price > 0);
+            const lotteryIndex = Math.floor(Math.random() * lotteryListFiltered.length);
+            const lottery = lotteryListFiltered[lotteryIndex];
+            return res.status(200).json({ lottery: lottery });
+        }
+
+        const isPrivateInsurance1 = insurance.some(insurance => insurance.title === '민영보험1');
+        if (isPrivateInsurance1) {
+            // 민영보험1 삭제
+            const privateInsurance1Index = insurance.findIndex(insurance => insurance.title === '민영보험1');
+            insurance.splice(privateInsurance1Index, 1);
+            userRef.child('insurance').set(insurance);
+
+            // 행운복권 반환(불운 미포함)
+            const lotteryListFiltered = lotteryList.filter(lottery => lottery.price > 0);
+            const lotteryIndex = Math.floor(Math.random() * lotteryListFiltered.length);
+            const lottery = lotteryListFiltered[lotteryIndex];
+            return res.status(200).json({ lottery: lottery });
+        }
+
+        // 행운복권 반환(랜덤)
+        const lotteryIndex = Math.floor(Math.random() * lotteryList.length);
+        const lottery = lotteryList[lotteryIndex];
+        return res.status(200).json({ lottery: lottery });
+
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
