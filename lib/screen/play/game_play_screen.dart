@@ -11,8 +11,11 @@ import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
+import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
+
+import '../../components/mc_button.dart';
 
 class GamePlayScreen extends StatefulWidget {
   const GamePlayScreen({super.key});
@@ -231,6 +234,24 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             );
                           },
                         ),
+                        ActionButton(
+                          isMyTurn: gameController.isMyTurn,
+                          title: "턴 종료",
+                          backgroundColor: const Color(0xFFA95BE7),
+                          titleColor: const Color(0xFF5B2486),
+                          onPressed: () async {
+                            Get.dialog(ActionAlertDialog(
+                              title: "턴 넘기기",
+                              subTitle: "턴을 넘기시겠습니까?",
+                              actionTitle: '턴 넘기기',
+                              primaryActionColor: const Color(0xFFA95BE7),
+                              onAction: () async {
+                                await gameController.endTurn();
+                              },
+                            ));
+                            //TODO - 턴 종료 확인 팝업
+                          },
+                        ),
                         // ActionButton(
                         //   isMyTurn: true,
                         //   title: "랜덤게임",
@@ -257,13 +278,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         //     //     ]));
                         //   },
                         // ),
-                        const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: SizedBox(
-                            width: 150,
-                            height: 90,
-                          ),
-                        ),
+                        // const Padding(
+                        //   padding: EdgeInsets.all(5.0),
+                        //   child: SizedBox(
+                        //     width: 150,
+                        //     height: 90,
+                        //   ),
+                        // ),
                         const Padding(
                           padding: EdgeInsets.all(5.0),
                           child: SizedBox(
@@ -459,14 +480,14 @@ class ActionButton extends StatefulWidget {
   final String title;
   final Color backgroundColor;
   final Color titleColor;
-  final String assetPath;
+  final String? assetPath;
   final Function()? onPressed;
 
   const ActionButton({
     super.key,
     required this.backgroundColor,
     required this.titleColor,
-    required this.assetPath,
+    this.assetPath,
     this.onPressed,
     required this.title,
     required this.isMyTurn,
@@ -507,7 +528,7 @@ class _ActionButtonState extends State<ActionButton> {
                 child: Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -515,10 +536,11 @@ class _ActionButtonState extends State<ActionButton> {
                             style: Constants.titleTextStyle
                                 .copyWith(color: widget.titleColor)),
                       ),
-                      Expanded(
-                        child: Image.asset(widget.assetPath,
-                            fit: BoxFit.fitHeight),
-                      )
+                      if (widget.assetPath != null)
+                        Expanded(
+                          child: Image.asset(widget.assetPath!,
+                              fit: BoxFit.fitHeight),
+                        )
                     ],
                   ),
                 ),
@@ -537,6 +559,114 @@ class _ActionButtonState extends State<ActionButton> {
                 )
             ],
           )),
+    );
+  }
+}
+
+class ActionAlertDialog extends StatefulWidget {
+  final String title;
+  final String subTitle;
+  final String actionTitle;
+  final Color? primaryActionColor;
+  final Future<void> Function()? onAction;
+
+  const ActionAlertDialog({
+    super.key,
+    this.primaryActionColor = Constants.accentRed,
+    required this.title,
+    required this.subTitle,
+    required this.actionTitle,
+    this.onAction,
+  });
+
+  @override
+  State<ActionAlertDialog> createState() => _ActionAlertDialogState();
+}
+
+class _ActionAlertDialogState extends State<ActionAlertDialog> {
+  bool isLoading = false;
+  int count = 1;
+  int totalAmount = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      content: MCContainer(
+        strokePadding: const EdgeInsets.all(8),
+        gradient: Constants.grey01Gradient,
+        width: 306,
+        height: 256,
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 24, bottom: 22, left: 30, right: 30),
+          child: Column(
+            children: [
+              Text(widget.title,
+                  style:
+                      Constants.titleTextStyle.copyWith(color: Colors.black)),
+              const SizedBox(height: 10),
+              Text(widget.subTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Constants.defaultTextStyle
+                      .copyWith(fontSize: 18, color: Colors.black)),
+              // const SizedBox(height: 10),
+
+              const Spacer(),
+              SizedBox(
+                height: 48,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: MCButton(
+                          title: "취소",
+                          fontSize: 20,
+                          titleColor: Constants.grey03,
+                          gradient: Constants.grey01Gradient,
+                          shadows: const [Constants.buttonShadow],
+                          onPressed: () {
+                            Get.back();
+                          }),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: MCButton(
+                        isLoading: isLoading,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 6),
+                        fontSize: 20,
+                        title: widget.actionTitle,
+                        backgroundColor: widget.primaryActionColor,
+                        shadows: const [Constants.buttonShadow],
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                                if (widget.onAction != null) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  await widget.onAction!();
+                                  Get.back();
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                }
+                              },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

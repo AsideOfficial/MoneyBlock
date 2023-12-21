@@ -117,7 +117,13 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   onPurchase: (count) async {
                                     //TODO - 지출 API 연동 필요 ✅
                                     if (gameController.totalCash! <
-                                        (item.price * count)) return;
+                                        (item.price * count)) {
+                                      Get.snackbar("잔액 부족", "잔액이 부족합니다.",
+                                          colorText: Colors.black,
+                                          backgroundGradient:
+                                              Constants.grey01Gradient);
+                                      return;
+                                    }
                                     await gameController.expendAction(
                                       title: item.title,
                                       price: item.price,

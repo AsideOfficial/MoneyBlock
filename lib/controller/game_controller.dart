@@ -753,6 +753,10 @@ class GameController extends GetxController {
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
+  Future<void> endTurn() async {
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
   //정상동작 확인 ✅
   Future<void> firstSalary() async {
     await CloudFunctionService.userAction(
