@@ -114,15 +114,16 @@ class _LobbyScreenState extends State<LobbyScreen> {
           else
             Center(
               child: MCContainer(
-                width: 640,
-                height: 340,
                 strokePadding: const EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 28.0),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 42.0),
+                    const SizedBox(height: 32.0),
+                    SizedBox(
+                      width:
+                          (MediaQuery.of(context).size.height * 3 / 4) + 124.0,
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Obx(
                             () => Image.asset(
@@ -135,7 +136,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                               height: 50.0,
                             ),
                           ),
-                          const SizedBox(width: 10.0),
+                          const SizedBox(width: 24.0),
                           Obx(
                             () => Text(
                               Get.find<MCUserController>().user!.value.nickNm,
@@ -174,11 +175,11 @@ class _LobbyScreenState extends State<LobbyScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 27.0),
+                    const SizedBox(height: 32.0),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Bounceable(
                             onTap: () {
@@ -186,23 +187,27 @@ class _LobbyScreenState extends State<LobbyScreen> {
                             },
                             child: Image.asset(
                               'assets/components/create_room_button.png',
-                              width: 270,
-                              height: 180,
+                              height:
+                                  MediaQuery.of(context).size.height * 3 / 8,
+                              fit: BoxFit.fitHeight,
                             ),
                           ),
+                          const SizedBox(width: 16.0),
                           Bounceable(
                             onTap: () {
                               Get.toNamed('/participate_room');
                             },
                             child: Image.asset(
                               'assets/components/participate_room_button.png',
-                              width: 270,
-                              height: 180,
+                              height:
+                                  MediaQuery.of(context).size.height * 3 / 8,
+                              fit: BoxFit.fitHeight,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 32.0),
                   ],
                 ),
               ),

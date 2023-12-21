@@ -56,7 +56,6 @@ class _SignUpDailogState extends State<SignUpDailog> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
             child: Stack(
               alignment: Alignment.topRight,
               children: [
@@ -254,7 +253,7 @@ class _EmailNickNameInputState extends State<EmailNickNameInput> {
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(
                       "올바른 이메일 형식을 입력해주세요.",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
               ],
@@ -285,7 +284,7 @@ class _EmailNickNameInputState extends State<EmailNickNameInput> {
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(
                       "3~8자 사이의 이름을 입력해주세요.",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
               ],
@@ -389,7 +388,7 @@ class _PasswordInputState extends State<PasswordInput> {
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(
                       "8~20자리 영문자, 숫자, 특수문자로 조합. ",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
               ],
@@ -421,7 +420,7 @@ class _PasswordInputState extends State<PasswordInput> {
                     padding: EdgeInsets.only(left: 24, top: 2),
                     child: Text(
                       "비밀번호가 다릅니다.",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
               ],

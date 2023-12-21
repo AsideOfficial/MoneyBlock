@@ -86,7 +86,7 @@ class _QRScannerState extends State<QRScanner> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(width: 60.0),
+                  SizedBox(width: MediaQuery.of(context).size.width / 20.0),
                   Column(
                     children: [
                       const SizedBox(height: 10.0),
@@ -141,7 +141,7 @@ class _QRScannerState extends State<QRScanner> {
                   ),
                 )
               else
-                const SizedBox(height: 36),
+                const SizedBox(height: 36.0),
               const SizedBox(height: 4.0),
             ],
           ),

@@ -12,6 +12,7 @@ class MCContainer extends StatelessWidget {
     this.shadows,
     this.strokePadding,
     this.gradient = Constants.mainGradient,
+    this.constraints,
   });
 
   final double? width;
@@ -22,6 +23,7 @@ class MCContainer extends StatelessWidget {
   final List<BoxShadow>? shadows;
   final EdgeInsetsGeometry? strokePadding;
   final LinearGradient? gradient;
+  final BoxConstraints? constraints;
 
   EdgeInsetsGeometry get getStrokePadding {
     if (strokePadding == null) {
@@ -39,6 +41,7 @@ class MCContainer extends StatelessWidget {
     return Container(
       width: width,
       height: height,
+      constraints: constraints,
       decoration: ShapeDecoration(
         gradient: Constants.subGradient,
         shape: RoundedRectangleBorder(

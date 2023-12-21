@@ -265,8 +265,8 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
         });
       },
       child: Container(
-        width: 316,
-        height: 58,
+        width: 316.0,
+        height: 58.0,
         alignment: Alignment.center,
         decoration: ShapeDecoration(
           gradient: LinearGradient(
@@ -309,137 +309,154 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.topCenter,
         children: [
           Container(
             decoration: const BoxDecoration(
               gradient: Constants.mainGradient,
             ),
           ),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 100.0),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          '테마',
+                          style:
+                              Constants.defaultTextStyle.copyWith(fontSize: 24),
+                        ),
+                        const SizedBox(height: 8.0),
+                        modeCard(),
+                      ],
+                    ),
+                    const SizedBox(width: 8.0),
+                    Column(
+                      children: [
+                        Text(
+                          '초기설정',
+                          style:
+                              Constants.defaultTextStyle.copyWith(fontSize: 24),
+                        ),
+                        const SizedBox(height: 8.0),
+                        variableSettingBox(),
+                        const SizedBox(height: 8.0),
+                        teamModeBox(),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+              ],
+            ),
+          ),
           Column(
             children: [
-              SizedBox(
-                height: 70,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Row(
-                    children: [
-                      Bounceable(
-                        child: SizedBox(
-                          height: 46,
-                          width: 46,
-                          child: Image.asset(
-                            "assets/icons/back_button.png",
-                          ),
-                        ),
-                        onTap: () => Get.back(),
-                      ),
-                      const SizedBox(width: 24),
-                      Text(
-                        "방 설정하기",
-                        style: Constants.largeTextStyle,
-                      ),
-                      const Spacer(),
-                      Bounceable(
-                        onTap: (gameMode == GameMode.officeWorker &&
-                                teamMode == TeamMode.solo &&
-                                !isLoading)
-                            ? () async {
-                                setState(() => isLoading = true);
-
-                                final roomData =
-                                    await FirebaseService.createRoom(
-                                  savingRate: savingRate,
-                                  loanRate: loanRate,
-                                  investmentRate: changeRate,
-                                  uid: FirebaseAuth.instance.currentUser!.uid,
-                                  name: Get.find<MCUserController>()
-                                      .user!
-                                      .value
-                                      .nickNm,
-                                  characterIndex: Get.find<MCUserController>()
-                                      .user!
-                                      .value
-                                      .profileImageIndex,
-                                );
-
-                                setState(() => isLoading = false);
-
-                                if (roomData != null) {
-                                  Get.off(
-                                    const WaitingRoomScreen(),
-                                    binding: BindingsBuilder(() {
-                                      Get.put(
-                                        WaitingRoomController(
-                                            roomId: roomData.roomId),
-                                      );
-                                    }),
-                                    transition: Transition.fadeIn,
-                                    arguments: roomData.roomId,
-                                  );
-                                }
-                              }
-                            : null,
-                        child: Image.asset(
-                          'assets/components/m_create_room_button${(gameMode == GameMode.officeWorker && teamMode == TeamMode.solo && !isLoading) ? '' : '_inactive'}.png',
-                          width: 170,
-                          height: 50,
-                        ),
-                      ),
-                    ],
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment(0.00, 1.00),
+                    end: Alignment(0, -1),
+                    colors: [Color(0xFF8065FC), Color(0xFF8572FF)],
                   ),
                 ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(50.0, 20.0, 50.0, 10.0),
+                      child: Row(
+                        children: [
+                          Bounceable(
+                            child: SizedBox(
+                              height: 46.0,
+                              width: 46.0,
+                              child: Image.asset(
+                                "assets/icons/back_button.png",
+                              ),
+                            ),
+                            onTap: () => Get.back(),
+                          ),
+                          const SizedBox(width: 24),
+                          Text(
+                            "방 설정하기",
+                            style: Constants.largeTextStyle,
+                          ),
+                          const Spacer(),
+                          Bounceable(
+                            onTap: (gameMode == GameMode.officeWorker &&
+                                    teamMode == TeamMode.solo &&
+                                    !isLoading)
+                                ? () async {
+                                    setState(() => isLoading = true);
+
+                                    final roomData =
+                                        await FirebaseService.createRoom(
+                                      savingRate: savingRate,
+                                      loanRate: loanRate,
+                                      investmentRate: changeRate,
+                                      uid: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      name: Get.find<MCUserController>()
+                                          .user!
+                                          .value
+                                          .nickNm,
+                                      characterIndex:
+                                          Get.find<MCUserController>()
+                                              .user!
+                                              .value
+                                              .profileImageIndex,
+                                    );
+
+                                    setState(() => isLoading = false);
+
+                                    if (roomData != null) {
+                                      Get.off(
+                                        const WaitingRoomScreen(),
+                                        binding: BindingsBuilder(() {
+                                          Get.put(
+                                            WaitingRoomController(
+                                                roomId: roomData.roomId),
+                                          );
+                                        }),
+                                        transition: Transition.fadeIn,
+                                        arguments: roomData.roomId,
+                                      );
+                                    }
+                                  }
+                                : null,
+                            child: Image.asset(
+                              'assets/components/m_create_room_button${(gameMode == GameMode.officeWorker && teamMode == TeamMode.solo && !isLoading) ? '' : '_inactive'}.png',
+                              width: 170.0,
+                              height: 50.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(height: 1.0),
+                  ],
+                ),
               ),
-              Container(height: 1),
               Container(
-                height: 13,
+                height: 13.0,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: const Alignment(0.00, -1.00),
-                    end: const Alignment(0, 1),
+                    end: const Alignment(0.0, 1.0),
                     colors: [
                       Colors.black.withOpacity(0.3),
                       Colors.transparent,
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            '테마',
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 24),
-                          ),
-                          const SizedBox(height: 8.0),
-                          modeCard(),
-                        ],
-                      ),
-                      const SizedBox(width: 8.0),
-                      Column(
-                        children: [
-                          Text(
-                            '초기설정',
-                            style: Constants.defaultTextStyle
-                                .copyWith(fontSize: 24),
-                          ),
-                          const SizedBox(height: 8.0),
-                          variableSettingBox(),
-                          const SizedBox(height: 8.0),
-                          teamModeBox(),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 11.0),
-                ],
               ),
             ],
           ),

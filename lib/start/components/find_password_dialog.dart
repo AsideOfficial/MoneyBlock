@@ -77,7 +77,6 @@ class _FindPasswordDialogState extends State<FindPasswordDialog> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
             child: Stack(
               alignment: Alignment.topRight,
               children: [
