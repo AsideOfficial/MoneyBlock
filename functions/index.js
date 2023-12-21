@@ -93,15 +93,50 @@ exports.createRoom = onRequest(async (req, res) => {
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
-        const newsData = newsRef.val();
+        const newsDataTemp = newsRef.val();
+
+        // 뉴스 데이터 랜덤 3개 선택
+        const newsIndex = [];
+        while (newsIndex.length < 3) {
+            const index = Math.floor(Math.random() * newsDataTemp.length);
+            if (!newsIndex.includes(index)) {
+                newsIndex.push(index);
+            }
+        }
+        const newsData = newsIndex.map(index => newsDataTemp[index]);
 
         var savingRateInfo = [savingRate];
         var loanRateInfo = [loanRate];
         var investmentRateInfo = [investmentRate];
-        for (news of newsData) {
-            savingRateInfo.push(news.savingsInterest);
-            loanRateInfo.push(news.loanInterest);
-            investmentRateInfo.push(news.investmentVolatility);
+        // 뉴스 데이터에 따른 금리 변동
+        // 저축 금리의 최대 최소는 10, 2
+        // 대출 금리의 최대 최소는 9, 1
+        // 투자 금리의 최대 최소는 100, -20
+        for (const news of newsData) {
+            // 저축 금리 상승
+            if (news.savingsInterest > 0) {
+                savingRateInfo.push(Math.min(savingRateInfo[savingRateInfo.length - 1] + news.savingsInterest, 10));
+            }
+            // 저축 금리 하락
+            if (news.savingsInterest < 0) {
+                savingRateInfo.push(Math.max(savingRateInfo[savingRateInfo.length - 1] + news.savingsInterest, 2));
+            }
+            // 대출 금리 상승
+            if (news.loanInterest > 0) {
+                loanRateInfo.push(Math.min(loanRateInfo[loanRateInfo.length - 1] + news.loanInterest, 9));
+            }
+            // 대출 금리 하락
+            if (news.loanInterest < 0) {
+                loanRateInfo.push(Math.max(loanRateInfo[loanRateInfo.length - 1] + news.loanInterest, 1));
+            }
+            // 투자 금리 상승
+            if (news.investmentVolatility > 0) {
+                investmentRateInfo.push(Math.min(investmentRateInfo[investmentRateInfo.length - 1] + news.investmentVolatility, 100));
+            }
+            // 투자 금리 하락
+            if (news.investmentVolatility < 0) {
+                investmentRateInfo.push(Math.max(investmentRateInfo[investmentRateInfo.length - 1] + news.investmentVolatility, -20));
+            }
         }
 
         // 룸 데이터 생성 (방장이 첫번째)
