@@ -6,6 +6,7 @@ import 'package:marquee/marquee.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
@@ -208,16 +209,23 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           backgroundColor: Constants.cardYellow,
                           titleColor: const Color(0xFFB86300),
                           assetPath: "assets/icons/lottery.png",
-                          onPressed: () {
+                          onPressed: () async {
                             final luckyItem =
-                                gameController.getRandomLuckyLottery();
-                            Get.dialog(
-                              LotteryAlert(
-                                luckyItem: luckyItem,
-                              ),
-                              barrierDismissible: false,
-                              useSafeArea: false,
-                            );
+                                await gameController.getRandomLuckyLottery();
+                            if (luckyItem != null) {
+                              Get.dialog(
+                                LotteryAlert(
+                                  luckyItem: luckyItem,
+                                ),
+                                barrierDismissible: false,
+                                useSafeArea: false,
+                              );
+                            } else {
+                              Get.snackbar("행운 복권 오류", "다시 시도해주세요.",
+                                  colorText: Colors.black,
+                                  backgroundGradient: Constants.grey01Gradient);
+                            }
+
                             // setState(() => isActionChoicing = true);
                           },
                         ),
@@ -374,7 +382,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 }
 
 class LotteryAlert extends StatefulWidget {
-  final LuckyLottery luckyItem;
+  final Lottery luckyItem;
 
   const LotteryAlert({
     super.key,
@@ -396,7 +404,7 @@ class _LotteryAlertState extends State<LotteryAlert> {
       backgroundColor: Colors.transparent,
       content: MCContainer(
         strokePadding: const EdgeInsets.all(3),
-        gradient: (widget.luckyItem.price! > 0)
+        gradient: (widget.luckyItem.price > 0)
             ? Constants.yellowGradient
             : Constants.purpleGreyGradient,
         width: 330,
@@ -405,10 +413,9 @@ class _LotteryAlertState extends State<LotteryAlert> {
           padding: const EdgeInsets.only(top: 28, bottom: 12),
           child: Column(
             children: [
-              Text(widget.luckyItem.title ?? "",
-                  style: Constants.titleTextStyle),
+              Text(widget.luckyItem.title, style: Constants.titleTextStyle),
               const SizedBox(height: 6),
-              Text(widget.luckyItem.description ?? "",
+              Text(widget.luckyItem.description,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 10),
               SizedBox(
@@ -416,10 +423,10 @@ class _LotteryAlertState extends State<LotteryAlert> {
                   child: Image.asset(
                       gameController.luckyItemAssetString(widget.luckyItem))),
               const SizedBox(height: 4),
-              Text("현금 ${widget.luckyItem.price?.commaString ?? ""}원",
+              Text("현금 ${widget.luckyItem.price.commaString}원",
                   style: Constants.titleTextStyle),
               const SizedBox(height: 6),
-              Text(widget.luckyItem.guide ?? "",
+              Text(widget.luckyItem.guide,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 14)),
               const SizedBox(height: 12),
               Bounceable(
@@ -430,8 +437,8 @@ class _LotteryAlertState extends State<LotteryAlert> {
                         setState(() {
                           isLoading = true;
                         });
-                        await gameController.luckyDrawAction(
-                            lotteryItem: widget.luckyItem);
+                        // await gameController.luckyDrawAction(
+                        //     lotteryItem: widget.luckyItem);
 
                         setState(() {
                           isLoading = false;
@@ -444,7 +451,7 @@ class _LotteryAlertState extends State<LotteryAlert> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset((widget.luckyItem.price! > 0)
+                      Image.asset((widget.luckyItem.price > 0)
                           ? "assets/icons/button_long_yellow.png"
                           : "assets/icons/button_long_purple_grey.png"),
                       if (!isLoading)

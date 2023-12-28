@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
+import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
@@ -352,7 +353,7 @@ class GameController extends GetxController {
     return assetString;
   }
 
-  String luckyItemAssetString(LuckyLottery item) {
+  String luckyItemAssetString(Lottery item) {
     String assetString = "assets/icons/lottery.png";
     switch (item.title) {
       case "행운복권 당첨!":
@@ -725,15 +726,18 @@ class GameController extends GetxController {
 
   //MARK: - 플레이어 액션
 
-  LuckyLottery getRandomLuckyLottery() {
-    if (lotteryList.isEmpty) {
-      throw Exception('행운 복권 콘텐츠 확인 불가.');
-    }
+  Future<Lottery?> getRandomLuckyLottery() async {
+    final lottery = await CloudFunctionService.lottery(
+        roomId: roomId, playerIndex: myIndex);
+    // if (lotteryList.isEmpty) {
+    //   throw Exception('행운 복권 콘텐츠 확인 불가.');
+    // }
 
-    Random random = Random();
-    int randomIndex = random.nextInt(lotteryList.length);
+    // Random random = Random();
+    // int randomIndex = random.nextInt(lotteryList.length);
 
-    return lotteryList[randomIndex];
+    // return lotteryList[randomIndex];
+    return lottery;
   }
 
   Future<void> luckyDrawAction({required LuckyLottery lotteryItem}) async {
