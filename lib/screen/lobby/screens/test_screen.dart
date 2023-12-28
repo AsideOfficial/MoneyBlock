@@ -53,7 +53,7 @@ class _TestScreenState extends State<TestScreen> {
                             Get.to(() => const GamePlayScreen(),
                                 binding: BindingsBuilder(() {
                               Get.put(GameController(
-                                roomId: "262092",
+                                roomId: "112808",
                                 myIndex: 0,
                               ));
                             }));

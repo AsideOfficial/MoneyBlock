@@ -124,10 +124,23 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                               Constants.grey01Gradient);
                                       return;
                                     }
-                                    await gameController.expendAction(
-                                      title: item.title,
-                                      price: item.price,
-                                    );
+
+                                    if (gameController
+                                            .curretnSpecificActionModel
+                                            ?.title ==
+                                        "보험") {
+                                      debugPrint("보험 요청");
+
+                                      await gameController.insuranceAction(
+                                        title: item.title,
+                                        price: item.price,
+                                      );
+                                    } else {
+                                      await gameController.expendAction(
+                                        title: item.title,
+                                        price: item.price,
+                                      );
+                                    }
 
                                     gameController.isActionChoicing = false;
                                   },

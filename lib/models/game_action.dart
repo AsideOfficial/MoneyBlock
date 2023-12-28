@@ -150,11 +150,11 @@ final expendModel = GameAction(
       GameActionItem(
           title: "민영보험2", description: "행운복권에서 불운 무제한 피하기 가능", price: 300000),
       GameActionItem(
-          title: "사회보장\n보험 1",
+          title: "사회보장보험1",
           description: "무급휴가 칸에서 쉬지 않고 게임진행 가능",
           price: 70000),
       GameActionItem(
-          title: "사회보장\n보험 2",
+          title: "사회보장보험2",
           description: "마이너스 투자수익률시 0%로 손실 보전",
           price: 300000),
     ]),
