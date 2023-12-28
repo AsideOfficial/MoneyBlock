@@ -486,6 +486,17 @@ class GameController extends GetxController {
         total += (cashData.price! * cashData.qty!);
       }
     }
+    final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
+    if (currentTotalInvestmentRate < 1) {
+      if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
+        for (final insurance in playerInsuranceList) {
+          if (insurance.title == "사회보장보험2") {
+            // 투자 손익률 보전
+            return (total * 1).toInt();
+          }
+        }
+      }
+    }
     return (total * currentTotalInvestmentRate).toInt();
   }
 
@@ -593,6 +604,7 @@ class GameController extends GetxController {
     final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
     final myMortgagesList = currentRoom?.player?[myIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[myIndex].investment;
+    final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -619,10 +631,28 @@ class GameController extends GetxController {
     }
 
     if (myInvestList != null) {
-      for (UserAction cashData in myInvestList) {
-        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
-            .toInt();
+      int temp = 0;
+
+      //TODO - 사회보장보험2 효과 적용 완료
+      if (currentTotalInvestmentRate < 1) {
+        if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
+          for (final insurance in playerInsuranceList) {
+            if (insurance.title == "사회보장보험2") {
+              for (UserAction cashData in myInvestList) {
+                // 투자 손익율 보전
+                temp += (cashData.price! * cashData.qty! * 1).toInt();
+              }
+            }
+          }
+        }
+      } else {
+        for (UserAction cashData in myInvestList) {
+          temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+              .toInt();
+        }
       }
+
+      total += temp;
     }
 
     if (myCashList != null) {
@@ -641,6 +671,7 @@ class GameController extends GetxController {
     final myCreditLoanList = currentRoom?.player?[playerIndex].creditLoan;
     final myMortgagesList = currentRoom?.player?[playerIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[playerIndex].investment;
+    final playerInsuranceList = currentRoom?.player?[playerIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
       for (UserAction cashData in myLongSavingList) {
@@ -667,10 +698,28 @@ class GameController extends GetxController {
     }
 
     if (myInvestList != null) {
-      for (UserAction cashData in myInvestList) {
-        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
-            .toInt();
+      int temp = 0;
+
+      //TODO - 사회보장보험2 효과 적용 완료
+      if (currentTotalInvestmentRate < 1) {
+        if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
+          for (final insurance in playerInsuranceList) {
+            if (insurance.title == "사회보장보험2") {
+              for (UserAction cashData in myInvestList) {
+                // 투자 손익율 보전
+                temp += (cashData.price! * cashData.qty! * 1).toInt();
+              }
+            }
+          }
+        }
+      } else {
+        for (UserAction cashData in myInvestList) {
+          temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+              .toInt();
+        }
       }
+
+      total += temp;
     }
 
     if (myCashList != null) {
