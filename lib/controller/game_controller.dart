@@ -944,7 +944,29 @@ class GameController extends GetxController {
         // cash -- loan --
         UserAction(type: "cash", title: title, price: -price, qty: 1),
         UserAction(
-            type: "expend", title: title, price: -price, qty: 1, isItem: true),
+            type: "expend", title: title, price: price, qty: 1, isItem: true),
+      ],
+    ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> insuranceAction({
+    required String title,
+    required int price,
+  }) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        UserAction(type: "cash", title: title, price: -price, qty: 1),
+        UserAction(
+            type: "insurance",
+            title: title,
+            price: price,
+            qty: 1,
+            isItem: true),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
