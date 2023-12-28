@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
@@ -460,10 +461,19 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                   price: item.price!,
                                                   description: item.description,
                                                 );
-                                                return GameItemCard(
-                                                  accentColor:
-                                                      Constants.cardBlue,
-                                                  item: gameItem,
+                                                return Bounceable(
+                                                  onTap: () {
+                                                    if (gameItem.title ==
+                                                        "사회보장보험1") {
+                                                      //TODO - 턴 종료
+                                                      gameController.endTurn();
+                                                    }
+                                                  },
+                                                  child: GameItemCard(
+                                                    accentColor:
+                                                        Constants.cardBlue,
+                                                    item: gameItem,
+                                                  ),
                                                 );
                                                 // return GameItemCard(item: item);
                                               },

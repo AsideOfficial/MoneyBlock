@@ -786,6 +786,7 @@ class GameController extends GetxController {
   }
 
   Future<void> endTurn() async {
+    if (!isMyTurn) return;
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
