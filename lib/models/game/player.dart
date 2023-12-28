@@ -7,6 +7,7 @@ class Player {
   List<UserAction>? longSaving; // 적금
   List<UserAction>? investment; // 투자
   List<UserAction>? expend; // 지출
+  List<UserAction>? insurance; // 지출
   List<UserAction>? creditLoan; // 신용대출
   List<UserAction>? mortgageLoan; // 담보대출
 
@@ -23,6 +24,7 @@ class Player {
     this.longSaving,
     this.investment,
     this.expend,
+    this.insurance,
     this.creditLoan,
     this.mortgageLoan,
     this.characterIndex,
@@ -57,6 +59,11 @@ class Player {
           .map((json) => UserAction.fromJson(json))
           .toList(),
       expend: (json['expend'] as List<dynamic>?)
+          ?.sublist(1)
+          .map((data) => Map<String, dynamic>.from(data))
+          .map((json) => UserAction.fromJson(json))
+          .toList(),
+      insurance: (json['insurance'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
           .map((json) => UserAction.fromJson(json))

@@ -4,6 +4,7 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
@@ -413,6 +414,58 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                     ),
                                                   ),
                                                 );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      if (gameController
+                                              .myExpendItems?.isNotEmpty ??
+                                          false)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 28, left: 28, bottom: 20),
+                                          child: Text(
+                                            "지출",
+                                            style: Constants.titleTextStyle
+                                                .copyWith(
+                                                    color: Constants.dark100),
+                                          ),
+                                        ),
+                                      if (gameController
+                                              .myExpendItems?.isNotEmpty ??
+                                          false)
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 28),
+                                            child: GridView.builder(
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      childAspectRatio:
+                                                          110 / 136,
+                                                      crossAxisCount: 4,
+                                                      crossAxisSpacing: 10.0,
+                                                      mainAxisSpacing: 20),
+                                              shrinkWrap: true,
+                                              itemCount: gameController
+                                                      .myExpendItems?.length ??
+                                                  0,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                final item = gameController
+                                                    .myExpendItems?[index];
+                                                final gameItem = GameActionItem(
+                                                  title: item!.title!,
+                                                  price: item.price!,
+                                                  description: item.description,
+                                                );
+                                                return GameItemCard(
+                                                  accentColor:
+                                                      Constants.cardBlue,
+                                                  item: gameItem,
+                                                );
+                                                // return GameItemCard(item: item);
                                               },
                                             ),
                                           ),

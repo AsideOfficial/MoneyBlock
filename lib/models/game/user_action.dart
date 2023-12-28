@@ -5,12 +5,14 @@ class UserAction {
   String? title;
   int? price;
   int? qty;
+  String? description;
 
   UserAction({
     required this.type,
     required this.title,
     required this.price,
     required this.qty,
+    this.description,
     this.isItem = false,
   });
 
@@ -21,6 +23,7 @@ class UserAction {
       price: json['price'],
       qty: json['qty'],
       isItem: json["isItem"],
+      description: json["description"],
     );
   }
 
@@ -31,6 +34,7 @@ class UserAction {
       'price': price,
       'qty': qty,
       'isItem': isItem,
+      "description": description
     };
   }
 }

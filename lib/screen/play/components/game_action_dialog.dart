@@ -134,11 +134,13 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       await gameController.insuranceAction(
                                         title: item.title,
                                         price: item.price,
+                                        description: item.description,
                                       );
                                     } else {
                                       await gameController.expendAction(
                                         title: item.title,
                                         price: item.price,
+                                        description: item.description,
                                       );
                                     }
 
