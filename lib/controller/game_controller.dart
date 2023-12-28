@@ -740,7 +740,7 @@ class GameController extends GetxController {
     return lottery;
   }
 
-  Future<void> luckyDrawAction({required LuckyLottery lotteryItem}) async {
+  Future<void> luckyDrawAction({required Lottery lotteryItem}) async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,

@@ -28,6 +28,7 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   bool isSwipeUp = true;
   bool isMyTurn = true; // TODO - 데이터 연동 필요
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -210,8 +211,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           titleColor: const Color(0xFFB86300),
                           assetPath: "assets/icons/lottery.png",
                           onPressed: () async {
+                            setState(() {
+                              isLoading = true;
+                            });
                             final luckyItem =
                                 await gameController.getRandomLuckyLottery();
+                            setState(() {
+                              isLoading = false;
+                            });
                             if (luckyItem != null) {
                               Get.dialog(
                                 LotteryAlert(
@@ -374,6 +381,18 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 ),
               ),
             ),
+
+            if (isLoading)
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Constants.grey100.withOpacity(0.5),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Constants.dark100,
+                  ),
+                ),
+              )
           ],
         );
       })),
@@ -437,8 +456,8 @@ class _LotteryAlertState extends State<LotteryAlert> {
                         setState(() {
                           isLoading = true;
                         });
-                        // await gameController.luckyDrawAction(
-                        //     lotteryItem: widget.luckyItem);
+                        await gameController.luckyDrawAction(
+                            lotteryItem: widget.luckyItem);
 
                         setState(() {
                           isLoading = false;
