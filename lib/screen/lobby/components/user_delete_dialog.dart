@@ -4,10 +4,10 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
-import 'package:money_cycle/screen/lobby/screens/user_delete_screen.dart';
+import 'package:money_cycle/start/start_screen.dart';
 
-class LogoutDialog extends StatelessWidget {
-  const LogoutDialog({super.key});
+class UserDeleteDialog extends StatelessWidget {
+  const UserDeleteDialog({super.key});
 
   Widget actionButton({
     required Color shadowColor,
@@ -69,7 +69,7 @@ class LogoutDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '계정관리',
+                    '탈퇴하기',
                     textAlign: TextAlign.center,
                     style: Constants.defaultTextStyle.copyWith(
                       color: const Color(0xFF303030),
@@ -79,7 +79,7 @@ class LogoutDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 48.0),
                   Text(
-                    '로그아웃 하시겠습니까?',
+                    '정말 탈퇴 하시겠습니까?',
                     textAlign: TextAlign.center,
                     style: Constants.defaultTextStyle.copyWith(
                       color: const Color(0xFF303030),
@@ -98,21 +98,22 @@ class LogoutDialog extends StatelessWidget {
                           end: Alignment(0, 1),
                           colors: [Color(0xFFE9E8EC), Color(0xFFD4D9E2)],
                         ),
-                        label: '회원탈퇴',
+                        label: '취소',
                         labelColor: const Color(0xFF696969),
-                        onTap: () async {
-                          Get.to(const UserDeleteScreen());
+                        onTap: () {
+                          Get.back();
                         },
                       ),
                       const SizedBox(width: 10.0),
                       actionButton(
                         shadowColor: const Color(0x3F000000),
-                        color: const Color(0xFF41ADEB),
-                        label: '로그아웃',
+                        color: const Color(0xFF8C51EB),
+                        label: '확인',
                         labelColor: Colors.white,
                         onTap: () {
-                          Get.back();
-                          FirebaseAuth.instance.signOut();
+                          final currentUser = FirebaseAuth.instance.currentUser;
+                          currentUser?.delete();
+                          Get.offAll(const StartScreen());
                         },
                       ),
                     ],
@@ -120,22 +121,6 @@ class LogoutDialog extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Bounceable(
-                onTap: () {
-                  Get.back();
-                },
-                child: SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: Image.asset(
-                    "assets/icons/x_button.png",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),
