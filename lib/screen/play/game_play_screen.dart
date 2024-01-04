@@ -253,6 +253,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           backgroundColor: const Color(0xFFA95BE7),
                           titleColor: const Color(0xFF5B2486),
                           onPressed: () async {
+                            // showToastMessage("하이");
                             Get.dialog(ActionAlertDialog(
                               title: "턴 넘기기",
                               subTitle: "턴을 넘기시겠습니까?",

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 class VacationAlert extends StatefulWidget {
   const VacationAlert({
@@ -54,13 +55,19 @@ class _VacationAlertState extends State<VacationAlert> {
                         setState(() {
                           isLoading = true;
                         });
-                        await gameController.startVacation();
-
-                        Get.back();
-
-                        const inVacationAlert = InVacationAlert();
-                        Get.dialog(inVacationAlert,
-                            barrierDismissible: false, useSafeArea: false);
+                        //TODO - 민영 보험 분기 처리
+                        SnackBarUtil.showToastMessage(
+                            message: "'민영보험'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
+                            actionTitle: '사용하기',
+                            onActionPressed: () {
+                              //TODO - 민영 보험 API 연동
+                            });
+                        //TODO - 주석 해제 필요
+                        // await gameController.startVacation();
+                        // Get.back();
+                        // const inVacationAlert = InVacationAlert();
+                        // Get.dialog(inVacationAlert,
+                        //     barrierDismissible: false, useSafeArea: false);
                         setState(() {
                           isLoading = false;
                         });
