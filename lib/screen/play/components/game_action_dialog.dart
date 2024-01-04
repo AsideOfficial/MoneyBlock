@@ -7,6 +7,8 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/action_choice_button.dart';
+import 'package:money_cycle/screen/play/components/cash_alert_dialog.dart';
+import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
@@ -30,6 +32,17 @@ class _GameActionDialogState extends State<GameActionDialog> {
   double currentMortgagesLoanPaybackAmount = 0;
   double height = 280;
   bool isCreditLoan = false;
+
+  Future<void> showCashAlert() async {
+    Future.delayed(const Duration(milliseconds: 200));
+    Get.dialog(CashAlertDialog(
+      title: "현금 부족",
+      subTitle: "추천 활동 : 대출 받기",
+      actionTitle: "대출받기",
+      description: "구매를 위해\n현금을 확보해야 합니다.",
+      primaryActionColor: Constants.cardOrange,
+    ));
+  }
 
   //MARK: - 플레이어 개인 활동 선택 화면
   List<Widget> actionChoiceContainer(
@@ -91,11 +104,14 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   perPrice: evaluatedPrice,
                                   actionTitle: "매수",
                                   onPurchase: (count) async {
-                                    //TODO - 투자 API 연동 필요 ✅
+                                    // if (gameController.totalCash! <
+                                    //     item.price * count) {
+                                    if (true) {
+                                      Get.back();
+                                      await showCashAlert();
+                                      return;
+                                    }
 
-                                    // if (item == null) return;
-                                    if (gameController.totalCash! <
-                                        (item.price * count)) return;
                                     await gameController.investAction(
                                         title: item.title,
                                         price: item.price,
@@ -115,13 +131,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   perPrice: item.price,
                                   actionTitle: "구입",
                                   onPurchase: (count) async {
-                                    //TODO - 지출 API 연동 필요 ✅
                                     if (gameController.totalCash! <
                                         (item.price * count)) {
-                                      Get.snackbar("잔액 부족", "잔액이 부족합니다.",
-                                          colorText: Colors.black,
-                                          backgroundGradient:
-                                              Constants.grey01Gradient);
+                                      showCashAlert();
                                       return;
                                     }
 

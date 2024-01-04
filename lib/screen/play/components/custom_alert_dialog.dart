@@ -8,7 +8,8 @@ class CustomAlertDialog extends StatelessWidget {
   final String description;
   final String instruction;
   final String acionButtonTitle;
-  final Function()? onPressed;
+  final Function()? onActionButtonPressed;
+  final Function()? onSecondaryButtonPressed;
   final bool? isLoading;
 
   const CustomAlertDialog({
@@ -16,9 +17,10 @@ class CustomAlertDialog extends StatelessWidget {
     required this.title,
     required this.description,
     required this.instruction,
-    this.onPressed,
+    this.onActionButtonPressed,
     required this.acionButtonTitle,
     this.isLoading,
+    this.onSecondaryButtonPressed,
   });
 
   @override
@@ -44,13 +46,30 @@ class CustomAlertDialog extends StatelessWidget {
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const Spacer(),
               SizedBox(
-                width: 184,
                 height: 44,
-                child: MCButton(
-                  isLoading: isLoading,
-                  title: acionButtonTitle,
-                  backgroundColor: Constants.blueNeon,
-                  onPressed: onPressed,
+                child: Row(
+                  children: [
+                    if (onSecondaryButtonPressed != null)
+                      Expanded(
+                        child: MCButton(
+                          isLoading: isLoading,
+                          title: acionButtonTitle,
+                          titleColor: Constants.grey03,
+                          gradient: Constants.grey01Gradient,
+                          onPressed: onSecondaryButtonPressed,
+                        ),
+                      ),
+                    if (onSecondaryButtonPressed != null)
+                      const SizedBox(width: 12),
+                    Expanded(
+                      child: MCButton(
+                        isLoading: isLoading,
+                        title: acionButtonTitle,
+                        backgroundColor: Constants.blueNeon,
+                        onPressed: onActionButtonPressed,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

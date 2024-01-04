@@ -24,7 +24,7 @@ class _EndGameAlertDialogState extends State<EndGameAlertDialog> {
       description: "게임이 종료되었습니다.",
       instruction: "게임의 결과를 확인해보세요.",
       acionButtonTitle: "결과보기",
-      onPressed: () {
+      onActionButtonPressed: () {
         Get.back();
         Get.dialog(
           const FinalCalculateDialog(),

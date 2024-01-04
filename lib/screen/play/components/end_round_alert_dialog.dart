@@ -29,7 +29,7 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
         instruction: "게임의 결과를 확인해보세요.",
         acionButtonTitle: "결과보기",
         isLoading: isLoading,
-        onPressed: isLoading
+        onActionButtonPressed: isLoading
             ? null
             : () async {
                 setState(() {
