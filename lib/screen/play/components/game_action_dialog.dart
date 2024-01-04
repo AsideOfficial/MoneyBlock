@@ -24,6 +24,7 @@ class GameActionDialog extends StatefulWidget {
 }
 
 class _GameActionDialogState extends State<GameActionDialog> {
+  final gameController = Get.find<GameController>();
   double cash = 1000000;
   double currentAmount = 0;
   double currentCreditLoanAmount = 0;
@@ -52,7 +53,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                 .copyWith(fontSize: 18, color: Colors.black)),
       ],
       onAction: () {
-        // TODO - 대출 화면으로 이동
+        Get.back();
+        gameController.actionButtonTap(GameActionType.loan);
       },
     ));
   }
@@ -117,9 +119,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   perPrice: evaluatedPrice,
                                   actionTitle: "매수",
                                   onPurchase: (count) async {
-                                    // if (gameController.totalCash! <
-                                    //     item.price * count) {
-                                    if (true) {
+                                    if (gameController.totalCash! <
+                                        (item.price * count)) {
                                       Get.back();
                                       await showCashAlert();
                                       return;
@@ -146,7 +147,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   onPurchase: (count) async {
                                     if (gameController.totalCash! <
                                         (item.price * count)) {
-                                      showCashAlert();
+                                      Get.back();
+                                      await showCashAlert();
                                       return;
                                     }
 
