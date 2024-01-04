@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/constants.dart';
-import 'package:money_cycle/utils/extension/int.dart';
-
 import '../../../components/mc_button.dart';
 import '../../../components/mc_container.dart';
 
 class CashAlertDialog extends StatefulWidget {
-  final String title;
-  final String subTitle;
-  final String description;
   final String actionTitle;
-  final bool? isMultiple;
   final Color? primaryActionColor;
-  final Future<void> Function()? onAction;
+  final Function()? onAction;
+  final List<Widget> children;
 
   const CashAlertDialog({
     super.key,
-    this.isMultiple = false,
     this.primaryActionColor = Constants.accentRed,
-    required this.title,
-    required this.subTitle,
     required this.actionTitle,
+    required this.children,
     this.onAction,
-    required this.description,
   });
 
   @override
@@ -48,22 +39,15 @@ class _CashAlertDialogState extends State<CashAlertDialog> {
           padding:
               const EdgeInsets.only(top: 24, bottom: 22, left: 30, right: 30),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(widget.title,
-                  style:
-                      Constants.titleTextStyle.copyWith(color: Colors.black)),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: widget.children,
+                ),
+              ),
               const SizedBox(height: 10),
-              Text(widget.subTitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Constants.defaultTextStyle
-                      .copyWith(fontSize: 18, color: Colors.black)),
-              const SizedBox(height: 10),
-              Text(widget.description,
-                  textAlign: TextAlign.center,
-                  style: Constants.defaultTextStyle
-                      .copyWith(fontSize: 18, color: Colors.black)),
-              const Spacer(),
               SizedBox(
                 height: 44,
                 child: Row(

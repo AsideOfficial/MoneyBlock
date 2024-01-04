@@ -36,11 +36,24 @@ class _GameActionDialogState extends State<GameActionDialog> {
   Future<void> showCashAlert() async {
     Future.delayed(const Duration(milliseconds: 200));
     Get.dialog(CashAlertDialog(
-      title: "현금 부족",
-      subTitle: "추천 활동 : 대출 받기",
       actionTitle: "대출받기",
-      description: "구매를 위해\n현금을 확보해야 합니다.",
       primaryActionColor: Constants.cardOrange,
+      children: [
+        Text("현금 부족",
+            style: Constants.titleTextStyle.copyWith(color: Colors.black)),
+        const SizedBox(height: 10),
+        Text("추천 활동 : 대출 받기",
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 18, color: Colors.black)),
+        const SizedBox(height: 10),
+        Text("구매를 위해\n현금을 확보해야합니다.",
+            textAlign: TextAlign.center,
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 18, color: Colors.black)),
+      ],
+      onAction: () {
+        // TODO - 대출 화면으로 이동
+      },
     ));
   }
 
