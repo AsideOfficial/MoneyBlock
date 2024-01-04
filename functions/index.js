@@ -90,6 +90,7 @@ exports.createRoom = onRequest(async (req, res) => {
         owner.isVacation = false;
         owner.vacationCount = 0;
         owner.insurance = [0];
+        owner.comsumption = [0];
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
@@ -228,6 +229,7 @@ exports.enterRoom = onRequest(async (req, res) => {
         user.isVacation = false;
         user.vacationCount = 0;
         user.insurance = [0];
+        user.comsumption = [0];
 
         playerList.push(user);
 
@@ -474,10 +476,47 @@ exports.userAction = onRequest(async (req, res) => {
             const typeRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
             const type = typeRef.val();
 
-            type.push(userAction);
-
-            // 유저 액션 추가
-            roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+            if (userAction.type == 'comsumption') {
+                // id 데이터 유효성 체크
+                if (userAction.id === undefined || typeof userAction.id !== 'string') {
+                    return res.status(400).json({ ValueError: 'id data is none' });
+                }
+                // 소비 액션
+                if (userAction.id == 'sma1' || userAction.id == 'sma2') {
+                    // 저축관리 어드바이저 중복 확인
+                    const consumptionRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
+                    const consumption = consumptionRef.val();
+                    const isSma1 = consumption.some(consumption => consumption.id === 'sma1');
+                    const isSma2 = consumption.some(consumption => consumption.id === 'sma2');
+                    if (isSma1 || isSma2) {
+                        return res.status(400).json({ 'message': '소비관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                    }
+                    // 저축관리 어드바이저 기입
+                    userAction.preferentialRate = 1;
+                    type.push(userAction);
+                    roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+                } else if (userAction.id == 'ima1' || userAction.id == 'ima2') {
+                    // 투자관리 어드바이저 중복 확인
+                    const consumptionRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
+                    const consumption = consumptionRef.val();
+                    const isSma1 = consumption.some(consumption => consumption.id === 'ima1');
+                    const isSma2 = consumption.some(consumption => consumption.id === 'ima2');
+                    if (isSma1 || isSma2) {
+                        return res.status(400).json({ 'message': '투자관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                    }
+                    // 투자관리 어드바이저 기입
+                    userAction.preferentialRate = 3;
+                    type.push(userAction);
+                    roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+                } else {
+                    return res.status(400).json({ ValueError: 'Invalid userAction id' });
+                }
+                continue;
+            } else {
+                type.push(userAction);
+                // 유저 액션 추가
+                roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+            }
         }
 
         const room_data = await roomRef.once('value');
@@ -609,6 +648,44 @@ exports.lottery = onRequest(async (req, res) => {
         const lottery = lotteryList[lotteryIndex];
         return res.status(200).json({ lottery: lottery });
 
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.deleteTickets = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        
+        // 모든 유저의 소비 데이터 접근
+        const roomRef = db.ref('Room').child(roomId);
+        const playerListRef = await roomRef.child('player').once('value');
+        const playerList = playerListRef.val();
+
+        // 모든 유저의 소비 데이터 중 sma1, ima1가 있다면 삭제 (인덱스로 배열을 돌리기)
+        for (const player of playerList) {
+            const consumptionRef = await roomRef.child('player').child(playerList.indexOf(player)).child('comsumption').once('value');
+            const consumption = consumptionRef.val();
+            const sma1Index = consumption.findIndex(consumption => consumption.id === 'sma1');
+            if (sma1Index !== -1) {
+                consumption.splice(sma1Index, 1);
+            }
+            const ima1Index = consumption.findIndex(consumption => consumption.id === 'ima1');
+            if (ima1Index !== -1) {
+                consumption.splice(ima1Index, 1);
+            }
+            roomRef.child('player').child(playerList.indexOf(player)).child('comsumption').set(consumption);
+        }
+
+        const room_data = await db.ref('Room').child(roomId).once('value');
+        return res.status(200).json({ roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
