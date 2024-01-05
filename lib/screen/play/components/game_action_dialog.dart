@@ -136,6 +136,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         qty: count);
 
                                     gameController.isActionChoicing = false;
+                                    Get.back();
                                   },
                                 ));
                               } else {
@@ -172,6 +173,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     }
 
                                     gameController.isActionChoicing = false;
+                                    Get.back();
                                   },
                                 ));
                               }
@@ -509,6 +511,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                               price: currentMortagagesLoanAmount
                                                   .toInt(),
                                             );
+                                            Get.back();
                                           }
                                         }
 
@@ -824,6 +827,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
 
                                           gameController.isActionChoicing =
                                               false;
+                                          Get.back();
                                         },
                                       ));
                                     },
@@ -1110,6 +1114,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       );
 
                                       gameController.isActionChoicing = false;
+                                      Get.back();
                                     }
                                   },
                                 ));
