@@ -7,6 +7,7 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
+import 'package:money_cycle/utils/extension/double.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
 import '../../../models/game/player.dart';
@@ -358,7 +359,8 @@ class RateVariationTile extends StatelessWidget {
       children: [
         SizedBox(
           width: 64,
-          child: Text(before != null ? "$before%" : "",
+          child: Text(
+              before != null ? "${before!.roundToDecimalPlaces(1)}%" : "",
               style: Constants.defaultTextStyle
                   .copyWith(fontSize: 16, color: Constants.grey100)),
         ),
@@ -367,7 +369,7 @@ class RateVariationTile extends StatelessWidget {
             height: 14,
             child: Image.asset("assets/icons/arrow_forward.png")),
         const SizedBox(width: 14),
-        Text("$after%",
+        Text("${after.roundToDecimalPlaces(1)}%",
             style: Constants.defaultTextStyle.copyWith(
                 fontSize: 16,
                 color: ((before != null) ? (before! < after) : (0 < after))
