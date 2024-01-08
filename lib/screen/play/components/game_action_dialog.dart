@@ -64,6 +64,106 @@ class _GameActionDialogState extends State<GameActionDialog> {
       GameActionType actionType, GameController gameController) {
     switch (actionType) {
       case GameActionType.expend:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(gameController.curretnSpecificActionModel?.title ?? "",
+                      style: Constants.titleTextStyle),
+                  const SizedBox(height: 6),
+                  Text(
+                      "어떤 ${gameController.curretnSpecificActionModel?.title}를 하시겠습니까?",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 140,
+                    width: 600,
+                    child: ListView.builder(
+                        controller: ScrollController(initialScrollOffset: 58),
+                        scrollDirection: Axis.horizontal,
+                        key: UniqueKey(),
+                        itemCount: gameController
+                            .curretnSpecificActionModel?.items.length,
+                        // itemExtent: 120,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final item = gameController
+                              .curretnSpecificActionModel?.items[index];
+                          final evaluatedPrice = (item!.price *
+                                  gameController.currentTotalInvestmentRate)
+                              .toInt();
+                          return Bounceable(
+                            onTap: () {
+                              Get.dialog(PurchaseAlertDialog(
+                                title: "구입",
+                                subTitle: item.title,
+                                perPrice: item.price,
+                                actionTitle: "구입",
+                                onPurchase: (count) async {
+                                  if (gameController.totalCash! <
+                                      (item.price * count)) {
+                                    Get.back();
+                                    await showCashAlert();
+                                    return;
+                                  }
+
+                                  if (gameController
+                                          .curretnSpecificActionModel?.title ==
+                                      "보험") {
+                                    debugPrint("보험 요청");
+
+                                    await gameController.insuranceAction(
+                                      title: item.title,
+                                      price: item.price,
+                                      description: item.description,
+                                    );
+                                  } else {
+                                    await gameController.expendAction(
+                                      title: item.title,
+                                      price: item.price,
+                                      description: item.description,
+                                    );
+                                  }
+
+                                  gameController.isActionChoicing = false;
+                                  Get.back();
+                                },
+                              ));
+                            },
+                            child: (gameController.currentActionType ==
+                                    GameActionType.investment)
+                                ? GameItemCard(
+                                    item: item,
+                                    evaluatedPrice: evaluatedPrice,
+                                    priceTitle: gameController
+                                            .curretnSpecificActionModel
+                                            ?.priceTitle ??
+                                        "",
+                                    accentColor:
+                                        gameController.currentCardColor,
+                                  )
+                                : GameItemCard(
+                                    item: item,
+                                    accentColor:
+                                        gameController.currentCardColor,
+                                  ),
+                          );
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ];
       case GameActionType.investment:
         return [
           MCContainer(

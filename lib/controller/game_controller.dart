@@ -11,6 +11,7 @@ import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/models/game_content.dart';
 import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/start_game_alert_dialog.dart';
@@ -23,6 +24,7 @@ class GameController extends GetxController {
   GameController({required this.roomId, required this.myIndex});
   final String roomId;
   final int myIndex;
+  List<GameContentCategory>? expendItems;
 
   // Mock 데이터를 LuckyLottery 인스턴스로 변환
   List<LuckyLottery> lotteryList =
@@ -33,6 +35,14 @@ class GameController extends GetxController {
     debugPrint("[게임 컨트롤러 onInit 시작]");
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
     final contentsData = await FirebaseRealTimeService.getGameContents();
+
+    for (final content in contentsData!.contentsData!) {
+      debugPrint(content.actionType);
+      if (content.actionType == "소비") {
+        expendItems = content.categories;
+        debugPrint("소비 콘텐츠 불러오기 성공");
+      }
+    }
     _currentRoom.value = roomData;
     super.onInit();
     bindRoomStream(roomId);
