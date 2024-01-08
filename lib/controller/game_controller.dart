@@ -40,7 +40,6 @@ class GameController extends GetxController {
       debugPrint(content.actionType);
       if (content.actionType == "소비") {
         expendItems = content.categories;
-        debugPrint("소비 콘텐츠 불러오기 성공");
       }
     }
     _currentRoom.value = roomData;
@@ -70,7 +69,23 @@ class GameController extends GetxController {
   set isActionChoicing(bool newValue) => _isActionChoicing.value = newValue;
 
   void specificActionButtonTap(int index) {
-    _curretnSpecificActionModel.value = currentActionTypeModel.actions[index];
+    if (currentActionType == GameActionType.expend) {
+      _curretnSpecificActionModel.value = SpecifitGameAction(
+        title: "소비",
+        items: expendItems![index]
+            .contents!
+            .map((e) => GameActionItem(
+                  title: e.title!,
+                  price: e.price!,
+                  subTitle: e.subTitle,
+                  description: e.description,
+                ))
+            .toList(),
+      );
+    } else {
+      _curretnSpecificActionModel.value = currentActionTypeModel.actions[index];
+    }
+
     debugPrint(_curretnSpecificActionModel.value?.title ?? "");
   }
 

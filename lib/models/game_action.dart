@@ -34,12 +34,14 @@ class SpecifitGameAction {
 
 class GameActionItem {
   final String title;
+  final String? subTitle;
   final int price;
   final String? description;
   final String? priceTitle;
 
   GameActionItem(
       {required this.title,
+      this.subTitle,
       this.description,
       required this.price,
       this.priceTitle});
