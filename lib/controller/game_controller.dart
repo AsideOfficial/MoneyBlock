@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -31,6 +32,7 @@ class GameController extends GetxController {
   void onInit() async {
     debugPrint("[게임 컨트롤러 onInit 시작]");
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
+    final contentsData = await FirebaseRealTimeService.getGameContents();
     _currentRoom.value = roomData;
     super.onInit();
     bindRoomStream(roomId);

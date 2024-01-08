@@ -15,7 +15,7 @@ class GameContentItem {
     this.price,
   });
 
-  factory GameContentItem.fromJson(Map<String, dynamic> json) {
+  factory GameContentItem.fromJson(Map<dynamic, dynamic> json) {
     return GameContentItem(
       id: json['id'],
       title: json['title'],
@@ -28,7 +28,7 @@ class GameContentItem {
 }
 
 class GameContentCategory {
-  final List<GameContentItem> contents;
+  final List<GameContentItem>? contents;
   final String? type;
 
   GameContentCategory({
@@ -36,10 +36,10 @@ class GameContentCategory {
     required this.type,
   });
 
-  factory GameContentCategory.fromJson(Map<String, dynamic> json) {
+  factory GameContentCategory.fromJson(Map<dynamic, dynamic> json) {
     return GameContentCategory(
-      contents: (json['contents'] as List<dynamic>)
-          .map((item) => GameContentItem.fromJson(item))
+      contents: (json['contents'] as List<dynamic>?)
+          ?.map((item) => GameContentItem.fromJson(item))
           .toList(),
       type: json['type'],
     );
@@ -48,25 +48,25 @@ class GameContentCategory {
 
 class GameContentAction {
   final String? actionType;
-  final List<GameContentCategory> categories;
+  final List<GameContentCategory>? categories;
 
   GameContentAction({
     required this.actionType,
     required this.categories,
   });
 
-  factory GameContentAction.fromJson(Map<String, dynamic> json) {
+  factory GameContentAction.fromJson(Map<dynamic, dynamic> json) {
     return GameContentAction(
       actionType: json['actionType'],
-      categories: (json['categories'] as List<dynamic>)
-          .map((category) => GameContentCategory.fromJson(category))
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((category) => GameContentCategory.fromJson(category))
           .toList(),
     );
   }
 }
 
 class GameContentsData {
-  final List<GameContentAction> contentsData;
+  final List<GameContentAction>? contentsData;
 
   GameContentsData({
     required this.contentsData,
@@ -74,8 +74,8 @@ class GameContentsData {
 
   factory GameContentsData.fromJson(Map<String, dynamic> json) {
     return GameContentsData(
-      contentsData: (json['contentsData'] as List<dynamic>)
-          .map((action) => GameContentAction.fromJson(action))
+      contentsData: (json['contentsData'] as List<dynamic>?)
+          ?.map((action) => GameContentAction.fromJson(action))
           .toList(),
     );
   }
