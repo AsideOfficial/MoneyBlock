@@ -91,6 +91,9 @@ exports.createRoom = onRequest(async (req, res) => {
         owner.vacationCount = 0;
         owner.insurance = [0];
         owner.comsumption = [0];
+        owner.donation = [0];
+
+        owner.history = [];
 
         // 금리 및 뉴스 데이터 받아오기
         const newsRef = await db.ref('contentsData').child(4).child('categories').once('value');
@@ -160,7 +163,7 @@ exports.createRoom = onRequest(async (req, res) => {
         // 데이터 저장
         db.ref('Room').child(room_id).set(room_data);
 
-        return res.status(200).json({ roomId: room_id, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: room_id, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -230,6 +233,9 @@ exports.enterRoom = onRequest(async (req, res) => {
         user.vacationCount = 0;
         user.insurance = [0];
         user.comsumption = [0];
+        user.donation = [0];
+
+        user.history = [];
 
         playerList.push(user);
 
@@ -237,7 +243,7 @@ exports.enterRoom = onRequest(async (req, res) => {
         db.ref('Room').child(roomId).child('player').set(playerList);
         const room_data = await room_ref.once('value');
 
-        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -279,7 +285,7 @@ exports.exitRoom = onRequest(async (req, res) => {
         }
 
         const room_data = await room_ref.once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -323,7 +329,7 @@ exports.readyToggle = onRequest(async (req, res) => {
 
         const room_data = await roomRef.once('value');
 
-        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -357,7 +363,7 @@ exports.gameStart = onRequest(async (req, res) => {
         roomRef.child('isPlaying').set(true);
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -391,7 +397,7 @@ exports.updateRateSetting = onRequest(async(req, res) => {
 
         const room_data = await roomRef.once('value');
 
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -441,7 +447,7 @@ exports.turnEnded = onRequest(async(req, res) => {
         roomRef.child('roundIndex').set(roundIndex);
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -489,12 +495,10 @@ exports.userAction = onRequest(async (req, res) => {
                     const isSma1 = consumption.some(consumption => consumption.id === 'sma1');
                     const isSma2 = consumption.some(consumption => consumption.id === 'sma2');
                     if (isSma1 || isSma2) {
-                        return res.status(400).json({ 'message': '소비관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ sucess: false, message: '소비관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
                     }
                     // 저축관리 어드바이저 기입
                     userAction.preferentialRate = 1;
-                    type.push(userAction);
-                    roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
                 } else if (userAction.id == 'ima1' || userAction.id == 'ima2') {
                     // 투자관리 어드바이저 중복 확인
                     const consumptionRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
@@ -502,16 +506,47 @@ exports.userAction = onRequest(async (req, res) => {
                     const isSma1 = consumption.some(consumption => consumption.id === 'ima1');
                     const isSma2 = consumption.some(consumption => consumption.id === 'ima2');
                     if (isSma1 || isSma2) {
-                        return res.status(400).json({ 'message': '투자관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ sucess: false, message: '투자관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
                     }
                     // 투자관리 어드바이저 기입
                     userAction.preferentialRate = 3;
-                    type.push(userAction);
-                    roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
                 } else {
                     return res.status(400).json({ ValueError: 'Invalid userAction id' });
                 }
+                type.push(userAction);
+                roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
                 continue;
+            } else if (userAction.type == 'donation') {
+                // id 데이터 유효성 체크
+                if (userAction.id === undefined || typeof userAction.id !== 'string') {
+                    return res.status(400).json({ ValueError: 'id data is none' });
+                }
+                // dna1, dna2, dna3, dna4로 id 분류
+                if (userAction.id == 'dna1' || userAction.id == 'dna2') {
+                    // 기부금(dna1, dna2) 중복 확인
+                    const donationRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
+                    const donation = donationRef.val();
+                    const isDna1 = donation.some(donation => donation.id === 'dna1');
+                    const isDna2 = donation.some(donation => donation.id === 'dna2');
+                    if (isDna1 || isDna2) {
+                        return res.status(200).json({ sucess: false, message: '기부금 공제 상품이 이미 있어 구매가 불가능합니다.' });
+                    }
+                    userAction.reductionValue = userAction.id == 'dna1' ? 100000:300000;
+                } else if (userAction.id == 'dna3' || userAction.id == 'dna4') {
+                    // 기부금(dna3, dna4) 중복 확인
+                    const donationRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
+                    const donation = donationRef.val();
+                    const isDna1 = donation.some(donation => donation.id === 'dna3');
+                    const isDna2 = donation.some(donation => donation.id === 'dna4');
+                    if (isDna1 || isDna2) {
+                        return res.status(200).json({ sucess: false, message: '기부금 할인 상품이 이미 있어 구매가 불가능합니다.' });
+                    }
+                    userAction.reductionRate = userAction.id == 'dna3' ? 0.3:0.7;
+                } else {
+                    return res.status(400).json({ ValueError: 'Invalid userAction id' });
+                }
+                type.push(userAction);
+                roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
             } else {
                 type.push(userAction);
                 // 유저 액션 추가
@@ -520,7 +555,7 @@ exports.userAction = onRequest(async (req, res) => {
         }
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -556,7 +591,7 @@ exports.startVacation = onRequest(async (req, res) => {
         }
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -590,13 +625,29 @@ exports.useVacation = onRequest(async (req, res) => {
         }
 
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
 });
 
 exports.lottery = onRequest(async (req, res) => {
+    try {
+        const lotteryRef = db.ref('contentsData').child(2).child('categories');
+        const lotteryListRef = await lotteryRef.once('value');
+        const lotteryList = lotteryListRef.val();
+
+        // 행운복권 반환(랜덤)
+        const lotteryIndex = Math.floor(Math.random() * lotteryList.length);
+        const lottery = lotteryList[lotteryIndex];
+        return res.status(200).json({ sucess: true, lottery: lottery });
+
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.deleteInsurance1 = onRequest(async (req, res) => {
     try {
         const request_data = req.body;
         // 데이터 파싱
@@ -611,43 +662,21 @@ exports.lottery = onRequest(async (req, res) => {
         }
 
         const userRef = db.ref('Room').child(roomId).child('player').child(`${playerIndex}`);
-        const lotteryRef = db.ref('contentsData').child(2).child('categories');
-        const lotteryListRef = await lotteryRef.once('value');
-        const lotteryList = lotteryListRef.val();
 
         // 유저 보험 조회
         const insuranceRef = await userRef.child('insurance').once('value');
         const insurance = insuranceRef.val();
 
-        // 보험 리스트에 title이 민영보험2인 항목이 있는 경우
-        const isPrivateInsurance2 = insurance.some(insurance => insurance.title === '민영보험2');
-        if (isPrivateInsurance2) {
-            // 행운복권 반환(불운 미포함)
-            const lotteryListFiltered = lotteryList.filter(lottery => lottery.price > 0);
-            const lotteryIndex = Math.floor(Math.random() * lotteryListFiltered.length);
-            const lottery = lotteryListFiltered[lotteryIndex];
-            return res.status(200).json({ lottery: lottery });
-        }
-
-        const isPrivateInsurance1 = insurance.some(insurance => insurance.title === '민영보험1');
-        if (isPrivateInsurance1) {
-            // 민영보험1 삭제
-            const privateInsurance1Index = insurance.findIndex(insurance => insurance.title === '민영보험1');
-            insurance.splice(privateInsurance1Index, 1);
+        // 민영보험1이 있다면 삭제, 삭제 된 데이터는 history에 추가
+        const privateInsurance1Index = insurance.findIndex(insurance => insurance.title === '민영보험1');
+        if (privateInsurance1Index !== -1) {
+            const insuranceHistory = insurance.splice(privateInsurance1Index, 1);
             userRef.child('insurance').set(insurance);
-
-            // 행운복권 반환(불운 미포함)
-            const lotteryListFiltered = lotteryList.filter(lottery => lottery.price > 0);
-            const lotteryIndex = Math.floor(Math.random() * lotteryListFiltered.length);
-            const lottery = lotteryListFiltered[lotteryIndex];
-            return res.status(200).json({ lottery: lottery });
+            userRef.child('history').push(insuranceHistory);
         }
 
-        // 행운복권 반환(랜덤)
-        const lotteryIndex = Math.floor(Math.random() * lotteryList.length);
-        const lottery = lotteryList[lotteryIndex];
-        return res.status(200).json({ lottery: lottery });
-
+        const room_data = await db.ref('Room').child(roomId).once('value');
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -669,23 +698,74 @@ exports.deleteTickets = onRequest(async (req, res) => {
         const playerListRef = await roomRef.child('player').once('value');
         const playerList = playerListRef.val();
 
-        // 모든 유저의 소비 데이터 중 sma1, ima1가 있다면 삭제 (인덱스로 배열을 돌리기)
+        // 모든 유저의 소비 데이터 중 sma1, ima1가 있다면 삭제,(인덱스로 배열을 돌리기)
         for (const player of playerList) {
             const consumptionRef = await roomRef.child('player').child(playerList.indexOf(player)).child('comsumption').once('value');
             const consumption = consumptionRef.val();
             const sma1Index = consumption.findIndex(consumption => consumption.id === 'sma1');
             if (sma1Index !== -1) {
-                consumption.splice(sma1Index, 1);
+                const consumptionHistory = consumption.splice(sma1Index, 1);
+                roomRef.child('player').child(playerList.indexOf(player)).child('history').push(consumptionHistory);
             }
             const ima1Index = consumption.findIndex(consumption => consumption.id === 'ima1');
             if (ima1Index !== -1) {
-                consumption.splice(ima1Index, 1);
+                const consumptionHistory = consumption.splice(ima1Index, 1);
+                roomRef.child('player').child(playerList.indexOf(player)).child('history').push(consumptionHistory);
             }
             roomRef.child('player').child(playerList.indexOf(player)).child('comsumption').set(consumption);
         }
 
+        // 모든 유저의 기부 데이터 중 dna1이 있다면 삭제
+        for (const player of playerList) {
+            const donationRef = await roomRef.child('player').child(playerList.indexOf(player)).child('donation').once('value');
+            const donation = donationRef.val();
+            const dna1Index = donation.findIndex(donation => donation.id === 'dna1');
+            if (dna1Index !== -1) {
+                const donationHistory = donation.splice(dna1Index, 1);
+                roomRef.child('player').child(playerList.indexOf(player)).child('history').push(donationHistory);
+            }
+            roomRef.child('player').child(playerList.indexOf(player)).child('donation').set(donation);
+        }
+
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ roomId: roomId, data: room_data });
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+    } catch (error) {
+        return res.status(500).json({ error: `Error processing request: ${error.message}` });
+    }
+});
+
+exports.useDonation2 = onRequest(async (req, res) => {
+    try {
+        const request_data = req.body;
+        // 데이터 파싱
+        const { roomId, playerIndex, value } = request_data;
+
+        // 데이터 유효성 체크
+        if (roomId === undefined || typeof roomId !== 'string') {
+            return res.status(400).json({ ValueError: 'roomId' });
+        }
+        if (playerIndex === undefined || typeof playerIndex !== 'number') {
+            return res.status(400).json({ ValueError: 'playerIndex' });
+        }
+        if (value === undefined || typeof value !== 'number') {
+            return res.status(400).json({ ValueError: 'value' });
+        }
+        
+        const userRef = db.ref('Room').child(roomId).child('player').child(`${playerIndex}`);
+
+        // dna2 reductionValue 차감(차감 이후 잔액이 0이하면 삭제 후 history에 추가)
+        const donationRef = await userRef.child('donation').once('value');
+        const donation = donationRef.val();
+        const dna2Index = donation.findIndex(donation => donation.id === 'dna2');
+        donation[dna2Index].reductionValue -= value;
+        if (donation[dna2Index].reductionValue <= 0) {
+            const donationHistory = donation.splice(dna2Index, 1);
+            userRef.child('history').push(donationHistory);
+        }
+        userRef.child('donation').set(donation);
+
+        const room_data = await db.ref('Room').child(roomId).once('value');
+        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
