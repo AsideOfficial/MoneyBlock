@@ -4,6 +4,34 @@ import 'package:http/http.dart' as http;
 import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/player.dart';
 
+class MCResponse {
+  final bool? success;
+  final String? message;
+
+  MCResponse({required this.success, required this.message});
+
+  factory MCResponse.fromJson(Map<String, dynamic> json) {
+    return MCResponse(
+      success: json['success'] as bool?,
+      message: json['message'],
+    );
+  }
+}
+
+class MCInGameRequest {
+  final String roomId;
+  final int playerIndex;
+
+  MCInGameRequest({required this.roomId, required this.playerIndex});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'roomId': roomId,
+      'playerIndex': playerIndex,
+    };
+  }
+}
+
 class CloudFunctionService {
   static Future<void> userAction({required PlayerActionDto userAction}) async {
     const String cloudFunctionUrl =
@@ -27,6 +55,36 @@ class CloudFunctionService {
     } catch (e) {
       debugPrint('클라우드 함수 요청 실패 - 예외 발생: $e');
       // TODO: 실패 핸들링
+    }
+  }
+
+  static Future<MCResponse?> deleteTicket(
+      {required MCInGameRequest inGameRequest}) async {
+    const String cloudFunctionUrl =
+        'https://deleteTickets-nq7btx6efq-du.a.run.app';
+    final uri = Uri.parse(cloudFunctionUrl);
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: <String, String>{"Content-Type": "application/json"},
+        body: jsonEncode(inGameRequest.toJson()),
+      );
+
+      final json = jsonDecode(response.body);
+      final mcResponse = MCResponse.fromJson(json);
+
+      if (response.statusCode == 200) {
+        debugPrint('클라우드 함수 응답: ${response.body}');
+        return mcResponse;
+      } else {
+        debugPrint(
+            '클라우드 함수 요청 실패 \n- HTTP 오류 코드: ${response.statusCode} \n - 에러 메세지: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('클라우드 함수 요청 실패 - 예외 발생: $e');
+      return null;
     }
   }
 

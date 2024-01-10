@@ -1132,6 +1132,15 @@ class GameController extends GetxController {
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
+  Future<void> deleteTicket() async {
+    //TODO 티켓 삭제
+    await CloudFunctionService.deleteTicket(
+        inGameRequest: MCInGameRequest(
+      roomId: roomId,
+      playerIndex: myIndex,
+    ));
+  }
+
   Future<List<int>> calculateRound() async {
     final int previousTotalAsset = totalAsset ?? 0;
 
@@ -1145,11 +1154,15 @@ class GameController extends GetxController {
     double preferentialRate = 0;
     if (myConsumptionItems != null) {
       for (final item in myConsumptionItems!) {
-        preferentialRate += (item.preferentialRate ?? 0.0);
+        //TODO - 조건 문 추가
+        if (item.target == "longSaving") {
+          preferentialRate += (item.preferentialRate ?? 0.0);
+        }
       }
     }
     if (preferentialRate > 0) {
       debugPrint("저축 관리 어드바이저 존재");
+      //TODO - 적금 관리 우대 혜택 적용 팝업 요청시 이 부분에 구현
     }
     final int longSavingInterest = totalLongSaving! *
         (currentSavingRate + 2 + preferentialRate) ~/

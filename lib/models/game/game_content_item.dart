@@ -13,19 +13,20 @@ class GameContentItem {
 
   // 이자율 우대 혜택 데이터
   double? preferentialRate;
+  String? target; // 우대 혜택 적용 대상
 
-  GameContentItem({
-    this.id,
-    required this.title,
-    this.subTitle,
-    this.description,
-    this.guide,
-    required this.price,
-    this.isItem,
-    this.qty,
-    this.type,
-    this.preferentialRate,
-  });
+  GameContentItem(
+      {this.id,
+      required this.title,
+      this.subTitle,
+      this.description,
+      this.guide,
+      required this.price,
+      this.isItem,
+      this.qty,
+      this.type,
+      this.preferentialRate,
+      this.target});
 
   factory GameContentItem.fromJson(Map<String, dynamic> json) {
     return GameContentItem(
@@ -39,6 +40,7 @@ class GameContentItem {
       isItem: json['isItem'] as bool?,
       preferentialRate: json["preferentialRate"] as double?,
       qty: json['qty'],
+      target: json["longSaving"],
     );
   }
 
@@ -54,6 +56,7 @@ class GameContentItem {
       'isItem': isItem,
       'qty': qty,
       "preferentialRate": preferentialRate,
+      "target": target,
     };
   }
 }
