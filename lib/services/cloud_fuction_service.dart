@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/player.dart';
-import 'package:money_cycle/utils/snack_bar_util.dart';
 
 class MCResponse {
   final bool? success;
