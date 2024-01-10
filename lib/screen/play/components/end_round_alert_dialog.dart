@@ -37,6 +37,7 @@ class _EndRoundAlertDialogState extends State<EndRoundAlertDialog> {
                   isLoading = true;
                 });
                 final previousDataList = await controller.calculateRound();
+                await controller.deleteTicket();
                 setState(() {
                   isLoading = false;
                 });

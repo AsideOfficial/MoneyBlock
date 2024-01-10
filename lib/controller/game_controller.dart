@@ -438,6 +438,39 @@ class GameController extends GetxController {
 
   // MARK: - 계산 비즈니스 로직
 
+  double getEstimatedPrice({
+    required int purchaseRoundIndex,
+    required int currentRoundIndex,
+  }) {
+    double totalRate = 1;
+    for (var index = 0; index < currentRoundIndex; index++) {
+      if (purchaseRoundIndex <= index) {
+        if (myConsumptionItems!.any(((element) =>
+            element.title == "투자관리" && element.isDeleted == false))) {
+          // 투자 관리 상품 존재
+          final GameContentItem investAdvisorItem =
+              myConsumptionItems!.firstWhere(
+            (element) => element.title == "투자관리" && element.isDeleted == false,
+          );
+
+          if (investAdvisorItem.purchaseRoundIndex! < index) {
+            totalRate *= (1 +
+                currentRoom!.investmentRateInfo![index] / 100 +
+                investAdvisorItem.preferentialRate! / 100); // 투자 금리 혜택 적용
+          } else {
+            totalRate *= (1 + currentRoom!.investmentRateInfo![index] / 100);
+          }
+
+          debugPrint("getEstimatedPrice() - 투자 관리 상품 존재");
+        } else {
+          totalRate *= (1 + currentRoom!.investmentRateInfo![index] / 100);
+          debugPrint("getEstimatedPrice() - 투자 관리 상품 존재 X");
+        }
+      }
+    }
+    return totalRate;
+  }
+
   double get currentTotalInvestmentRate {
     if (currentRoom == null) return 0;
     double result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
@@ -1039,11 +1072,13 @@ class GameController extends GetxController {
             price: -(evealuatedPrice * qty),
             qty: 1),
         GameContentItem(
-            type: "investment",
-            title: title,
-            price: price,
-            qty: qty,
-            isItem: true),
+          type: "investment",
+          title: title,
+          price: price,
+          qty: qty,
+          isItem: true,
+          purchaseRoundIndex: currentRoundIndex,
+        ),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
@@ -1089,7 +1124,7 @@ class GameController extends GetxController {
             title: gameContentItem.title,
             price: -gameContentItem.price,
             qty: 1),
-        gameContentItem,
+        gameContentItem.copyWith(purchaseRoundIndex: currentRoundIndex),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
@@ -1133,7 +1168,6 @@ class GameController extends GetxController {
   }
 
   Future<void> deleteTicket() async {
-    //TODO 티켓 삭제
     await CloudFunctionService.deleteTicket(
         inGameRequest: MCInGameRequest(
       roomId: roomId,
