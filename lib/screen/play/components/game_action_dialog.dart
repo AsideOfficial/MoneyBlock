@@ -10,6 +10,7 @@ import 'package:money_cycle/screen/play/components/action_choice_button.dart';
 import 'package:money_cycle/screen/play/components/cash_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
+import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -115,6 +116,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
 
                                   debugPrint(gameController
                                       .curretnSpecificActionModel!.title);
+
                                   switch (gameController
                                       .curretnSpecificActionModel!.title) {
                                     case "소비":
@@ -197,7 +199,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       : true,
                                   title:
                                       "${gameController.curretnSpecificActionModel?.title} 매수",
-                                  subTitle: item.title,
+                                  subTitle: item.title
+                                      .replaceAllMapped("\n", (match) => " "),
                                   perPrice: evaluatedPrice,
                                   actionTitle: "매수",
                                   onPurchase: (count) async {
