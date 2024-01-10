@@ -205,6 +205,7 @@ class GameController extends GetxController {
 
   List<GameContentItem>? get myConsumptionItems =>
       currentRoom!.player?[myIndex].consumption;
+
   List<GameContentItem>? get myInsuranceItems =>
       currentRoom!.player?[myIndex].insurance;
 

@@ -233,7 +233,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                       (element) =>
                                           element.title == "민영보험1" ||
                                           element.title == "민영보험2")) {
-                                //TODO - 사회 보장보험 확인
                                 SnackBarUtil.showToastMessage(
                                     message: "'민영보험'을 사용해서 불운을 건너뛸까요?",
                                     actionTitle: "사용하기",

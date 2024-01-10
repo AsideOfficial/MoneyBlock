@@ -51,10 +51,22 @@ class GameItemCard extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  item?.title ?? "",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                padding: const EdgeInsets.only(left: 8, right: 2, bottom: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      item?.title ?? "",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                    ),
+                    if (item?.subTitle != null && item!.subTitle!.isNotEmpty)
+                      Text(
+                        item?.subTitle ?? "",
+                        style:
+                            Constants.defaultTextStyle.copyWith(fontSize: 11),
+                      ),
+                  ],
                 ),
               ),
             ),
