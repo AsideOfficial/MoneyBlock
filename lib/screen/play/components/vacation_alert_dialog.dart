@@ -75,11 +75,11 @@ class _VacationAlertState extends State<VacationAlert> {
                           return;
                         }
 
-                        // await gameController.startVacation();
-                        // Get.back();
-                        // const inVacationAlert = InVacationAlert();
-                        // Get.dialog(inVacationAlert,
-                        //     barrierDismissible: false, useSafeArea: false);
+                        await gameController.startVacation();
+                        Get.back();
+                        const inVacationAlert = InVacationAlert();
+                        Get.dialog(inVacationAlert,
+                            barrierDismissible: false, useSafeArea: false);
                         setState(() {
                           isLoading = false;
                         });
