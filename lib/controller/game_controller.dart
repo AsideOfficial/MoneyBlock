@@ -129,17 +129,10 @@ class GameController extends GetxController {
         FirebaseRealTimeService.getRoundIndexStream(roomId: roomId));
     _isGameEnded.bindStream(
         FirebaseRealTimeService.getIsGameEndedStream(roomId: roomId));
-    ever(_currentRoom, _roomDataHandler);
     ever(_currentTurnIndex, _turnIndexHandler);
     ever(_currentRoundIndex, _roundIndexHandler);
     ever(_isGameEnded, _endGameHandler);
     debugPrint("[게임 이벤트 핸들러 바인딩 완료]");
-  }
-
-  _roomDataHandler(GameDataDetails? room) {
-    debugPrint("_roomDataHandler 트리거 -");
-    // debugPrint("[게임 데이터 변경 수신 핸들러] 플레이어 리스트 - ${_currentRoom.value?.player}");
-    // _currentRoom.value.
   }
 
   _turnIndexHandler(int? index) {
