@@ -17,6 +17,9 @@ class GameContentItem {
   String? target; // 우대 혜택 적용 대상
   final bool? isDeleted;
 
+  final int? reductionValue;
+  final double? reductionRate;
+
   GameContentItem({
     this.id,
     required this.title,
@@ -31,24 +34,27 @@ class GameContentItem {
     this.target,
     this.purchaseRoundIndex,
     this.isDeleted,
+    this.reductionRate,
+    this.reductionValue,
   });
 
   factory GameContentItem.fromJson(Map<String, dynamic> json) {
     return GameContentItem(
-      id: json['id'],
-      title: json['title'],
-      subTitle: json['subTitle'],
-      description: json['description'],
-      guide: json['guide'],
-      price: json['price'],
-      type: json['type'],
-      isItem: json['isItem'] as bool?,
-      preferentialRate: json["preferentialRate"] as int?,
-      qty: json['qty'],
-      target: json["longSaving"],
-      purchaseRoundIndex: json["purchaseRoundIndex"],
-      isDeleted: json["isDeleted"] as bool?,
-    );
+        id: json['id'],
+        title: json['title'],
+        subTitle: json['subTitle'],
+        description: json['description'],
+        guide: json['guide'],
+        price: json['price'],
+        type: json['type'],
+        isItem: json['isItem'] as bool?,
+        preferentialRate: json["preferentialRate"] as int?,
+        qty: json['qty'],
+        target: json["longSaving"],
+        purchaseRoundIndex: json["purchaseRoundIndex"],
+        isDeleted: json["isDeleted"] as bool?,
+        reductionRate: json["reductionRate"] as double?,
+        reductionValue: json["reductionValue"] as int?);
   }
 
   Map<String, dynamic> toJson() {
@@ -66,6 +72,8 @@ class GameContentItem {
       "target": target,
       "purchaseRoundIndex": purchaseRoundIndex,
       "isDeleted": isDeleted,
+      "reductionValue": reductionValue,
+      "reductionRate": reductionRate,
     };
   }
 

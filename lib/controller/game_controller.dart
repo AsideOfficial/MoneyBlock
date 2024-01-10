@@ -213,6 +213,10 @@ class GameController extends GetxController {
       currentRoom!.player?[myIndex].insurance
           ?.where((element) => !(element.isDeleted ?? false))
           .toList();
+  List<GameContentItem>? get myDonationItems =>
+      currentRoom!.player?[myIndex].insurance
+          ?.where((element) => !(element.isDeleted ?? false))
+          .toList();
 
   List<GameContentItem>? get myExpendItems {
     if (currentRoom == null) return null;
@@ -1154,10 +1158,12 @@ class GameController extends GetxController {
       ],
     ));
     if (response?.success == false && response?.message != null) {
+      Get.back(closeOverlays: true);
       SnackBarUtil.showToastMessage(message: response!.message!);
       return;
     }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
   }
 
   Future<void> insuranceAction({
@@ -1178,12 +1184,14 @@ class GameController extends GetxController {
             qty: 1),
       ],
     ));
-    debugPrint(response!.success.toString());
-    if (response.success == false && response.message != null) {
-      SnackBarUtil.showToastMessage(message: response.message!);
+    if (response?.success == false && response?.message != null) {
+      Get.back(closeOverlays: true);
+      SnackBarUtil.showToastMessage(message: response!.message!);
       return;
     }
+
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
   }
 
   Future<void> donationAction({
@@ -1204,10 +1212,12 @@ class GameController extends GetxController {
       ],
     ));
     if (response?.success == false && response?.message != null) {
+      Get.back(closeOverlays: true);
       SnackBarUtil.showToastMessage(message: response!.message!);
       return;
     }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
   }
 
   Future<void> startVacation() async {
@@ -1258,7 +1268,6 @@ class GameController extends GetxController {
     double preferentialRate = 0;
     if (myConsumptionItems != null) {
       for (final item in myConsumptionItems!) {
-        //TODO - 조건 문 추가
         if (item.target == "longSaving") {
           preferentialRate += (item.preferentialRate ?? 0.0);
         }
@@ -1291,6 +1300,25 @@ class GameController extends GetxController {
         .toInt();
     if (tax < 0) {
       tax = 0;
+    } else {
+      if (myDonationItems!
+          .any((element) => element.id == "dna3" || element.id == "dna4")) {
+        final donationItem = myDonationItems!.firstWhere(
+            (element) => element.id == "dna3" || element.id == "dna4");
+        tax -= donationItem.reductionValue ?? 100000;
+      }
+    }
+
+    if (tax < 0) {
+      tax = 0;
+    } else {
+      if (myDonationItems!
+          .any((element) => element.id == "dna1" || element.id == "dna2")) {
+        // 세금 할인
+        final donationItem = myDonationItems!.firstWhere(
+            (element) => element.id == "dna3" || element.id == "dna4");
+        tax = (tax * (donationItem.reductionRate ?? 0.3)).toInt();
+      }
     }
 
     await CloudFunctionService.userAction(
