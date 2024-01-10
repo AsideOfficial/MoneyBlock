@@ -103,7 +103,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                             onTap: () {
                               Get.dialog(PurchaseAlertDialog(
                                 title: "구입",
-                                subTitle: item.title,
+                                subTitle:
+                                    "${item.title} ${(item.subTitle != null) ? item.subTitle! : ""}",
                                 perPrice: item.price,
                                 actionTitle: "구입",
                                 onPurchase: (count) async {
