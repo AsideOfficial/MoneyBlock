@@ -57,14 +57,19 @@ class _VacationAlertState extends State<VacationAlert> {
                         });
                         if (gameController.myInsuranceItems!
                             .any((element) => element.id == "si1")) {
+                          final item = gameController.myInsuranceItems!
+                              .firstWhere((element) =>
+                                  element.id == "si1" &&
+                                  !(element.isDeleted ?? false));
                           SnackBarUtil.showToastMessage(
-                              message: "'민영보험'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
+                              message: "'${item.title}'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
                               actionTitle: '사용하기',
                               onActionPressed: () {
                                 Get.back(closeOverlays: true);
                                 gameController.endTurn();
                                 SnackBarUtil.showToastMessage(
-                                    message: "민영보험1을 사용해서 무급 휴가를 건너 뛰었습니다.");
+                                    message:
+                                        "'${item.title}'을 사용해서 무급 휴가를 건너 뛰었습니다.");
                               });
 
                           return;

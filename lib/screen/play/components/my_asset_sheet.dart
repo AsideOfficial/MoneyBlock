@@ -456,19 +456,10 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                 final item = gameController
                                                     .myExpendItems?[index];
 
-                                                return Bounceable(
-                                                  onTap: () {
-                                                    if (item?.title ==
-                                                        "사회보장보험1") {
-                                                      //TODO - 턴 종료
-                                                      gameController.endTurn();
-                                                    }
-                                                  },
-                                                  child: GameItemCard(
-                                                    accentColor:
-                                                        Constants.cardBlue,
-                                                    item: item,
-                                                  ),
+                                                return GameItemCard(
+                                                  accentColor:
+                                                      Constants.cardBlue,
+                                                  item: item,
                                                 );
                                                 // return GameItemCard(item: item);
                                               },

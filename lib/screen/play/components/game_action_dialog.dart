@@ -112,6 +112,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     await showCashAlert();
                                     return;
                                   }
+
+                                  debugPrint(gameController
+                                      .curretnSpecificActionModel!.title);
                                   switch (gameController
                                       .curretnSpecificActionModel!.title) {
                                     case "소비":
@@ -120,14 +123,12 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       );
                                     case "보험":
                                       await gameController.insuranceAction(
-                                        title: item.title,
-                                        price: item.price,
-                                        description: item.description,
+                                        gameContentItem: item,
                                       );
-
                                     case "기부":
-                                      //TODO - 🚧기부 액션 작업중 🚧
-                                      {}
+                                      await gameController.donationAction(
+                                        gameContentItem: item,
+                                      );
                                   }
 
                                   gameController.isActionChoicing = false;

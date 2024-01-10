@@ -49,18 +49,22 @@ class CloudFunctionService {
 
       if (response.statusCode == 200) {
         debugPrint('클라우드 함수 응답: ${response.body}');
-        // TODO: 성공 핸들링
-        final json = jsonDecode(response.body);
-        final mcResponse = MCResponse.fromJson(json);
+        Map<String, dynamic> jsonMap =
+            Map<String, dynamic>.from(json.decode(response.body));
 
+        MCResponse mcResponse = MCResponse.fromJson(jsonMap);
+        debugPrint("CloudFunctionService - userAction ${mcResponse.success}");
+        debugPrint("CloudFunctionService - userAction ${mcResponse.message}");
         return mcResponse;
       } else {
         debugPrint(
             '클라우드 함수 요청 실패 \n- HTTP 오류 코드: ${response.statusCode} \n - 에러 메세지: ${response.body}');
       }
+      final jsonData = json.decode(response.body) as Map<String, dynamic>;
+      final mcResponse = MCResponse.fromJson(jsonData);
+      return mcResponse;
     } catch (e) {
       debugPrint('클라우드 함수 요청 실패 - 예외 발생: $e');
-      // TODO: 실패 핸들링
     }
     return null;
   }

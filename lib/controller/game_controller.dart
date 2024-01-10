@@ -206,14 +206,12 @@ class GameController extends GetxController {
 
   List<GameContentItem>? get myConsumptionItems =>
       currentRoom!.player?[myIndex].consumption
-          ?.where((element) => element.isItem == true)
-          .where((element) => !(element.isDeleted ?? false))
+          ?.where((element) => !(element.isDeleted ?? false))
           .toList();
 
   List<GameContentItem>? get myInsuranceItems =>
       currentRoom!.player?[myIndex].insurance
-          ?.where((element) => element.isItem == true)
-          .where((element) => !(element.isDeleted ?? false))
+          ?.where((element) => !(element.isDeleted ?? false))
           .toList();
 
   List<GameContentItem>? get myExpendItems {
@@ -226,8 +224,7 @@ class GameController extends GetxController {
     final consumptionList = myConsumptionItems;
     final insuranceList = myInsuranceItems;
     final donationList = currentRoom!.player?[myIndex].donation
-        ?.where((element) => element.isItem == true)
-        .where((element) => !(element.isDeleted ?? false))
+        ?.where((element) => !(element.isDeleted ?? false))
         .toList();
 
     if (expendList != null) {
@@ -1164,9 +1161,33 @@ class GameController extends GetxController {
   }
 
   Future<void> insuranceAction({
-    required String title,
-    required int price,
-    required String? description,
+    required GameContentItem gameContentItem,
+  }) async {
+    debugPrint("${gameContentItem.id!}wow");
+    final response = await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        gameContentItem,
+        GameContentItem(
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
+      ],
+    ));
+    debugPrint(response!.success.toString());
+    if (response.success == false && response.message != null) {
+      SnackBarUtil.showToastMessage(message: response.message!);
+      return;
+    }
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> donationAction({
+    required GameContentItem gameContentItem,
   }) async {
     final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -1174,15 +1195,12 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
+        gameContentItem,
         GameContentItem(
-          type: "insurance",
-          title: title,
-          price: price,
-          qty: 1,
-          isItem: true,
-          description: description,
-        ),
-        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
       ],
     ));
     if (response?.success == false && response?.message != null) {
