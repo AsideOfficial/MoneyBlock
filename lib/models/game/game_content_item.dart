@@ -11,6 +11,9 @@ class GameContentItem {
   bool? isItem;
   int? qty;
 
+  // 이자율 우대 혜택 데이터
+  double? preferentialRate;
+
   GameContentItem({
     this.id,
     required this.title,
@@ -21,6 +24,7 @@ class GameContentItem {
     this.isItem,
     this.qty,
     this.type,
+    this.preferentialRate,
   });
 
   factory GameContentItem.fromJson(Map<String, dynamic> json) {
@@ -32,7 +36,8 @@ class GameContentItem {
       guide: json['guide'],
       price: json['price'],
       type: json['type'],
-      isItem: json['isItem'],
+      isItem: json['isItem'] as bool?,
+      preferentialRate: json["preferentialRate"] as double?,
       qty: json['qty'],
     );
   }
@@ -48,6 +53,7 @@ class GameContentItem {
       'type': type,
       'isItem': isItem,
       'qty': qty,
+      "preferentialRate": preferentialRate,
     };
   }
 }

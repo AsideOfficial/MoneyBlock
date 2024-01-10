@@ -115,10 +115,10 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   switch (gameController
                                       .curretnSpecificActionModel!.title) {
                                     case "소비":
-                                    //TODO - 소비 액션 작업중 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
-                                    // await gameController.consumeAction(
-                                    //   gameContentItem: item,
-                                    // );
+                                      //TODO - 소비 액션 작업중 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
+                                      await gameController.consumeAction(
+                                        gameContentItem: item,
+                                      );
                                     case "보험":
                                       await gameController.insuranceAction(
                                         title: item.title,

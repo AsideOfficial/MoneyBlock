@@ -203,13 +203,22 @@ class GameController extends GetxController {
     }
   }
 
+  List<GameContentItem>? get myConsumptionItems =>
+      currentRoom!.player?[myIndex].consumption;
+
   List<GameContentItem>? get myExpendItems {
     if (currentRoom == null) return null;
     final List<GameContentItem> result = [];
     final expendList = currentRoom!.player?[myIndex].expend
         ?.where((element) => element.isItem == true)
         .toList();
+    final consumptionList = currentRoom!.player?[myIndex].consumption
+        ?.where((element) => element.isItem == true)
+        .toList();
     final insuranceList = currentRoom!.player?[myIndex].insurance
+        ?.where((element) => element.isItem == true)
+        .toList();
+    final donationList = currentRoom!.player?[myIndex].donation
         ?.where((element) => element.isItem == true)
         .toList();
 
@@ -217,9 +226,19 @@ class GameController extends GetxController {
       result.addAll(expendList);
     }
 
-    if (insuranceList != null) {
+    if (consumptionList != null && consumptionList.isNotEmpty) {
+      result.addAll(consumptionList);
+      debugPrint(consumptionList.length.toString());
+    }
+
+    if (insuranceList != null && insuranceList.isNotEmpty) {
       result.addAll(insuranceList);
       debugPrint(insuranceList.length.toString());
+    }
+
+    if (donationList != null && donationList.isNotEmpty) {
+      result.addAll(donationList);
+      debugPrint(donationList.length.toString());
     }
 
     if (result.isEmpty) {
@@ -1115,13 +1134,27 @@ class GameController extends GetxController {
 
   Future<List<int>> calculateRound() async {
     final int previousTotalAsset = totalAsset ?? 0;
-    //저축이자
+
+    // 예금 계산
     final int previousShrotSaving = totalShortSaving ?? 0;
     final int shortSavingInterest =
         totalShortSaving! * (currentSavingRate) ~/ 100 * 3;
     final int previousTotalShortSaving = totalShortSaving ?? 0;
-    final int longSavingInterest =
-        totalLongSaving! * (currentSavingRate + 2) ~/ 100 * 3;
+
+    // 적금 계산 + 저축 관리 어드바이저 효과 적용
+    double preferentialRate = 0;
+    if (myConsumptionItems != null) {
+      for (final item in myConsumptionItems!) {
+        preferentialRate += (item.preferentialRate ?? 0.0);
+      }
+    }
+    if (preferentialRate > 0) {
+      debugPrint("저축 관리 어드바이저 존재");
+    }
+    final int longSavingInterest = totalLongSaving! *
+        (currentSavingRate + 2 + preferentialRate) ~/
+        100 *
+        3;
 
     //대출이자
     final int creditLoanInterest = totalCreditLoan! * currentLoanRate ~/ 100;

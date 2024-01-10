@@ -456,15 +456,10 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                               itemBuilder: (context, index) {
                                                 final item = gameController
                                                     .myExpendItems?[index];
-                                                final gameItem =
-                                                    GameContentItem(
-                                                  title: item!.title,
-                                                  price: item.price,
-                                                  description: item.description,
-                                                );
+
                                                 return Bounceable(
                                                   onTap: () {
-                                                    if (gameItem.title ==
+                                                    if (item?.title ==
                                                         "사회보장보험1") {
                                                       //TODO - 턴 종료
                                                       gameController.endTurn();
@@ -473,7 +468,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                   child: GameItemCard(
                                                     accentColor:
                                                         Constants.cardBlue,
-                                                    item: gameItem,
+                                                    item: item,
                                                   ),
                                                 );
                                                 // return GameItemCard(item: item);
