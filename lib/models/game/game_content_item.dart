@@ -6,12 +6,10 @@ class GameContentItem {
   final String? guide;
   final int? price;
 
+  // UserAction 과 통합
   String? type;
   bool? isItem;
-  // String? title;
-  // int? price;
   int? qty;
-  // String? description;
 
   GameContentItem({
     this.id,

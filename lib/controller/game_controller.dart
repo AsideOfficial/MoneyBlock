@@ -9,7 +9,6 @@ import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
-import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';

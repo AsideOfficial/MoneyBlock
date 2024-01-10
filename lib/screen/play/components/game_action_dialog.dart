@@ -260,7 +260,11 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     switch (gameController
                                         .curretnSpecificActionModel!.title) {
                                       case "소비":
-                                        {}
+                                        await gameController.consumeAction(
+                                          title: item.title,
+                                          price: item.price,
+                                          description: item.description,
+                                        );
                                       case "보험":
                                         await gameController.insuranceAction(
                                           title: item.title,
@@ -271,20 +275,6 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       case "기부":
                                         {}
                                     }
-
-                                    if (gameController
-                                            .curretnSpecificActionModel
-                                            ?.title ==
-                                        "보험") {
-                                      debugPrint("보험 요청");
-                                    } else {
-                                      await gameController.expendAction(
-                                        title: item.title,
-                                        price: item.price,
-                                        description: item.description,
-                                      );
-                                    }
-
                                     gameController.isActionChoicing = false;
                                     Get.back();
                                   },
