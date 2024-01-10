@@ -9,6 +9,7 @@ import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/double.dart';
 import 'package:money_cycle/utils/extension/int.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 import '../../../models/game/player.dart';
 
@@ -172,27 +173,32 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 20),
                           AssetVariationListTile(
-                              title: "현금", variation: widget.previousDataList[1]),
+                              title: "현금",
+                              variation: widget.previousDataList[1]),
                           const SizedBox(height: 4),
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 4),
                           AssetVariationListTile(
-                              title: "저축", variation: widget.previousDataList[2]),
+                              title: "저축",
+                              variation: widget.previousDataList[2]),
                           const SizedBox(height: 4),
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 4),
                           AssetVariationListTile(
-                              title: "투자", variation: widget.previousDataList[3]),
+                              title: "투자",
+                              variation: widget.previousDataList[3]),
                           const SizedBox(height: 4),
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 4),
                           AssetVariationListTile(
-                              title: "대출", variation: widget.previousDataList[4]),
+                              title: "대출",
+                              variation: widget.previousDataList[4]),
                           const SizedBox(height: 4),
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 4),
                           AssetVariationListTile(
-                              title: "세금", variation: widget.previousDataList[5]),
+                              title: "세금",
+                              variation: widget.previousDataList[5]),
                           const SizedBox(height: 4),
                           Container(height: 1, color: Constants.grey100),
                           const SizedBox(height: 4),
@@ -242,18 +248,21 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount:
-                                      controller.currentRoom?.player?.length ?? 0,
+                                      controller.currentRoom?.player?.length ??
+                                          0,
                                   itemBuilder: (context, index) {
                                     //TODO - 순위 데이터 리스트 연동 및 정렬
                                     final player = playerRankingList[index];
                                     return Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10),
                                       child: Row(
                                         children: [
                                           SizedBox(
                                             width: 20,
                                             child: Text("${index + 1}.",
-                                                style: Constants.defaultTextStyle
+                                                style: Constants
+                                                    .defaultTextStyle
                                                     .copyWith(
                                                         fontSize: 20,
                                                         color: Colors.black)),
@@ -272,7 +281,8 @@ class _EconomicNewsDialogState extends State<EconomicNewsDialog> {
                                             child: Text(player.name ?? "",
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
-                                                style: Constants.defaultTextStyle
+                                                style: Constants
+                                                    .defaultTextStyle
                                                     .copyWith(
                                                         fontSize: 20,
                                                         color: Colors.black)),

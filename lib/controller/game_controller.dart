@@ -207,7 +207,7 @@ class GameController extends GetxController {
           ?.where((element) => !(element.isDeleted ?? false))
           .toList();
   List<GameContentItem>? get myDonationItems =>
-      currentRoom!.player?[myIndex].insurance
+      currentRoom!.player?[myIndex].donation
           ?.where((element) => !(element.isDeleted ?? false))
           .toList();
 
@@ -1261,19 +1261,21 @@ class GameController extends GetxController {
     double preferentialRate = 0;
     if (myConsumptionItems != null) {
       for (final item in myConsumptionItems!) {
-        if (item.target == "longSaving") {
+        debugPrint("라운드 정산 - 적금 우대 혜택 적용 ${item.subTitle}");
+        if ((item.id == "sma1" || item.id == "sma2") &&
+            (item.isDeleted ?? false) == false) {
           preferentialRate += (item.preferentialRate ?? 0.0);
         }
       }
     }
-    if (preferentialRate > 0) {
-      debugPrint("저축 관리 어드바이저 존재");
-      //TODO - 적금 관리 우대 혜택 적용 팝업 요청시 이 부분에 구현
-    }
-    final int longSavingInterest = totalLongSaving! *
-        (currentSavingRate + 2 + preferentialRate) ~/
-        100 *
-        3;
+
+    debugPrint("라운드 정산 - 적금 우대 혜택 적용 $preferentialRate%");
+
+    final int previousTotalLongSaving = totalLongSaving ?? 0;
+
+    final int longSavingInterest = (previousTotalLongSaving *
+            ((currentSavingRate + 2 + preferentialRate) / 100))
+        .toInt();
 
     //대출이자
     final int creditLoanInterest = totalCreditLoan! * currentLoanRate ~/ 100;
@@ -1295,10 +1297,12 @@ class GameController extends GetxController {
       tax = 0;
     } else {
       if (myDonationItems!
-          .any((element) => element.id == "dna3" || element.id == "dna4")) {
+          .any((element) => element.id == "dna1" || element.id == "dna2")) {
         final donationItem = myDonationItems!.firstWhere(
-            (element) => element.id == "dna3" || element.id == "dna4");
+            (element) => element.id == "dna1" || element.id == "dna2");
         tax -= donationItem.reductionValue ?? 100000;
+        debugPrint(
+            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
       }
     }
 
@@ -1306,11 +1310,13 @@ class GameController extends GetxController {
       tax = 0;
     } else {
       if (myDonationItems!
-          .any((element) => element.id == "dna1" || element.id == "dna2")) {
+          .any((element) => element.id == "dna3" || element.id == "dna4")) {
         // 세금 할인
         final donationItem = myDonationItems!.firstWhere(
             (element) => element.id == "dna3" || element.id == "dna4");
-        tax = (tax * (donationItem.reductionRate ?? 0.3)).toInt();
+        tax = (tax * (1 - (donationItem.reductionRate ?? 0.3))).toInt();
+        debugPrint(
+            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionRate}%");
       }
     }
 
@@ -1367,6 +1373,7 @@ class GameController extends GetxController {
         // UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
+
     return [
       previousTotalAsset,
       (previousShrotSaving + shortSavingInterest),
@@ -1374,6 +1381,7 @@ class GameController extends GetxController {
       investmentInterest,
       -totalLoanInterest,
       -tax,
+      preferentialRate.toInt(),
     ];
   }
 
