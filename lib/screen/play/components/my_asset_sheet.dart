@@ -6,7 +6,6 @@ import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/models/game/game_content_item.dart';
-import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 

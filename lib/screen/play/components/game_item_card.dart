@@ -80,7 +80,7 @@ class GameItemCard extends StatelessWidget {
                   Text(
                     (evaluatedPrice != null)
                         ? "${evaluatedPrice?.commaString}원"
-                        : "${(item!.price! >= 1000000) ? ("${(item!.price! / 10000.0).toStringAsFixed(0)}만") : item?.price!.commaString}원",
+                        : "${(item!.price >= 1000000) ? ("${(item!.price / 10000.0).toStringAsFixed(0)}만") : item?.price.commaString}원",
                     style: Constants.defaultTextStyle
                         .copyWith(fontSize: 14, color: Constants.black),
                   ),
