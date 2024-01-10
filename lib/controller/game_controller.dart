@@ -69,16 +69,8 @@ class GameController extends GetxController {
   void specificActionButtonTap(int index) {
     if (currentActionType == GameActionType.expend) {
       _curretnSpecificActionModel.value = SpecifitGameAction(
-        title: "소비",
-        items: expendItems![index]
-            .contents!
-            .map((e) => GameActionItem(
-                  title: e.title!,
-                  price: e.price!,
-                  subTitle: e.subTitle,
-                  description: e.description,
-                ))
-            .toList(),
+        title: expendItems![index].type!,
+        items: expendItems![index].contents!,
       );
     } else {
       _curretnSpecificActionModel.value = currentActionTypeModel.actions[index];
@@ -496,7 +488,7 @@ class GameController extends GetxController {
     int total = 0;
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -508,7 +500,7 @@ class GameController extends GetxController {
     int total = 0;
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
-        total += (cashData.price! * cashData.qty!);
+        total += (cashData.price * cashData.qty!);
       }
     }
     final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
@@ -532,13 +524,13 @@ class GameController extends GetxController {
     int total = 0;
     if (myLongSavingList != null) {
       for (GameContentItem cashData in myLongSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
       for (GameContentItem cashData in myshortSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
@@ -554,7 +546,7 @@ class GameController extends GetxController {
 
     if (myshortSavingList != null) {
       for (GameContentItem cashData in myshortSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -567,7 +559,7 @@ class GameController extends GetxController {
 
     if (myshortSavingList != null) {
       for (GameContentItem cashData in myshortSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -580,7 +572,7 @@ class GameController extends GetxController {
 
     if (myCreditLoanList != null) {
       for (GameContentItem cashData in myCreditLoanList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -593,7 +585,7 @@ class GameController extends GetxController {
 
     if (myLongMortgagesList != null) {
       for (GameContentItem cashData in myLongMortgagesList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -606,13 +598,13 @@ class GameController extends GetxController {
     int total = 0;
     if (myCreditLoanList != null) {
       for (GameContentItem cashData in myCreditLoanList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myMortgagesLoanList != null) {
       for (GameContentItem cashData in myMortgagesLoanList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
@@ -633,25 +625,25 @@ class GameController extends GetxController {
     int total = 0;
     if (myLongSavingList != null) {
       for (GameContentItem cashData in myLongSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
       for (GameContentItem cashData in myshortSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myCreditLoanList != null) {
       for (GameContentItem cashData in myCreditLoanList) {
-        total -= cashData.price!;
+        total -= cashData.price;
       }
     }
 
     if (myMortgagesList != null) {
       for (GameContentItem cashData in myMortgagesList) {
-        total -= cashData.price!;
+        total -= cashData.price;
       }
     }
 
@@ -665,14 +657,14 @@ class GameController extends GetxController {
             if (insurance.title == "사회보장보험2") {
               for (GameContentItem cashData in myInvestList) {
                 // 투자 손익율 보전
-                temp += (cashData.price! * cashData.qty! * 1).toInt();
+                temp += (cashData.price * cashData.qty! * 1).toInt();
               }
             }
           }
         }
       } else {
         for (GameContentItem cashData in myInvestList) {
-          temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+          temp += (cashData.price * cashData.qty! * currentTotalInvestmentRate)
               .toInt();
         }
       }
@@ -682,7 +674,7 @@ class GameController extends GetxController {
 
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -700,25 +692,25 @@ class GameController extends GetxController {
     int total = 0;
     if (myLongSavingList != null) {
       for (GameContentItem cashData in myLongSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
       for (GameContentItem cashData in myshortSavingList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
 
     if (myCreditLoanList != null) {
       for (GameContentItem cashData in myCreditLoanList) {
-        total -= cashData.price!;
+        total -= cashData.price;
       }
     }
 
     if (myMortgagesList != null) {
       for (GameContentItem cashData in myMortgagesList) {
-        total -= cashData.price!;
+        total -= cashData.price;
       }
     }
 
@@ -732,14 +724,14 @@ class GameController extends GetxController {
             if (insurance.title == "사회보장보험2") {
               for (GameContentItem cashData in myInvestList) {
                 // 투자 손익율 보전
-                temp += (cashData.price! * cashData.qty! * 1).toInt();
+                temp += (cashData.price * cashData.qty! * 1).toInt();
               }
             }
           }
         }
       } else {
         for (GameContentItem cashData in myInvestList) {
-          temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
+          temp += (cashData.price * cashData.qty! * currentTotalInvestmentRate)
               .toInt();
         }
       }
@@ -749,7 +741,7 @@ class GameController extends GetxController {
 
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
-        total += cashData.price!;
+        total += cashData.price;
       }
     }
     return total;
@@ -1065,9 +1057,7 @@ class GameController extends GetxController {
   }
 
   Future<void> consumeAction({
-    required String title,
-    required int price,
-    required String? description,
+    required GameContentItem gameContentItem,
   }) async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -1075,15 +1065,12 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
         GameContentItem(
-          type: "consumption",
-          title: title,
-          price: price,
-          qty: 1,
-          isItem: true,
-          description: description,
-        ),
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
+        gameContentItem,
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
@@ -1232,6 +1219,7 @@ class GameController extends GetxController {
     }
   }
 
+  // MARK : - UI
   LinearGradient get currentBackgroundGradient {
     switch (_curretnActionType.value) {
       case GameActionType.saving:

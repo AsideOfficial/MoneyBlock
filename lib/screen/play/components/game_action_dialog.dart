@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -98,9 +100,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                         itemBuilder: (context, index) {
                           final item = gameController
                               .curretnSpecificActionModel?.items[index];
-                          final evaluatedPrice = (item!.price *
-                                  gameController.currentTotalInvestmentRate)
-                              .toInt();
+                          if (item == null) return const SizedBox();
                           return Bounceable(
                             onTap: () {
                               Get.dialog(PurchaseAlertDialog(
@@ -115,23 +115,22 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     await showCashAlert();
                                     return;
                                   }
+                                  switch (gameController
+                                      .curretnSpecificActionModel!.title) {
+                                    case "소비":
+                                    //TODO - 소비 액션 작업중 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
+                                    // await gameController.consumeAction(
+                                    //   gameContentItem: item,
+                                    // );
+                                    case "보험":
+                                      await gameController.insuranceAction(
+                                        title: item.title,
+                                        price: item.price,
+                                        description: item.description,
+                                      );
 
-                                  if (gameController
-                                          .curretnSpecificActionModel?.title ==
-                                      "보험") {
-                                    debugPrint("보험 요청");
-
-                                    await gameController.insuranceAction(
-                                      title: item.title,
-                                      price: item.price,
-                                      description: item.description,
-                                    );
-                                  } else {
-                                    await gameController.expendAction(
-                                      title: item.title,
-                                      price: item.price,
-                                      description: item.description,
-                                    );
+                                    case "기부":
+                                      {}
                                   }
 
                                   gameController.isActionChoicing = false;
@@ -139,23 +138,10 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                 },
                               ));
                             },
-                            child: (gameController.currentActionType ==
-                                    GameActionType.investment)
-                                ? GameItemCard(
-                                    item: item,
-                                    evaluatedPrice: evaluatedPrice,
-                                    priceTitle: gameController
-                                            .curretnSpecificActionModel
-                                            ?.priceTitle ??
-                                        "",
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  )
-                                : GameItemCard(
-                                    item: item,
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  ),
+                            child: GameItemCard(
+                              item: item,
+                              accentColor: gameController.currentCardColor,
+                            ),
                           );
                         }),
                   ),
@@ -203,9 +189,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   gameController.currentTotalInvestmentRate)
                               .toInt();
                           return Bounceable(
-                            onTap: () {
-                              if (gameController.currentActionType ==
-                                  GameActionType.investment) {
+                              onTap: () {
                                 Get.dialog(PurchaseAlertDialog(
                                   isMultiple: (gameController
                                               .curretnSpecificActionModel
@@ -239,66 +223,16 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     Get.back();
                                   },
                                 ));
-                              } else {
-                                Get.dialog(PurchaseAlertDialog(
-                                  title: "구입",
-                                  subTitle: item.title,
-                                  perPrice: item.price,
-                                  actionTitle: "구입",
-                                  onPurchase: (count) async {
-                                    if (gameController.totalCash! <
-                                        (item.price * count)) {
-                                      Get.back();
-                                      await showCashAlert();
-                                      return;
-                                    }
-
-                                    if (gameController
-                                            .curretnSpecificActionModel
-                                            ?.title ==
-                                        null) return;
-                                    switch (gameController
-                                        .curretnSpecificActionModel!.title) {
-                                      case "소비":
-                                        await gameController.consumeAction(
-                                          title: item.title,
-                                          price: item.price,
-                                          description: item.description,
-                                        );
-                                      case "보험":
-                                        await gameController.insuranceAction(
-                                          title: item.title,
-                                          price: item.price,
-                                          description: item.description,
-                                        );
-
-                                      case "기부":
-                                        {}
-                                    }
-                                    gameController.isActionChoicing = false;
-                                    Get.back();
-                                  },
-                                ));
-                              }
-                            },
-                            child: (gameController.currentActionType ==
-                                    GameActionType.investment)
-                                ? GameItemCard(
-                                    item: item,
-                                    evaluatedPrice: evaluatedPrice,
-                                    priceTitle: gameController
-                                            .curretnSpecificActionModel
-                                            ?.priceTitle ??
-                                        "",
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  )
-                                : GameItemCard(
-                                    item: item,
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  ),
-                          );
+                              },
+                              child: GameItemCard(
+                                item: item,
+                                evaluatedPrice: evaluatedPrice,
+                                priceTitle: gameController
+                                        .curretnSpecificActionModel
+                                        ?.priceTitle ??
+                                    "",
+                                accentColor: gameController.currentCardColor,
+                              ));
                         }),
                   ),
                 ],

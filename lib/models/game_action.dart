@@ -1,3 +1,5 @@
+import 'package:money_cycle/models/game/game_content_item.dart';
+
 class GameAction {
   final String title; // 예: 저축, 지출, 대출
   final String description; // 예 : 예금: 은행에 자유롭게 맡기는 돈\n적금: 은행에 라운드마다 정기적으로 맡기는 돈
@@ -25,27 +27,27 @@ class Rate {
 
 class SpecifitGameAction {
   final String title; // 예 : 예금, 적금, 주식, 실물자산, 부동산
-  final List<GameActionItem> items; // 저축, 대출은 필요 X
+  final List<GameContentItem> items; // 저축, 대출은 필요 X
   final String? priceTitle;
 
   SpecifitGameAction(
       {required this.title, required this.items, this.priceTitle});
 }
 
-class GameActionItem {
-  final String title;
-  final String? subTitle;
-  final int price;
-  final String? description;
-  final String? priceTitle;
+// class GameContentItem {
+//   final String title;
+//   final String? subTitle;
+//   final int price;
+//   final String? description;
+//   // final String? priceTitle;
 
-  GameActionItem(
-      {required this.title,
-      this.subTitle,
-      this.description,
-      required this.price,
-      this.priceTitle});
-}
+//   GameContentItem({
+//     required this.title,
+//     this.subTitle,
+//     this.description,
+//     required this.price,
+//   });
+// }
 
 final savingModel = GameAction(
   title: "저축",
@@ -61,23 +63,23 @@ final savingModel = GameAction(
   ],
   actions: [
     SpecifitGameAction(title: '예금', items: [
-      GameActionItem(
+      GameContentItem(
           title: "예금1", description: "예금 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "예금2", description: "예금 상품 1에 대한 설명", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "예금3", description: "예금 상품 1에 대한 설명", price: 500000),
-      GameActionItem(
+      GameContentItem(
           title: "예금4", description: "예금 상품 1에 대한 설명", price: 1000000),
     ]),
     SpecifitGameAction(title: '적금', items: [
-      GameActionItem(
+      GameContentItem(
           title: "적금1", description: "적금 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "적금2", description: "적금 상품 2에 대한 설명", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "적금3", description: "적금 상품 3에 대한 설명", price: 500000),
-      GameActionItem(
+      GameContentItem(
           title: "적금4", description: "적금 상품 4에 대한 설명", price: 1000000),
     ])
   ],
@@ -98,28 +100,28 @@ final investmentModel = GameAction(
   ],
   actions: [
     SpecifitGameAction(title: '주식', priceTitle: "한 주 가격", items: [
-      GameActionItem(title: "전기전자", price: 1000000),
-      GameActionItem(title: "금융", price: 100000),
-      GameActionItem(title: "철강", price: 300000),
-      GameActionItem(title: "제약", price: 70000),
+      GameContentItem(title: "전기전자", price: 1000000),
+      GameContentItem(title: "금융", price: 100000),
+      GameContentItem(title: "철강", price: 300000),
+      GameContentItem(title: "제약", price: 70000),
     ]),
     SpecifitGameAction(title: '실물자산', priceTitle: "구매 가격", items: [
-      GameActionItem(title: "금", price: 200000),
-      GameActionItem(title: "미술품", price: 500000),
-      GameActionItem(title: "다이아몬드", price: 700000),
-      GameActionItem(title: "기념주화", price: 50000),
+      GameContentItem(title: "금", price: 200000),
+      GameContentItem(title: "미술품", price: 500000),
+      GameContentItem(title: "다이아몬드", price: 700000),
+      GameContentItem(title: "기념주화", price: 50000),
     ]),
     SpecifitGameAction(title: '부동산', priceTitle: "매매 가격", items: [
-      GameActionItem(title: "서울", price: 3000000),
-      GameActionItem(title: "대전", price: 4300000),
-      GameActionItem(title: "광주", price: 1200000),
-      GameActionItem(title: "부산", price: 650000),
+      GameContentItem(title: "서울", price: 3000000),
+      GameContentItem(title: "대전", price: 4300000),
+      GameContentItem(title: "광주", price: 1200000),
+      GameContentItem(title: "부산", price: 650000),
     ]),
     SpecifitGameAction(title: '펀드', priceTitle: "구매 가격", items: [
-      GameActionItem(title: "카이마루\n부자시리즈", price: 100000),
-      GameActionItem(title: "안전에셋\n더드림", price: 300000),
-      GameActionItem(title: "탁월해\n투자신탁", price: 500000),
-      GameActionItem(title: "글로벌\n베스트", price: 1000000),
+      GameContentItem(title: "카이마루\n부자시리즈", price: 100000),
+      GameContentItem(title: "안전에셋\n더드림", price: 300000),
+      GameContentItem(title: "탁월해\n투자신탁", price: 500000),
+      GameContentItem(title: "글로벌\n베스트", price: 1000000),
     ]),
   ],
 );
@@ -133,45 +135,45 @@ final expendModel = GameAction(
 """,
   actions: [
     SpecifitGameAction(title: '소비', items: [
-      GameActionItem(
+      GameContentItem(
           title: "저축관리\n어드바이저", description: "금리우대 혜약", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "투자관리\n어드바이저", description: "투자상승률 우대 혜택", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "주사위\n특권",
           description: "홀짝 골라서 그 중에서만 결과값 나오도록",
           price: 500000),
-      GameActionItem(
+      GameContentItem(
           title: "주사위\n1회권",
           description: "라운즈 중, 한번 더 주사위 굴리고 한 턴 더 진행하기 가능",
           price: 1000000),
     ]),
     SpecifitGameAction(title: '보험', items: [
-      GameActionItem(
+      GameContentItem(
           title: "민영보험1", description: "행운복권에서 불운 1번 피하기 가능", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "민영보험2", description: "행운복권에서 불운 무제한 피하기 가능", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "사회보장보험1",
           description: "무급휴가 칸에서 쉬지 않고 게임진행 가능",
           price: 70000),
-      GameActionItem(
+      GameContentItem(
           title: "사회보장보험2",
           description: "마이너스 투자수익률시 0%로 손실 보전",
           price: 300000),
     ]),
     SpecifitGameAction(title: '기부', items: [
-      GameActionItem(
+      GameContentItem(
           title: "기부금 공제 1",
           description: "한 라운드에서 기부 금액만큼 세금감면",
           price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "기부금 공제 2",
           description: "한 라운드에서 기부 금액만큼 세금감면",
           price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "기부금 공제 3", description: "한 라운드에서 3% 세금감면", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "기부금 공제 4", description: "한 라운드에서 7% 세금감면", price: 300000),
     ]),
   ],
@@ -191,23 +193,23 @@ final loanModel = GameAction(
   ],
   actions: [
     SpecifitGameAction(title: '대출', items: [
-      GameActionItem(
+      GameContentItem(
           title: "신용대출21", description: "신용대출 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "신용대출2", description: "신용대출 상품 1에 대한 설명", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "신용대출3", description: "신용대출 상품 1에 대한 설명", price: 500000),
-      GameActionItem(
+      GameContentItem(
           title: "신용대출4", description: "신용대출 상품 1에 대한 설명", price: 1000000),
     ]),
     SpecifitGameAction(title: '상환', items: [
-      GameActionItem(
+      GameContentItem(
           title: "담보대출1", description: "담보대출 상품 1에 대한 설명", price: 100000),
-      GameActionItem(
+      GameContentItem(
           title: "담보대출2", description: "담보대출 상품 2에 대한 설명", price: 300000),
-      GameActionItem(
+      GameContentItem(
           title: "담보대출3", description: "담보대출 상품 3에 대한 설명", price: 500000),
-      GameActionItem(
+      GameContentItem(
           title: "담보대출4", description: "담보대출 상품 4에 대한 설명", price: 1000000),
     ]),
   ],

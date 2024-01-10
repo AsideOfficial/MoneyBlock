@@ -7,7 +7,7 @@ class GameContentsDto {
     required this.contentsData,
   });
 
-  factory GameContentsDto.fromJson(Map<String, dynamic> json) {
+  factory GameContentsDto.fromJson(dynamic json) {
     return GameContentsDto(
       contentsData: (json['contentsData'] as List<dynamic>?)
           ?.map((action) => GameContentAction.fromJson(action))

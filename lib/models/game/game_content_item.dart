@@ -1,10 +1,10 @@
 class GameContentItem {
   final String? id;
-  final String? title;
+  final String title;
   final String? subTitle;
   final String? description;
   final String? guide;
-  final int? price;
+  final int price;
 
   // UserAction 과 통합
   String? type;
@@ -13,11 +13,11 @@ class GameContentItem {
 
   GameContentItem({
     this.id,
-    this.title,
+    required this.title,
     this.subTitle,
     this.description,
     this.guide,
-    this.price,
+    required this.price,
     this.isItem,
     this.qty,
     this.type,
@@ -64,7 +64,8 @@ class GameContentCategory {
   factory GameContentCategory.fromJson(Map<dynamic, dynamic> json) {
     return GameContentCategory(
       contents: (json['contents'] as List<dynamic>?)
-          ?.map((item) => GameContentItem.fromJson(item))
+          ?.map(
+              (item) => GameContentItem.fromJson(item.cast<String, dynamic>()))
           .toList(),
       type: json['type'],
     );

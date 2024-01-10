@@ -5,6 +5,7 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game/game_content_item.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/utils/extension/int.dart';
@@ -396,7 +397,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                             const SizedBox(
                                                                 height: 4),
                                                             Text(
-                                                              "${((item!.price! * item.qty!) * gameController.currentTotalInvestmentRate).toInt().commaString} 원",
+                                                              "${((item!.price * item.qty!) * gameController.currentTotalInvestmentRate).toInt().commaString} 원",
                                                               style: Constants
                                                                   .defaultTextStyle
                                                                   .copyWith(
@@ -456,9 +457,10 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                               itemBuilder: (context, index) {
                                                 final item = gameController
                                                     .myExpendItems?[index];
-                                                final gameItem = GameActionItem(
-                                                  title: item!.title!,
-                                                  price: item.price!,
+                                                final gameItem =
+                                                    GameContentItem(
+                                                  title: item!.title,
+                                                  price: item.price,
                                                   description: item.description,
                                                 );
                                                 return Bounceable(
