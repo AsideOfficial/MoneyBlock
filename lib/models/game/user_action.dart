@@ -1,5 +1,5 @@
 //MARK : - 사용자 액션 (장부 기입)
-class UserAction {
+class GameContentItem {
   String? type;
   bool? isItem;
   String? title;
@@ -7,7 +7,7 @@ class UserAction {
   int? qty;
   String? description;
 
-  UserAction({
+  GameContentItem({
     required this.type,
     required this.title,
     required this.price,
@@ -16,8 +16,8 @@ class UserAction {
     this.isItem = false,
   });
 
-  factory UserAction.fromJson(Map<String, dynamic> json) {
-    return UserAction(
+  factory GameContentItem.fromJson(Map<String, dynamic> json) {
+    return GameContentItem(
       type: json['type'],
       title: json['title'],
       price: json['price'],

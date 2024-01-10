@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game/game_content_item.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
 import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/lucky_lottery.dart';
@@ -10,7 +11,6 @@ import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
 import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
-import 'package:money_cycle/models/game_content.dart';
 import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/start_game_alert_dialog.dart';
@@ -200,7 +200,7 @@ class GameController extends GetxController {
 
   //MARK: - UI 비즈니스 로직
 
-  List<UserAction>? get myInvestmentItems {
+  List<GameContentItem>? get myInvestmentItems {
     if (currentRoom == null) return null;
     final list = currentRoom!.player?[myIndex].investment
         ?.where((element) => element.isItem == true)
@@ -212,9 +212,9 @@ class GameController extends GetxController {
     }
   }
 
-  List<UserAction>? get myExpendItems {
+  List<GameContentItem>? get myExpendItems {
     if (currentRoom == null) return null;
-    final List<UserAction> result = [];
+    final List<GameContentItem> result = [];
     final expendList = currentRoom!.player?[myIndex].expend
         ?.where((element) => element.isItem == true)
         .toList();
@@ -496,7 +496,7 @@ class GameController extends GetxController {
     final myCashList = currentRoom?.player?[myIndex].cash;
     int total = 0;
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
+      for (GameContentItem cashData in myCashList) {
         total += cashData.price!;
       }
     }
@@ -508,7 +508,7 @@ class GameController extends GetxController {
     final myCashList = currentRoom?.player?[myIndex].investment;
     int total = 0;
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
+      for (GameContentItem cashData in myCashList) {
         total += (cashData.price! * cashData.qty!);
       }
     }
@@ -532,13 +532,13 @@ class GameController extends GetxController {
     final myLongSavingList = currentRoom?.player?[myIndex].longSaving;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
+      for (GameContentItem cashData in myLongSavingList) {
         total += cashData.price!;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
+      for (GameContentItem cashData in myshortSavingList) {
         total += cashData.price!;
       }
     }
@@ -554,7 +554,7 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
+      for (GameContentItem cashData in myshortSavingList) {
         total += cashData.price!;
       }
     }
@@ -567,7 +567,7 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
+      for (GameContentItem cashData in myshortSavingList) {
         total += cashData.price!;
       }
     }
@@ -580,7 +580,7 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
+      for (GameContentItem cashData in myCreditLoanList) {
         total += cashData.price!;
       }
     }
@@ -593,7 +593,7 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myLongMortgagesList != null) {
-      for (UserAction cashData in myLongMortgagesList) {
+      for (GameContentItem cashData in myLongMortgagesList) {
         total += cashData.price!;
       }
     }
@@ -606,13 +606,13 @@ class GameController extends GetxController {
     final myMortgagesLoanList = currentRoom?.player?[myIndex].mortgageLoan;
     int total = 0;
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
+      for (GameContentItem cashData in myCreditLoanList) {
         total += cashData.price!;
       }
     }
 
     if (myMortgagesLoanList != null) {
-      for (UserAction cashData in myMortgagesLoanList) {
+      for (GameContentItem cashData in myMortgagesLoanList) {
         total += cashData.price!;
       }
     }
@@ -633,25 +633,25 @@ class GameController extends GetxController {
     final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
+      for (GameContentItem cashData in myLongSavingList) {
         total += cashData.price!;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
+      for (GameContentItem cashData in myshortSavingList) {
         total += cashData.price!;
       }
     }
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
+      for (GameContentItem cashData in myCreditLoanList) {
         total -= cashData.price!;
       }
     }
 
     if (myMortgagesList != null) {
-      for (UserAction cashData in myMortgagesList) {
+      for (GameContentItem cashData in myMortgagesList) {
         total -= cashData.price!;
       }
     }
@@ -664,7 +664,7 @@ class GameController extends GetxController {
         if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
           for (final insurance in playerInsuranceList) {
             if (insurance.title == "사회보장보험2") {
-              for (UserAction cashData in myInvestList) {
+              for (GameContentItem cashData in myInvestList) {
                 // 투자 손익율 보전
                 temp += (cashData.price! * cashData.qty! * 1).toInt();
               }
@@ -672,7 +672,7 @@ class GameController extends GetxController {
           }
         }
       } else {
-        for (UserAction cashData in myInvestList) {
+        for (GameContentItem cashData in myInvestList) {
           temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
               .toInt();
         }
@@ -682,7 +682,7 @@ class GameController extends GetxController {
     }
 
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
+      for (GameContentItem cashData in myCashList) {
         total += cashData.price!;
       }
     }
@@ -700,25 +700,25 @@ class GameController extends GetxController {
     final playerInsuranceList = currentRoom?.player?[playerIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
+      for (GameContentItem cashData in myLongSavingList) {
         total += cashData.price!;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
+      for (GameContentItem cashData in myshortSavingList) {
         total += cashData.price!;
       }
     }
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
+      for (GameContentItem cashData in myCreditLoanList) {
         total -= cashData.price!;
       }
     }
 
     if (myMortgagesList != null) {
-      for (UserAction cashData in myMortgagesList) {
+      for (GameContentItem cashData in myMortgagesList) {
         total -= cashData.price!;
       }
     }
@@ -731,7 +731,7 @@ class GameController extends GetxController {
         if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
           for (final insurance in playerInsuranceList) {
             if (insurance.title == "사회보장보험2") {
-              for (UserAction cashData in myInvestList) {
+              for (GameContentItem cashData in myInvestList) {
                 // 투자 손익율 보전
                 temp += (cashData.price! * cashData.qty! * 1).toInt();
               }
@@ -739,7 +739,7 @@ class GameController extends GetxController {
           }
         }
       } else {
-        for (UserAction cashData in myInvestList) {
+        for (GameContentItem cashData in myInvestList) {
           temp += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
               .toInt();
         }
@@ -749,7 +749,7 @@ class GameController extends GetxController {
     }
 
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
+      for (GameContentItem cashData in myCashList) {
         total += cashData.price!;
       }
     }
@@ -850,7 +850,7 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash +-
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: lotteryItem.title,
             price: lotteryItem.price,
@@ -865,7 +865,6 @@ class GameController extends GetxController {
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  //정상동작 확인 ✅
   Future<void> firstSalary() async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -873,12 +872,11 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
+        GameContentItem(type: "cash", title: "월급", price: 2000000, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> salaryAndIncentive() async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -886,13 +884,13 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
-        UserAction(type: "cash", title: "인센티브", price: myIncentive, qty: 1),
+        GameContentItem(type: "cash", title: "월급", price: 2000000, qty: 1),
+        GameContentItem(
+            type: "cash", title: "인센티브", price: myIncentive, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> shortSavingAction({
     required String title,
     required int price,
@@ -903,15 +901,14 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "예금", price: -price, qty: 1),
-        UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "예금", price: -price, qty: 1),
+        GameContentItem(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
     // 턴 넘기기
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  //정상동작 확인 ✅
   Future<void> longSavingAction({
     required String title,
     required int price,
@@ -922,8 +919,8 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- longSaving ++
-        UserAction(type: "cash", title: "적금", price: -price, qty: 1),
-        UserAction(type: "longSaving", title: "적금", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "적금", price: -price, qty: 1),
+        GameContentItem(type: "longSaving", title: "적금", price: price, qty: 1),
       ],
     ));
     // 턴 넘기기
@@ -940,8 +937,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "creditLoan", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(
+            type: "creditLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -956,8 +954,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "creditLoan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(
+            type: "creditLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
@@ -972,8 +971,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "mortgageLoan", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(
+            type: "mortgageLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -988,8 +988,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "mortgageLoan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(
+            type: "mortgageLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
@@ -1004,13 +1005,12 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "loan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "loan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> investAction({
     required String title,
     required int price,
@@ -1023,12 +1023,12 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- invest ++
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: title,
             price: -(evealuatedPrice * qty),
             qty: 1),
-        UserAction(
+        GameContentItem(
             type: "investment",
             title: title,
             price: price,
@@ -1051,9 +1051,34 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: title, price: -price, qty: 1),
-        UserAction(
+        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
+        GameContentItem(
           type: "expend",
+          title: title,
+          price: price,
+          qty: 1,
+          isItem: true,
+          description: description,
+        ),
+      ],
+    ));
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> consumeAction({
+    required String title,
+    required int price,
+    required String? description,
+  }) async {
+    await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
+        GameContentItem(
+          type: "consumption",
           title: title,
           price: price,
           qty: 1,
@@ -1076,8 +1101,8 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: title, price: -price, qty: 1),
-        UserAction(
+        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
+        GameContentItem(
           type: "insurance",
           title: title,
           price: price,
@@ -1142,11 +1167,11 @@ class GameController extends GetxController {
         // 1. 예금
         // shortSaving sum -> shortSaving -- cash ++
         // shortSaving sum * 이번 라운드 이자 -> cash ++
-        UserAction(
+        GameContentItem(
             type: "cash", title: "예금 출금", price: totalShortSaving!, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "cash", title: "예금 이자", price: shortSavingInterest, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "shortSaving",
             title: "출금",
             price: -totalShortSaving!,
@@ -1154,7 +1179,7 @@ class GameController extends GetxController {
 
         // 2. 적금
         // longSaving sum * 이번 라운드 이자 -> longSaving ++
-        UserAction(
+        GameContentItem(
             type: "longSaving",
             title: "적금 이자",
             price: longSavingInterest,
@@ -1163,9 +1188,9 @@ class GameController extends GetxController {
         // 3. 대출
         // loan sum * 이번 라운드 이자 -> cash ++
         // TODO - 담보 신용 대출 금리 따로 적용
-        UserAction(
+        GameContentItem(
             type: "cash", title: "신용대출 이자", price: -creditLoanInterest, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: "담보대출 이자",
             price: -mortgagesLoanInterest,
@@ -1178,7 +1203,7 @@ class GameController extends GetxController {
         //     qty: 1),
 
         // 4. 세금
-        UserAction(
+        GameContentItem(
             type: "cash", title: "$currentRound라운드 세금", price: -tax, qty: 1),
 
         // UserAction(type: "cash", title: "예금", price: -price, qty: 1),

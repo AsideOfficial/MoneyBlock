@@ -6,6 +6,13 @@ class GameContentItem {
   final String? guide;
   final int? price;
 
+  String? type;
+  bool? isItem;
+  // String? title;
+  // int? price;
+  int? qty;
+  // String? description;
+
   GameContentItem({
     this.id,
     this.title,
@@ -13,9 +20,12 @@ class GameContentItem {
     this.description,
     this.guide,
     this.price,
+    this.isItem,
+    this.qty,
+    this.type,
   });
 
-  factory GameContentItem.fromJson(Map<dynamic, dynamic> json) {
+  factory GameContentItem.fromJson(Map<String, dynamic> json) {
     return GameContentItem(
       id: json['id'],
       title: json['title'],
@@ -23,7 +33,24 @@ class GameContentItem {
       description: json['description'],
       guide: json['guide'],
       price: json['price'],
+      type: json['type'],
+      isItem: json['isItem'],
+      qty: json['qty'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'subTitle': subTitle,
+      'description': description,
+      'guide': guide,
+      'price': price,
+      'type': type,
+      'isItem': isItem,
+      'qty': qty,
+    };
   }
 }
 
@@ -42,41 +69,6 @@ class GameContentCategory {
           ?.map((item) => GameContentItem.fromJson(item))
           .toList(),
       type: json['type'],
-    );
-  }
-}
-
-class GameContentAction {
-  final String? actionType;
-  final List<GameContentCategory>? categories;
-
-  GameContentAction({
-    required this.actionType,
-    required this.categories,
-  });
-
-  factory GameContentAction.fromJson(Map<dynamic, dynamic> json) {
-    return GameContentAction(
-      actionType: json['actionType'],
-      categories: (json['categories'] as List<dynamic>?)
-          ?.map((category) => GameContentCategory.fromJson(category))
-          .toList(),
-    );
-  }
-}
-
-class GameContentsData {
-  final List<GameContentAction>? contentsData;
-
-  GameContentsData({
-    required this.contentsData,
-  });
-
-  factory GameContentsData.fromJson(Map<String, dynamic> json) {
-    return GameContentsData(
-      contentsData: (json['contentsData'] as List<dynamic>?)
-          ?.map((action) => GameContentAction.fromJson(action))
-          .toList(),
     );
   }
 }

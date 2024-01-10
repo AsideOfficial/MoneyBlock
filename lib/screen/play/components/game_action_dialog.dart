@@ -6,9 +6,9 @@ import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/action_choice_button.dart';
 import 'package:money_cycle/screen/play/components/cash_alert_dialog.dart';
-import 'package:money_cycle/screen/play/components/custom_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
@@ -256,14 +256,27 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                     if (gameController
                                             .curretnSpecificActionModel
                                             ?.title ==
+                                        null) return;
+                                    switch (gameController
+                                        .curretnSpecificActionModel!.title) {
+                                      case "소비":
+                                        {}
+                                      case "보험":
+                                        await gameController.insuranceAction(
+                                          title: item.title,
+                                          price: item.price,
+                                          description: item.description,
+                                        );
+
+                                      case "기부":
+                                        {}
+                                    }
+
+                                    if (gameController
+                                            .curretnSpecificActionModel
+                                            ?.title ==
                                         "보험") {
                                       debugPrint("보험 요청");
-
-                                      await gameController.insuranceAction(
-                                        title: item.title,
-                                        price: item.price,
-                                        description: item.description,
-                                      );
                                     } else {
                                       await gameController.expendAction(
                                         title: item.title,

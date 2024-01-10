@@ -1,17 +1,17 @@
 // MARK: - 플레이어 데이터
-import 'package:money_cycle/models/game/user_action.dart';
+import 'package:money_cycle/models/game/game_content_item.dart';
 
 class Player {
-  List<UserAction>? cash; // 현금
-  List<UserAction>? shortSaving; // 예금
-  List<UserAction>? longSaving; // 적금
-  List<UserAction>? investment; // 투자
-  List<UserAction>? expend; // 지출
-  List<UserAction>? consumption; // 소비
-  List<UserAction>? insurance; // 보험
-  List<UserAction>? donation; // 기부
-  List<UserAction>? creditLoan; // 신용대출
-  List<UserAction>? mortgageLoan; // 담보대출
+  List<GameContentItem>? cash; // 현금
+  List<GameContentItem>? shortSaving; // 예금
+  List<GameContentItem>? longSaving; // 적금
+  List<GameContentItem>? investment; // 투자
+  List<GameContentItem>? expend; // 지출
+  List<GameContentItem>? consumption; // 소비
+  List<GameContentItem>? insurance; // 보험
+  List<GameContentItem>? donation; // 기부
+  List<GameContentItem>? creditLoan; // 신용대출
+  List<GameContentItem>? mortgageLoan; // 담보대출
 
   bool? isReady;
   bool? isVacation;
@@ -45,52 +45,52 @@ class Player {
       cash: (json['cash'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       shortSaving: (json['shortSaving'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       longSaving: (json['longSaving'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       investment: (json['investment'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       expend: (json['expend'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       consumption: (json['consumption'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       insurance: (json['insurance'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       donation: (json['donation'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       creditLoan: (json['creditLoan'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
       mortgageLoan: (json['mortgageLoan'] as List<dynamic>?)
           ?.sublist(1)
           .map((data) => Map<String, dynamic>.from(data))
-          .map((json) => UserAction.fromJson(json))
+          .map((json) => GameContentItem.fromJson(json))
           .toList(),
     );
   }
@@ -122,7 +122,7 @@ Map<String, dynamic>? convertDataToJson(Map<dynamic, dynamic>? data) {
 class PlayerActionDto {
   String? roomId;
   int? playerIndex;
-  List<UserAction>? userActions;
+  List<GameContentItem>? userActions;
 
   PlayerActionDto({
     this.roomId,
@@ -135,7 +135,7 @@ class PlayerActionDto {
       roomId: json['roomId'],
       playerIndex: json['playerIndex'],
       userActions: (json['userActions'] as List<dynamic>?)
-          ?.map((item) => UserAction.fromJson(item))
+          ?.map((item) => GameContentItem.fromJson(item))
           .toList(),
     );
   }

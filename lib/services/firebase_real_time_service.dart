@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
+import 'package:money_cycle/models/game/game_contents_category.dart';
+import 'package:money_cycle/models/game/game_contents_data.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
-import 'package:money_cycle/models/game_content.dart';
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 
 class FirebaseRealTimeService {
@@ -56,7 +57,7 @@ class FirebaseRealTimeService {
     return null;
   }
 
-  static Future<GameContentsData?> getGameContents() async {
+  static Future<GameContentsDto?> getGameContents() async {
     final DatabaseReference roomRef = _rdb.ref('contentsData');
     try {
       final snapShot = await roomRef.get();
@@ -69,7 +70,7 @@ class FirebaseRealTimeService {
           contentsData.add(action);
         }
         log(contentsData.length.toString());
-        return GameContentsData(contentsData: contentsData);
+        return GameContentsDto(contentsData: contentsData);
       } else {
         log("getRoomData - 데이터 없음");
         return null;
