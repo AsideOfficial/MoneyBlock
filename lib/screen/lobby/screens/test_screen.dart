@@ -50,7 +50,7 @@ class _TestScreenState extends State<TestScreen> {
                       children: [
                         Bounceable(
                           onTap: () {
-                            Get.to(() => const GamePlayScreen(),
+                            Get.offAll(() => const GamePlayScreen(),
                                 binding: BindingsBuilder(() {
                               Get.put(GameController(
                                 roomId: "831692",

@@ -6,8 +6,9 @@ import 'package:money_cycle/constants.dart';
 class SnackBarUtil {
   static void showToastMessage({
     required String message,
-    required String actionTitle,
-    required Function()? onActionPressed,
+    String? actionTitle,
+    Function()? onActionPressed,
+    Duration duration = const Duration(seconds: 3),
   }) {
     Get.rawSnackbar(
       titleText: const SizedBox(),
@@ -35,15 +36,16 @@ class SnackBarUtil {
                       style: Constants.defaultTextStyle
                           .copyWith(color: Colors.black, fontSize: 14),
                     ),
-                    const SizedBox(width: 32),
-                    CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: onActionPressed,
-                        child: Text(
-                          actionTitle,
-                          style: Constants.defaultTextStyle.copyWith(
-                              color: Constants.cardBlue, fontSize: 14),
-                        ))
+                    if (actionTitle != null) const SizedBox(width: 32),
+                    if (actionTitle != null)
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: onActionPressed,
+                          child: Text(
+                            actionTitle,
+                            style: Constants.defaultTextStyle.copyWith(
+                                color: Constants.cardBlue, fontSize: 14),
+                          ))
                   ],
                 ),
               ),
@@ -55,7 +57,7 @@ class SnackBarUtil {
       backgroundColor: Colors.transparent,
       barBlur: 0.0,
       snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 3),
+      duration: duration,
     );
   }
 }

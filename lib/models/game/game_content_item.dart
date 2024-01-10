@@ -35,19 +35,20 @@ class GameContentItem {
 
   factory GameContentItem.fromJson(Map<String, dynamic> json) {
     return GameContentItem(
-        id: json['id'],
-        title: json['title'],
-        subTitle: json['subTitle'],
-        description: json['description'],
-        guide: json['guide'],
-        price: json['price'],
-        type: json['type'],
-        isItem: json['isItem'] as bool?,
-        preferentialRate: json["preferentialRate"] as int?,
-        qty: json['qty'],
-        target: json["longSaving"],
-        purchaseRoundIndex: json["purchaseRoundIndex"],
-        isDeleted: json["isDeleted"] as bool?);
+      id: json['id'],
+      title: json['title'],
+      subTitle: json['subTitle'],
+      description: json['description'],
+      guide: json['guide'],
+      price: json['price'],
+      type: json['type'],
+      isItem: json['isItem'] as bool?,
+      preferentialRate: json["preferentialRate"] as int?,
+      qty: json['qty'],
+      target: json["longSaving"],
+      purchaseRoundIndex: json["purchaseRoundIndex"],
+      isDeleted: json["isDeleted"] as bool?,
+    );
   }
 
   Map<String, dynamic> toJson() {

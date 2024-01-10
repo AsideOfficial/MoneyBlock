@@ -15,6 +15,7 @@ import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/start_game_alert_dialog.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 import '../constants.dart';
 
@@ -204,25 +205,29 @@ class GameController extends GetxController {
   }
 
   List<GameContentItem>? get myConsumptionItems =>
-      currentRoom!.player?[myIndex].consumption;
+      currentRoom!.player?[myIndex].consumption
+          ?.where((element) => element.isItem == true)
+          .where((element) => !(element.isDeleted ?? false))
+          .toList();
 
   List<GameContentItem>? get myInsuranceItems =>
-      currentRoom!.player?[myIndex].insurance;
+      currentRoom!.player?[myIndex].insurance
+          ?.where((element) => element.isItem == true)
+          .where((element) => !(element.isDeleted ?? false))
+          .toList();
 
   List<GameContentItem>? get myExpendItems {
     if (currentRoom == null) return null;
     final List<GameContentItem> result = [];
     final expendList = currentRoom!.player?[myIndex].expend
         ?.where((element) => element.isItem == true)
+        .where((element) => !(element.isDeleted ?? false))
         .toList();
-    final consumptionList = currentRoom!.player?[myIndex].consumption
-        ?.where((element) => element.isItem == true)
-        .toList();
-    final insuranceList = currentRoom!.player?[myIndex].insurance
-        ?.where((element) => element.isItem == true)
-        .toList();
+    final consumptionList = myConsumptionItems;
+    final insuranceList = myInsuranceItems;
     final donationList = currentRoom!.player?[myIndex].donation
         ?.where((element) => element.isItem == true)
+        .where((element) => !(element.isDeleted ?? false))
         .toList();
 
     if (expendList != null) {
@@ -1075,7 +1080,7 @@ class GameController extends GetxController {
     required int evealuatedPrice,
     required int qty,
   }) async {
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -1096,6 +1101,10 @@ class GameController extends GetxController {
         ),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
@@ -1105,7 +1114,7 @@ class GameController extends GetxController {
     required int price,
     required String? description,
   }) async {
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -1122,6 +1131,10 @@ class GameController extends GetxController {
         ),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
@@ -1129,7 +1142,7 @@ class GameController extends GetxController {
     required GameContentItem gameContentItem,
   }) async {
     // TODO - 중복 구매 불가능 처리 필요
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -1143,6 +1156,10 @@ class GameController extends GetxController {
             qty: 1),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
@@ -1151,7 +1168,7 @@ class GameController extends GetxController {
     required int price,
     required String? description,
   }) async {
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
@@ -1168,6 +1185,10 @@ class GameController extends GetxController {
         GameContentItem(type: "cash", title: title, price: -price, qty: 1),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
@@ -1189,6 +1210,21 @@ class GameController extends GetxController {
       roomId: roomId,
       playerIndex: myIndex,
     ));
+    debugPrint("deleteTicket()");
+  }
+
+  Future<void> usePrivateInsurance() async {
+    final response = await CloudFunctionService.deleteInsurance1(
+        inGameRequest: MCInGameRequest(
+      roomId: roomId,
+      playerIndex: myIndex,
+    ));
+    if (response?.message != null) {
+      SnackBarUtil.showToastMessage(
+        message: response!.message!,
+      );
+    }
+    debugPrint("deleteInsurance1()");
   }
 
   Future<List<int>> calculateRound() async {

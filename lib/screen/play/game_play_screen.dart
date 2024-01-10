@@ -12,6 +12,7 @@ import 'package:money_cycle/screen/play/components/game_action_dialog.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
+import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 import 'package:money_cycle/utils/snack_bar_util.dart';
 
@@ -230,15 +231,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                               );
                               if (luckyItem.price < 0 &&
                                   gameController.myInsuranceItems!.any(
-                                      (element) =>
-                                          element.title == "민영보험1" ||
-                                          element.title == "민영보험2")) {
+                                      (element) => (element.id == "pi1" ||
+                                          element.id == "pi2"))) {
                                 SnackBarUtil.showToastMessage(
                                     message: "'민영보험'을 사용해서 불운을 건너뛸까요?",
                                     actionTitle: "사용하기",
-                                    onActionPressed: () {
-                                      Get.back();
-                                      //TODO - DELETE INSURANCE API 호출
+                                    duration: const Duration(seconds: 20),
+                                    onActionPressed: () async {
+                                      Get.back(closeOverlays: true);
+                                      await gameController
+                                          .usePrivateInsurance();
                                     });
                               }
                             } else {
@@ -246,8 +248,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                   colorText: Colors.black,
                                   backgroundGradient: Constants.grey01Gradient);
                             }
-
-                            // setState(() => isActionChoicing = true);
                           },
                         ),
                         ActionButton(
@@ -258,9 +258,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           assetPath: "assets/icons/vacation.png",
                           onPressed: () {
                             // setState(() => isActionChoicing = true);
-                            Get.dialog(
-                              const VacationAlert(),
-                            );
+                            Get.dialog(const VacationAlert());
                           },
                         ),
                         ActionButton(
@@ -270,6 +268,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           titleColor: const Color(0xFF5B2486),
                           onPressed: () async {
                             // showToastMessage("하이");
+                            // await gameController.usePrivateInsurance();
                             Get.dialog(ActionAlertDialog(
                               title: "턴 넘기기",
                               subTitle: "턴을 넘기시겠습니까?",
@@ -279,7 +278,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 await gameController.endTurn();
                               },
                             ));
-                            //TODO - 턴 종료 확인 팝업
                           },
                         ),
                         // ActionButton(

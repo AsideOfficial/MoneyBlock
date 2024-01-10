@@ -55,14 +55,21 @@ class _VacationAlertState extends State<VacationAlert> {
                         setState(() {
                           isLoading = true;
                         });
-                        //TODO - 민영 보험 분기 처리
-                        SnackBarUtil.showToastMessage(
-                            message: "'민영보험'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
-                            actionTitle: '사용하기',
-                            onActionPressed: () {
-                              //TODO - 민영 보험 API 연동
-                            });
-                        //TODO - 주석 해제 필요
+                        if (gameController.myInsuranceItems!
+                            .any((element) => element.id == "si1")) {
+                          SnackBarUtil.showToastMessage(
+                              message: "'민영보험'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
+                              actionTitle: '사용하기',
+                              onActionPressed: () {
+                                Get.back(closeOverlays: true);
+                                gameController.endTurn();
+                                SnackBarUtil.showToastMessage(
+                                    message: "민영보험1을 사용해서 무급 휴가를 건너 뛰었습니다.");
+                              });
+
+                          return;
+                        }
+
                         // await gameController.startVacation();
                         // Get.back();
                         // const inVacationAlert = InVacationAlert();
