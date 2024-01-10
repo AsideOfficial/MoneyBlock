@@ -115,7 +115,6 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   switch (gameController
                                       .curretnSpecificActionModel!.title) {
                                     case "소비":
-                                      //TODO - 소비 액션 작업중 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
                                       await gameController.consumeAction(
                                         gameContentItem: item,
                                       );
@@ -127,6 +126,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       );
 
                                     case "기부":
+                                      //TODO - 🚧기부 액션 작업중 🚧
                                       {}
                                   }
 
@@ -545,8 +545,8 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                               price: currentMortagagesLoanAmount
                                                   .toInt(),
                                             );
-                                            Get.back();
                                           }
+                                          Get.back();
                                         }
 
                                         gameController.isActionChoicing = false;
@@ -1146,10 +1146,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         title: item.title,
                                         price: currentAmount.toInt(),
                                       );
-
-                                      gameController.isActionChoicing = false;
-                                      Get.back();
                                     }
+                                    gameController.isActionChoicing = false;
+                                    Get.back();
                                   },
                                 ));
                               },
