@@ -13,6 +13,7 @@ import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/my_asset_sheet.dart';
 import 'package:money_cycle/screen/play/components/vacation_alert_dialog.dart';
 import 'package:money_cycle/utils/extension/int.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 import '../../components/mc_button.dart';
 
@@ -217,14 +218,30 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             setState(() {
                               isLoading = false;
                             });
+
                             if (luckyItem != null) {
                               Get.dialog(
                                 LotteryAlert(
                                   luckyItem: luckyItem,
+                                  skipLottery: false,
                                 ),
                                 barrierDismissible: false,
                                 useSafeArea: false,
                               );
+                              if (luckyItem.price < 0 &&
+                                  gameController.myInsuranceItems!.any(
+                                      (element) =>
+                                          element.title == "민영보험1" ||
+                                          element.title == "민영보험2")) {
+                                //TODO - 사회 보장보험 확인
+                                SnackBarUtil.showToastMessage(
+                                    message: "'민영보험'을 사용해서 불운을 건너뛸까요?",
+                                    actionTitle: "사용하기",
+                                    onActionPressed: () {
+                                      Get.back();
+                                      //TODO - DELETE INSURANCE API 호출
+                                    });
+                              }
                             } else {
                               Get.snackbar("행운 복권 오류", "다시 시도해주세요.",
                                   colorText: Colors.black,
@@ -401,10 +418,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
 class LotteryAlert extends StatefulWidget {
   final Lottery luckyItem;
+  final bool skipLottery;
 
   const LotteryAlert({
     super.key,
     required this.luckyItem,
+    required this.skipLottery,
   });
 
   @override
@@ -455,8 +474,11 @@ class _LotteryAlertState extends State<LotteryAlert> {
                         setState(() {
                           isLoading = true;
                         });
-                        await gameController.luckyDrawAction(
-                            lotteryItem: widget.luckyItem);
+
+                        if (!widget.skipLottery) {
+                          await gameController.luckyDrawAction(
+                              lotteryItem: widget.luckyItem);
+                        }
 
                         setState(() {
                           isLoading = false;

@@ -33,7 +33,9 @@ class MCInGameRequest {
 }
 
 class CloudFunctionService {
-  static Future<void> userAction({required PlayerActionDto userAction}) async {
+  static Future<MCResponse?> userAction({
+    required PlayerActionDto userAction,
+  }) async {
     const String cloudFunctionUrl =
         'https://useraction-nq7btx6efq-du.a.run.app';
     final uri = Uri.parse(cloudFunctionUrl);
@@ -48,6 +50,9 @@ class CloudFunctionService {
       if (response.statusCode == 200) {
         debugPrint('클라우드 함수 응답: ${response.body}');
         // TODO: 성공 핸들링
+        final json = jsonDecode(response.body);
+        final mcResponse = MCResponse.fromJson(json);
+        return mcResponse;
       } else {
         debugPrint(
             '클라우드 함수 요청 실패 \n- HTTP 오류 코드: ${response.statusCode} \n - 에러 메세지: ${response.body}');
@@ -56,6 +61,7 @@ class CloudFunctionService {
       debugPrint('클라우드 함수 요청 실패 - 예외 발생: $e');
       // TODO: 실패 핸들링
     }
+    return null;
   }
 
   static Future<MCResponse?> deleteTicket(

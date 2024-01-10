@@ -205,6 +205,8 @@ class GameController extends GetxController {
 
   List<GameContentItem>? get myConsumptionItems =>
       currentRoom!.player?[myIndex].consumption;
+  List<GameContentItem>? get myInsuranceItems =>
+      currentRoom!.player?[myIndex].insurance;
 
   List<GameContentItem>? get myExpendItems {
     if (currentRoom == null) return null;
@@ -1125,18 +1127,19 @@ class GameController extends GetxController {
   Future<void> consumeAction({
     required GameContentItem gameContentItem,
   }) async {
+    // TODO - 중복 구매 불가능 처리 필요
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
+        gameContentItem.copyWith(purchaseRoundIndex: currentRoundIndex),
         GameContentItem(
             type: "cash",
             title: gameContentItem.title,
             price: -gameContentItem.price,
             qty: 1),
-        gameContentItem.copyWith(purchaseRoundIndex: currentRoundIndex),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
@@ -1153,7 +1156,6 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
         GameContentItem(
           type: "insurance",
           title: title,
@@ -1162,6 +1164,7 @@ class GameController extends GetxController {
           isItem: true,
           description: description,
         ),
+        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
       ],
     ));
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
