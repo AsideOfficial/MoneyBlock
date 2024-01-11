@@ -343,7 +343,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
 
                                       setState(() => isLoading = false);
 
-                                      Get.off(
+                                      Get.offAll(
                                         () => const GamePlayScreen(),
                                         binding: BindingsBuilder(() {
                                           Get.put(

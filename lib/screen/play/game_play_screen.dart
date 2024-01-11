@@ -268,6 +268,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                             primaryActionColor: const Color(0xFFA95BE7),
                             onAction: () async {
                               await gameController.endTurn();
+                              Get.back(closeOverlays: true);
                             },
                           ));
                         },
