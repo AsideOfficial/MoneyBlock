@@ -443,47 +443,56 @@ class GameController extends GetxController {
 
   // MARK: - 계산 비즈니스 로직
 
+  int getTotalEstimatedInvestment({required int roundIndex}) {
+    int result = 0;
+    for (final investItem in myInvestmentItems!) {
+      final perPrice = getEstimatedPrice(
+        purchasedPrice: investItem.price,
+        purchaseRoundIndex: investItem.purchaseRoundIndex ?? 0,
+        currentRoundIndex: roundIndex,
+      );
+      result += perPrice * (investItem.qty ?? 0);
+    }
+    return result;
+  }
+
   int getEstimatedPrice({
     required int purchasedPrice,
     required int purchaseRoundIndex,
     required int currentRoundIndex,
   }) {
     debugPrint("getEstimatedPrice() - 평가금액 산출 시작");
-    int result = purchasedPrice; // 1개 가격 계산
+    double result = purchasedPrice.toDouble(); // 1개 가격 계산
+    debugPrint("getEstimatedPrice - 구매가 - $purchasedPrice");
     for (var index = 0; index < currentRoundIndex; index++) {
-      double currentInvestmentRate =
-          currentRoom!.investmentRateInfo![index] / 100;
+      double currentInvestmentRate = investmentRateAt(index) / 100;
       if (currentInvestRate < 0) {
-        final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
-        if (currentTotalInvestmentRate < 1) {
-          if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
-            for (final insurance in playerInsuranceList) {
-              if (insurance.id == "si2") {
-                currentInvestmentRate = 0;
-                debugPrint(
-                    "투자 손실금 보전 ${insurance.subTitle} - $currentInvestRate");
-              }
-            }
+        if (myInsuranceItems != null && myInsuranceItems!.isNotEmpty) {
+          if (myInsuranceItems!.any((element) =>
+              element.id == "si2" && !(element.isDeleted ?? false))) {
+            currentInvestmentRate = 0;
+            debugPrint("투자 손실금 보전  - $currentInvestRate");
           }
         }
       }
+
       if (purchaseRoundIndex <= index) {
         if (myConsumptionItems!.any((element) =>
             (element.id == "ima1" || element.id == "ima2") &&
-            (element.isDeleted ?? false) == false)) {
+            !(element.isDeleted ?? false))) {
           // 투자 관리 상품 존재
           final GameContentItem investAdvisorItem = myConsumptionItems!
               .firstWhere((element) =>
                   (element.id == "ima1" || element.id == "ima2") &&
-                  (element.isDeleted ?? false) == false);
+                  !(element.isDeleted ?? false));
+          debugPrint("getEstimatedPrice() - 효과 적용 전 $result");
 
           if (investAdvisorItem.purchaseRoundIndex! <= index) {
             result *= (1 +
-                    currentInvestmentRate +
-                    investAdvisorItem.preferentialRate! / 100)
-                .toInt(); // 투자 금리 혜택 적용
+                currentInvestmentRate +
+                investAdvisorItem.preferentialRate! / 100); // 투자 금리 혜택 적용
             debugPrint(
-                "getEstimatedPrice() - 투자 상품 혜택 ${investAdvisorItem.subTitle} 우대율 ${investAdvisorItem.preferentialRate}%");
+                "getEstimatedPrice() - 투자 상품 혜택 ${investAdvisorItem.subTitle} 우대율 ${investAdvisorItem.preferentialRate}% - $result");
           } else {
             result *= (1 + currentInvestmentRate).toInt();
           }
@@ -492,6 +501,28 @@ class GameController extends GetxController {
           debugPrint("getEstimatedPrice() - 투자 관리 상품 존재 X");
         }
       }
+    }
+    return result.toInt();
+  }
+
+  double investmentRateAt(index) {
+    if (currentRoom == null) return 0;
+    double result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
+    switch (index) {
+      case 0:
+        result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
+
+      case 1:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100);
+      case 2:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
+      case 3:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
     }
     return result;
   }
@@ -583,10 +614,13 @@ class GameController extends GetxController {
           purchaseRoundIndex: investItem.purchaseRoundIndex!,
           currentRoundIndex: currentRoundIndex!,
         );
+        debugPrint("Hi - $estimatedPrice @");
+
         total += estimatedPrice * (investItem.qty ?? 1);
       }
     }
-    return (total * currentTotalInvestmentRate).toInt();
+    debugPrint("Hi - $total");
+    return total.toInt();
   }
 
   int? get totalSaving {
@@ -719,30 +753,7 @@ class GameController extends GetxController {
       }
     }
 
-    if (myInvestList != null) {
-      int temp = 0;
-
-      //TODO - 사회보장보험2 효과 적용 완료
-      if (currentTotalInvestmentRate < 1) {
-        if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
-          for (final insurance in playerInsuranceList) {
-            if (insurance.title == "사회보장보험2") {
-              for (GameContentItem cashData in myInvestList) {
-                // 투자 손익율 보전
-                temp += (cashData.price * cashData.qty! * 1).toInt();
-              }
-            }
-          }
-        }
-      } else {
-        for (GameContentItem cashData in myInvestList) {
-          temp += (cashData.price * cashData.qty! * currentTotalInvestmentRate)
-              .toInt();
-        }
-      }
-
-      total += temp;
-    }
+    total += totalInvestment!;
 
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
@@ -786,30 +797,7 @@ class GameController extends GetxController {
       }
     }
 
-    if (myInvestList != null) {
-      int temp = 0;
-
-      //TODO - 사회보장보험2 효과 적용 완료
-      if (currentTotalInvestmentRate < 1) {
-        if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
-          for (final insurance in playerInsuranceList) {
-            if (insurance.title == "사회보장보험2") {
-              for (GameContentItem cashData in myInvestList) {
-                // 투자 손익율 보전
-                temp += (cashData.price * cashData.qty! * 1).toInt();
-              }
-            }
-          }
-        }
-      } else {
-        for (GameContentItem cashData in myInvestList) {
-          temp += (cashData.price * cashData.qty! * currentTotalInvestmentRate)
-              .toInt();
-        }
-      }
-
-      total += temp;
-    }
+    total += totalInvestment!;
 
     if (myCashList != null) {
       for (GameContentItem cashData in myCashList) {
@@ -1289,9 +1277,11 @@ class GameController extends GetxController {
     final int mortgagesLoanInterest =
         totalMortgagesLoan! * (currentLoanRate - 1) ~/ 100;
     final int totalLoanInterest = creditLoanInterest + mortgagesLoanInterest;
-    //투자이익
+
+    // TODO - 투자 이익 => 평가 금액으로 계산
     final int investmentInterest =
-        totalInvestment! * (currentInvestRate) ~/ 100;
+        getTotalEstimatedInvestment(roundIndex: currentRoundIndex! - 1) -
+            getTotalEstimatedInvestment(roundIndex: currentRoundIndex!);
 
     int tax = ((totalCash! +
                 shortSavingInterest +
@@ -1349,6 +1339,10 @@ class GameController extends GetxController {
           isDna4PurchasedRecord = true;
         }
       }
+    }
+
+    if (tax < 0) {
+      tax = 0;
     }
 
     await CloudFunctionService.userAction(

@@ -395,7 +395,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                             const SizedBox(
                                                                 height: 4),
                                                             Text(
-                                                              "${((item!.price * item.qty!) * gameController.currentTotalInvestmentRate).toInt().commaString} 원",
+                                                              "${gameController.getEstimatedPrice(purchasedPrice: item!.price, purchaseRoundIndex: item.purchaseRoundIndex!, currentRoundIndex: gameController.currentRoundIndex!).commaString} 원",
                                                               style: Constants
                                                                   .defaultTextStyle
                                                                   .copyWith(
