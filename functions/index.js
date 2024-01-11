@@ -161,7 +161,7 @@ exports.createRoom = onRequest(async (req, res) => {
         // 데이터 저장
         db.ref('Room').child(room_id).set(room_data);
 
-        return res.status(200).json({ sucess: true, roomId: room_id, data: room_data });
+        return res.status(200).json({ success: true, roomId: room_id, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -239,7 +239,7 @@ exports.enterRoom = onRequest(async (req, res) => {
         db.ref('Room').child(roomId).child('player').set(playerList);
         const room_data = await room_ref.once('value');
 
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -281,7 +281,7 @@ exports.exitRoom = onRequest(async (req, res) => {
         }
 
         const room_data = await room_ref.once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -325,7 +325,7 @@ exports.readyToggle = onRequest(async (req, res) => {
 
         const room_data = await roomRef.once('value');
 
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -359,7 +359,7 @@ exports.gameStart = onRequest(async (req, res) => {
         roomRef.child('isPlaying').set(true);
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data.val() });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data.val() });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -393,7 +393,7 @@ exports.updateRateSetting = onRequest(async(req, res) => {
 
         const room_data = await roomRef.once('value');
 
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -443,7 +443,7 @@ exports.turnEnded = onRequest(async(req, res) => {
         roomRef.child('roundIndex').set(roundIndex);
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -488,10 +488,10 @@ exports.userAction = onRequest(async (req, res) => {
                     // 저축관리 어드바이저 중복 확인
                     const consumptionRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const consumption = consumptionRef.val();
-                    const isSma1 = consumption.some(consumption => consumption.id === 'sma1');
-                    const isSma2 = consumption.some(consumption => consumption.id === 'sma2');
+                    const isSma1 = consumption.some(consumption => (consumption.id === 'sma1' && consumption.isDeleted === false));
+                    const isSma2 = consumption.some(consumption => (consumption.id === 'sma2' && consumption.isDeleted === false));
                     if (isSma1 || isSma2) {
-                        return res.status(200).json({ sucess: false, message: '소비관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '저축관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
                     }
                     // 저축관리 어드바이저 기입
                     userAction.preferentialRate = 1;
@@ -499,10 +499,10 @@ exports.userAction = onRequest(async (req, res) => {
                     // 투자관리 어드바이저 중복 확인
                     const consumptionRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const consumption = consumptionRef.val();
-                    const isSma1 = consumption.some(consumption => consumption.id === 'ima1');
-                    const isSma2 = consumption.some(consumption => consumption.id === 'ima2');
+                    const isSma1 = consumption.some(consumption => (consumption.id === 'ima1' && consumption.isDeleted === false));
+                    const isSma2 = consumption.some(consumption => (consumption.id === 'ima2' && consumption.isDeleted === false));
                     if (isSma1 || isSma2) {
-                        return res.status(200).json({ sucess: false, message: '투자관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '투자관리 어드바이저가 이미 있어 구매가 불가능합니다.' });
                     }
                     // 투자관리 어드바이저 기입
                     userAction.preferentialRate = 3;
@@ -523,20 +523,20 @@ exports.userAction = onRequest(async (req, res) => {
                     // 기부금(dna1, dna2) 중복 확인
                     const donationRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const donation = donationRef.val();
-                    const isDna1 = donation.some(donation => donation.id === 'dna1');
-                    const isDna2 = donation.some(donation => donation.id === 'dna2');
+                    const isDna1 = donation.some(donation => (donation.id === 'dna1' && donation.isDeleted === false));
+                    const isDna2 = donation.some(donation => (donation.id === 'dna2' && donation.isDeleted === false));
                     if (isDna1 || isDna2) {
-                        return res.status(200).json({ sucess: false, message: '기부금 공제 상품이 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '기부금 공제 상품이 이미 있어 구매가 불가능합니다.' });
                     }
                     userAction.reductionValue = userAction.id == 'dna1' ? 100000:300000;
                 } else if (userAction.id == 'dna3' || userAction.id == 'dna4') {
                     // 기부금(dna3, dna4) 중복 확인
                     const donationRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const donation = donationRef.val();
-                    const isDna1 = donation.some(donation => donation.id === 'dna3');
-                    const isDna2 = donation.some(donation => donation.id === 'dna4');
+                    const isDna1 = donation.some(donation => (donation.id === 'dna3' && donation.isDeleted === false));
+                    const isDna2 = donation.some(donation => (donation.id === 'dna4' && donation.isDeleted === false));
                     if (isDna1 || isDna2) {
-                        return res.status(200).json({ sucess: false, message: '기부금 할인 상품이 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '기부금 할인 상품이 이미 있어 구매가 불가능합니다.' });
                     }
                     userAction.reductionRate = userAction.id == 'dna3' ? 0.3:0.7;
                 } else {
@@ -545,6 +545,7 @@ exports.userAction = onRequest(async (req, res) => {
                 userAction.isDeleted = false;
                 type.push(userAction);
                 roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+                continue;
             } else if (userAction.type == 'insurance') {
                 // id 데이터 유효성 체크
                 if (userAction.id === undefined || typeof userAction.id !== 'string') {
@@ -554,19 +555,19 @@ exports.userAction = onRequest(async (req, res) => {
                     // 민영보험(pi1, pi2) 중복 불가 처리
                     const insuranceRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const insurance = insuranceRef.val();
-                    const isPi1 = insurance.some(insurance => insurance.id === 'pi1');
-                    const isPi2 = insurance.some(insurance => insurance.id === 'pi2');
+                    const isPi1 = insurance.some(insurance => (insurance.id === 'pi1' && insurance.isDeleted === false));
+                    const isPi2 = insurance.some(insurance => (insurance.id === 'pi2' && insurance.isDeleted === false));
                     if (isPi1 || isPi2) {
-                        return res.status(200).json({ sucess: false, message: '민영보험 상품이 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '민영보험 상품이 이미 있어 구매가 불가능합니다.' });
                     }
                 } else if (userAction.id == 'si1' || userAction.id == 'si2') {
                     // 국영보험(si1, si2) 중복 불가 처리
                     const insuranceRef = await roomRef.child('player').child(playerIndex).child(userAction.type).once('value');
                     const insurance = insuranceRef.val();
-                    const isSi1 = insurance.some(insurance => insurance.id === 'si1');
-                    const isSi2 = insurance.some(insurance => insurance.id === 'si2');
+                    const isSi1 = insurance.some(insurance => (insurance.id === 'si1' && insurance.isDeleted === false));
+                    const isSi2 = insurance.some(insurance => (insurance.id === 'si2' && insurance.isDeleted === false));
                     if (isSi1 || isSi2) {
-                        return res.status(200).json({ sucess: false, message: '사회보장보험 상품이 이미 있어 구매가 불가능합니다.' });
+                        return res.status(200).json({ success: false, message: '사회보장보험 상품이 이미 있어 구매가 불가능합니다.' });
                     }
                 } else {
                     return res.status(400).json({ ValueError: 'Invalid userAction id' });
@@ -574,16 +575,18 @@ exports.userAction = onRequest(async (req, res) => {
                 userAction.isDeleted = false;
                 type.push(userAction);
                 roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+                continue;
             } else {
                 userAction.isDeleted = false;
                 type.push(userAction);
                 // 유저 액션 추가
                 roomRef.child('player').child(`${playerIndex}`).child(userAction.type).set(type);
+                continue;
             }
         }
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -619,7 +622,7 @@ exports.startVacation = onRequest(async (req, res) => {
         }
 
         const room_data = await roomRef.once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -653,7 +656,7 @@ exports.useVacation = onRequest(async (req, res) => {
         }
 
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -667,7 +670,7 @@ exports.lottery = onRequest(async (req, res) => {
         // 행운복권 반환(랜덤)
         const lotteryIndex = Math.floor(Math.random() * lotteryList.length);
         const lottery = lotteryList[lotteryIndex];
-        return res.status(200).json({ sucess: true, lottery: lottery });
+        return res.status(200).json({ success: true, lottery: lottery });
 
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
@@ -702,7 +705,7 @@ exports.deleteInsurance1 = onRequest(async (req, res) => {
         }
 
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data, message: '민영보험을 사용해서 불운을 건너뛰었습니다.' });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data, message: '민영보험을 사용해서 불운을 건너뛰었습니다.' });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -751,7 +754,7 @@ exports.deleteTickets = onRequest(async (req, res) => {
         }
 
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
@@ -787,7 +790,7 @@ exports.useDonation2 = onRequest(async (req, res) => {
         userRef.child('donation').set(donation);
 
         const room_data = await db.ref('Room').child(roomId).once('value');
-        return res.status(200).json({ sucess: true, roomId: roomId, data: room_data });
+        return res.status(200).json({ success: true, roomId: roomId, data: room_data });
     } catch (error) {
         return res.status(500).json({ error: `Error processing request: ${error.message}` });
     }
