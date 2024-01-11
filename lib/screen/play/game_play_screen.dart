@@ -233,6 +233,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                   onActionPressed: () async {
                                     Get.back(closeOverlays: true);
                                     await gameController.usePrivateInsurance();
+                                    await gameController.endTurn();
                                   });
                             }
                           } else {
