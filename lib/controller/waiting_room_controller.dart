@@ -10,6 +10,7 @@ import 'package:money_cycle/services/firebase_real_time_service.dart';
 class WaitingRoomController extends GetxController {
   WaitingRoomController({required this.roomId});
   final String roomId;
+  bool isRouteToPlayScreen = false;
 
   final Rx<RoomData?> _currentWaitingRoom = Rx<RoomData?>(null);
   RoomData? get currentWaitingRoomData => _currentWaitingRoom.value;
@@ -27,13 +28,12 @@ class WaitingRoomController extends GetxController {
     _currentWaitingRoom.bindStream(
         FirebaseRealTimeService.getWaitingRoomDataStream(roomId: roomId));
     ever(_currentWaitingRoom, _roomDataHandler);
-    debugPrint("게임 이벤트 핸들러 바인딩 완료");
+    debugPrint("대기실 이벤트 핸들러 바인딩 완료");
   }
 
   _roomDataHandler(RoomData? room) {
-    debugPrint("_waitingRoomDataHandler 트리거 - GamePlayScreen 이동 시작");
-
     if (room != null && room.isPlaying) {
+      debugPrint("_waitingRoomDataHandler 트리거 - GamePlayScreen 이동 시작");
       Map<String, bool> participantsState = {};
 
       for (Player player in room.player ?? []) {
@@ -42,18 +42,21 @@ class WaitingRoomController extends GetxController {
       final myIndex = participantsState.keys
           .toList()
           .indexOf(FirebaseAuth.instance.currentUser!.uid);
-      Get.offAll(
-        () => const GamePlayScreen(),
-        binding: BindingsBuilder(() {
-          Get.put(
-            GameController(
-              roomId: roomId,
-              myIndex: myIndex,
-            ),
-          );
-        }),
-        transition: Transition.fadeIn,
-      );
+      if (myIndex != 0 && !isRouteToPlayScreen) {
+        isRouteToPlayScreen = true;
+        Get.offAll(
+          () => const GamePlayScreen(),
+          binding: BindingsBuilder(() {
+            Get.put(
+              GameController(
+                roomId: roomId,
+                myIndex: myIndex,
+              ),
+            );
+          }),
+          transition: Transition.fadeIn,
+        );
+      }
     }
   }
 }

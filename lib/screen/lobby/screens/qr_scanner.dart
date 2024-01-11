@@ -236,7 +236,7 @@ class _QRScannerState extends State<QRScanner> {
 
     if (result != null) {
       Get.off(
-        const WaitingRoomScreen(),
+        () => const WaitingRoomScreen(),
         binding: BindingsBuilder(() {
           Get.put(
             WaitingRoomController(roomId: result.roomId),

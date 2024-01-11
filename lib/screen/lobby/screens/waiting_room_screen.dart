@@ -343,7 +343,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
 
                                       setState(() => isLoading = false);
 
-                                      Get.offAll(
+                                      Get.off(
                                         () => const GamePlayScreen(),
                                         binding: BindingsBuilder(() {
                                           Get.put(
@@ -353,8 +353,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                                             ),
                                           );
                                         }),
-
-                                        // transition: Transition.fadeIn,
+                                        transition: Transition.fadeIn,
                                       );
                                     }
                                   : null,
