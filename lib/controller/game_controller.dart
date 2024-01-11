@@ -51,7 +51,8 @@ class GameController extends GetxController {
   void onReady() {
     super.onReady();
     Future.delayed(const Duration(seconds: 1), () {
-      Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
+      Get.dialog(const StartGameAlertDialog(),
+          barrierDismissible: false, name: "StartGameAlertDialog");
     });
   }
 
@@ -244,10 +245,9 @@ class GameController extends GetxController {
     }
 
     if (result.isEmpty) {
-      debugPrint("NONO");
+      debugPrint("myExpendItems - 지출 아이템 없음");
       return null;
     } else {
-      // debugPrint("NONO");
       return result;
     }
   }
@@ -600,7 +600,7 @@ class GameController extends GetxController {
       }
     }
 
-    debugPrint("totalCash - $total");
+    debugPrint("totalSaving - 현재 총 저축 금액 $total");
 
     return total;
   }

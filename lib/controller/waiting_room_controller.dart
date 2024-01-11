@@ -31,7 +31,7 @@ class WaitingRoomController extends GetxController {
   }
 
   _roomDataHandler(RoomData? room) {
-    debugPrint("_waitingRoomDataHandler 트리거 -");
+    debugPrint("_waitingRoomDataHandler 트리거 - GamePlayScreen 이동 시작");
 
     if (room != null && room.isPlaying) {
       Map<String, bool> participantsState = {};
@@ -42,7 +42,7 @@ class WaitingRoomController extends GetxController {
       final myIndex = participantsState.keys
           .toList()
           .indexOf(FirebaseAuth.instance.currentUser!.uid);
-      Get.to(
+      Get.offAll(
         () => const GamePlayScreen(),
         binding: BindingsBuilder(() {
           Get.put(
