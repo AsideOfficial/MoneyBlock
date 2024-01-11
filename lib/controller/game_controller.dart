@@ -88,6 +88,9 @@ class GameController extends GetxController {
     isActionChoicing = true;
   }
 
+  int previousRoundReductionValue = 0;
+  bool isDna4PurchasedRecord = false;
+
   //MARK: - <게임 플레이 리스너
 
   final Rx<int?> _currentTurnIndex = Rx<int?>(null);
@@ -445,7 +448,8 @@ class GameController extends GetxController {
     required int purchaseRoundIndex,
     required int currentRoundIndex,
   }) {
-    int result = purchasedPrice;
+    debugPrint("getEstimatedPrice() - 평가금액 산출 시작");
+    int result = purchasedPrice; // 1개 가격 계산
     for (var index = 0; index < currentRoundIndex; index++) {
       double currentInvestmentRate =
           currentRoom!.investmentRateInfo![index] / 100;
@@ -454,33 +458,35 @@ class GameController extends GetxController {
         if (currentTotalInvestmentRate < 1) {
           if (playerInsuranceList != null && playerInsuranceList.isNotEmpty) {
             for (final insurance in playerInsuranceList) {
-              if (insurance.title == "사회보장보험2") {
-                // 🚧 투자 손익률 보전
+              if (insurance.id == "si2") {
                 currentInvestmentRate = 0;
+                debugPrint(
+                    "투자 손실금 보전 ${insurance.subTitle} - $currentInvestRate");
               }
             }
           }
         }
       }
       if (purchaseRoundIndex <= index) {
-        if (myConsumptionItems!.any(((element) =>
-            element.title == "투자관리" && element.isDeleted == false))) {
+        if (myConsumptionItems!.any((element) =>
+            (element.id == "ima1" || element.id == "ima2") &&
+            (element.isDeleted ?? false) == false)) {
           // 투자 관리 상품 존재
-          final GameContentItem investAdvisorItem =
-              myConsumptionItems!.firstWhere(
-            (element) => element.title == "투자관리" && element.isDeleted == false,
-          );
+          final GameContentItem investAdvisorItem = myConsumptionItems!
+              .firstWhere((element) =>
+                  (element.id == "ima1" || element.id == "ima2") &&
+                  (element.isDeleted ?? false) == false);
 
-          if (investAdvisorItem.purchaseRoundIndex! < index) {
+          if (investAdvisorItem.purchaseRoundIndex! <= index) {
             result *= (1 +
                     currentInvestmentRate +
                     investAdvisorItem.preferentialRate! / 100)
                 .toInt(); // 투자 금리 혜택 적용
+            debugPrint(
+                "getEstimatedPrice() - 투자 상품 혜택 ${investAdvisorItem.subTitle} 우대율 ${investAdvisorItem.preferentialRate}%");
           } else {
             result *= (1 + currentInvestmentRate).toInt();
           }
-
-          debugPrint("getEstimatedPrice() - 투자 관리 상품 존재");
         } else {
           result *= (1 + currentInvestmentRate).toInt();
           debugPrint("getEstimatedPrice() - 투자 관리 상품 존재 X");
@@ -577,7 +583,7 @@ class GameController extends GetxController {
           purchaseRoundIndex: investItem.purchaseRoundIndex!,
           currentRoundIndex: currentRoundIndex!,
         );
-        total += estimatedPrice;
+        total += estimatedPrice * (investItem.qty ?? 1);
       }
     }
     return (total * currentTotalInvestmentRate).toInt();
@@ -1261,10 +1267,11 @@ class GameController extends GetxController {
     double preferentialRate = 0;
     if (myConsumptionItems != null) {
       for (final item in myConsumptionItems!) {
-        debugPrint("라운드 정산 - 적금 우대 혜택 적용 ${item.subTitle}");
         if ((item.id == "sma1" || item.id == "sma2") &&
             (item.isDeleted ?? false) == false) {
           preferentialRate += (item.preferentialRate ?? 0.0);
+          debugPrint(
+              "라운드 정산 - 적금 우대 혜택 적용 ${item.subTitle} - 우대율 $preferentialRate%");
         }
       }
     }
@@ -1293,18 +1300,6 @@ class GameController extends GetxController {
                 investmentInterest) *
             0.1)
         .toInt();
-    if (tax < 0) {
-      tax = 0;
-    } else {
-      if (myDonationItems!
-          .any((element) => element.id == "dna1" || element.id == "dna2")) {
-        final donationItem = myDonationItems!.firstWhere(
-            (element) => element.id == "dna1" || element.id == "dna2");
-        tax -= donationItem.reductionValue ?? 100000;
-        debugPrint(
-            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
-      }
-    }
 
     if (tax < 0) {
       tax = 0;
@@ -1315,8 +1310,44 @@ class GameController extends GetxController {
         final donationItem = myDonationItems!.firstWhere(
             (element) => element.id == "dna3" || element.id == "dna4");
         tax = (tax * (1 - (donationItem.reductionRate ?? 0.3))).toInt();
+
         debugPrint(
             "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionRate}%");
+      }
+    }
+
+    if (tax < 0) {
+      tax = 0;
+    } else {
+      if (myDonationItems!.any((element) => element.id == "dna1")) {
+        final donationItem =
+            myDonationItems!.firstWhere((element) => element.id == "dna1");
+        tax -= donationItem.reductionValue ?? 100000;
+        debugPrint(
+            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
+      }
+
+      if (myDonationItems!.any((element) => element.id == "dna2")) {
+        final donationItem =
+            myDonationItems!.firstWhere((element) => element.id == "dna2");
+        if (isDna4PurchasedRecord) {
+          if (previousRoundReductionValue > 0) {
+            debugPrint(
+                "라운드 정산 - 잔여 세금 우대 혜택 적용 ${donationItem.subTitle} - $previousRoundReductionValue");
+            tax -= previousRoundReductionValue;
+            if (tax < 0) {
+              previousRoundReductionValue = -tax;
+            }
+          }
+        } else {
+          debugPrint(
+              "라운드 정산 - 세금 우대 혜택 최초 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
+          tax -= donationItem.reductionValue ?? 100000;
+          if (tax < 0) {
+            previousRoundReductionValue = -tax;
+          }
+          isDna4PurchasedRecord = true;
+        }
       }
     }
 
