@@ -129,6 +129,36 @@ class CloudFunctionService {
     }
   }
 
+  static Future<MCResponse?> deleteInsurance2(
+      {required MCInGameRequest inGameRequest}) async {
+    const String cloudFunctionUrl =
+        'https://deleteInsurance2-nq7btx6efq-du.a.run.app';
+    final uri = Uri.parse(cloudFunctionUrl);
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: <String, String>{"Content-Type": "application/json"},
+        body: jsonEncode(inGameRequest.toJson()),
+      );
+
+      final json = jsonDecode(response.body);
+      final mcResponse = MCResponse.fromJson(json);
+
+      if (response.statusCode == 200) {
+        debugPrint('클라우드 함수 응답: ${response.body}');
+        return mcResponse;
+      } else {
+        debugPrint(
+            '클라우드 함수 요청 실패 \n- HTTP 오류 코드: ${response.statusCode} \n - 에러 메세지: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('클라우드 함수 요청 실패 - 예외 발생: $e');
+      return null;
+    }
+  }
+
   static Future<void> startVacation(
       {required String roomId, required num playerIndex}) async {
     const String cloudFunctionUrl =

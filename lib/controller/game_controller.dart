@@ -1331,6 +1331,13 @@ class GameController extends GetxController {
             if (tax < 0) {
               previousRoundReductionValue = -tax;
             }
+          } else {
+            await CloudFunctionService.deleteInsurance2(
+                inGameRequest: MCInGameRequest(
+              roomId: roomId,
+              playerIndex: myIndex,
+            ));
+            isDna4PurchasedRecord = false;
           }
         } else {
           debugPrint(
