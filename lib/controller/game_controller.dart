@@ -1151,6 +1151,7 @@ class GameController extends GetxController {
     }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
     Get.back();
+    isActionChoicing = false;
   }
 
   Future<void> insuranceAction({
@@ -1179,6 +1180,7 @@ class GameController extends GetxController {
 
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
     Get.back();
+    isActionChoicing = false;
   }
 
   Future<void> donationAction({
@@ -1199,12 +1201,13 @@ class GameController extends GetxController {
       ],
     ));
     if (response?.success == false && response?.message != null) {
-      Get.back(closeOverlays: true);
+      Get.back();
       SnackBarUtil.showToastMessage(message: response!.message!);
       return;
     }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
     Get.back();
+    isActionChoicing = false;
   }
 
   Future<void> startVacation() async {

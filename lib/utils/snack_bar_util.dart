@@ -23,7 +23,7 @@ class SnackBarUtil {
           children: [
             const Spacer(),
             Container(
-              height: 48,
+              height: 50,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(76), color: Colors.white),
               child: Padding(

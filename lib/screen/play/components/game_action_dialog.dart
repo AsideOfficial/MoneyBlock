@@ -134,7 +134,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       );
                                   }
 
-                                  gameController.isActionChoicing = false;
+                                  // gameController.isActionChoicing = false;
                                   // Get.back();
                                 },
                               ));
