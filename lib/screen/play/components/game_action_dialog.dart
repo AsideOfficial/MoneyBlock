@@ -7,8 +7,10 @@ import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
 import 'package:money_cycle/controller/game_controller.dart';
 import 'package:money_cycle/screen/play/components/action_choice_button.dart';
+import 'package:money_cycle/screen/play/components/cash_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/game_item_card.dart';
 import 'package:money_cycle/screen/play/components/purchase_alert_dialog.dart';
+import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -22,6 +24,7 @@ class GameActionDialog extends StatefulWidget {
 }
 
 class _GameActionDialogState extends State<GameActionDialog> {
+  final gameController = Get.find<GameController>();
   double cash = 1000000;
   double currentAmount = 0;
   double currentCreditLoanAmount = 0;
@@ -31,11 +34,123 @@ class _GameActionDialogState extends State<GameActionDialog> {
   double height = 280;
   bool isCreditLoan = false;
 
+  Future<void> showCashAlert() async {
+    Future.delayed(const Duration(milliseconds: 200));
+    Get.dialog(CashAlertDialog(
+      actionTitle: "대출받기",
+      primaryActionColor: Constants.cardOrange,
+      children: [
+        Text("현금 부족",
+            style: Constants.titleTextStyle.copyWith(color: Colors.black)),
+        const SizedBox(height: 10),
+        Text("추천 활동 : 대출 받기",
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 18, color: Colors.black)),
+        const SizedBox(height: 10),
+        Text("구매를 위해\n현금을 확보해야합니다.",
+            textAlign: TextAlign.center,
+            style: Constants.defaultTextStyle
+                .copyWith(fontSize: 18, color: Colors.black)),
+      ],
+      onAction: () {
+        Get.back();
+        gameController.actionButtonTap(GameActionType.loan);
+      },
+    ));
+  }
+
   //MARK: - 플레이어 개인 활동 선택 화면
   List<Widget> actionChoiceContainer(
       GameActionType actionType, GameController gameController) {
     switch (actionType) {
       case GameActionType.expend:
+        return [
+          MCContainer(
+            borderRadius: 20,
+            gradient: gameController.currentBackgroundGradient,
+            strokePadding: const EdgeInsets.all(5),
+            width: 530,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 24, left: 30, right: 10, bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(gameController.curretnSpecificActionModel?.title ?? "",
+                      style: Constants.titleTextStyle),
+                  const SizedBox(height: 6),
+                  Text(
+                      "어떤 ${gameController.curretnSpecificActionModel?.title}를 하시겠습니까?",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 140,
+                    width: 600,
+                    child: ListView.builder(
+                        controller: ScrollController(initialScrollOffset: 58),
+                        scrollDirection: Axis.horizontal,
+                        key: UniqueKey(),
+                        itemCount: gameController
+                            .curretnSpecificActionModel?.items.length,
+                        // itemExtent: 120,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final item = gameController
+                              .curretnSpecificActionModel?.items[index];
+                          if (item == null) return const SizedBox();
+                          return Bounceable(
+                            onTap: () {
+                              Get.dialog(PurchaseAlertDialog(
+                                title: "구입",
+                                subTitle:
+                                    "${item.title} ${(item.subTitle != null) ? item.subTitle! : ""}",
+                                perPrice: item.price,
+                                actionTitle: "구입",
+                                onPurchase: (count) async {
+                                  if (gameController.totalCash! <
+                                      (item.price * count)) {
+                                    Get.back();
+                                    await showCashAlert();
+                                    return;
+                                  }
+
+                                  debugPrint(gameController
+                                      .curretnSpecificActionModel!.title);
+
+                                  switch (gameController
+                                      .curretnSpecificActionModel!.title) {
+                                    case "소비":
+                                      await gameController.consumeAction(
+                                        gameContentItem: item,
+                                      );
+                                    case "보험":
+                                      await gameController.insuranceAction(
+                                        gameContentItem: item,
+                                      );
+                                    case "기부":
+                                      await gameController.donationAction(
+                                        gameContentItem: item,
+                                      );
+                                  }
+
+                                  // gameController.isActionChoicing = false;
+                                  // Get.back();
+                                },
+                              ));
+                            },
+                            child: GameItemCard(
+                              item: item,
+                              accentColor: gameController.currentCardColor,
+                            ),
+                          );
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ];
       case GameActionType.investment:
         return [
           MCContainer(
@@ -75,9 +190,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                   gameController.currentTotalInvestmentRate)
                               .toInt();
                           return Bounceable(
-                            onTap: () {
-                              if (gameController.currentActionType ==
-                                  GameActionType.investment) {
+                              onTap: () {
                                 Get.dialog(PurchaseAlertDialog(
                                   isMultiple: (gameController
                                               .curretnSpecificActionModel
@@ -87,15 +200,18 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                       : true,
                                   title:
                                       "${gameController.curretnSpecificActionModel?.title} 매수",
-                                  subTitle: item.title,
+                                  subTitle: item.title
+                                      .replaceAllMapped("\n", (match) => " "),
                                   perPrice: evaluatedPrice,
                                   actionTitle: "매수",
                                   onPurchase: (count) async {
-                                    //TODO - 투자 API 연동 필요 ✅
-
-                                    // if (item == null) return;
                                     if (gameController.totalCash! <
-                                        (item.price * count)) return;
+                                        (item.price * count)) {
+                                      Get.back();
+                                      await showCashAlert();
+                                      return;
+                                    }
+
                                     await gameController.investAction(
                                         title: item.title,
                                         price: item.price,
@@ -106,52 +222,19 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         qty: count);
 
                                     gameController.isActionChoicing = false;
+                                    Get.back();
                                   },
                                 ));
-                              } else {
-                                Get.dialog(PurchaseAlertDialog(
-                                  title: "구입",
-                                  subTitle: item.title,
-                                  perPrice: item.price,
-                                  actionTitle: "구입",
-                                  onPurchase: (count) async {
-                                    //TODO - 지출 API 연동 필요 ✅
-                                    if (gameController.totalCash! <
-                                        (item.price * count)) {
-                                      Get.snackbar("잔액 부족", "잔액이 부족합니다.",
-                                          colorText: Colors.black,
-                                          backgroundGradient:
-                                              Constants.grey01Gradient);
-                                      return;
-                                    }
-                                    await gameController.expendAction(
-                                      title: item.title,
-                                      price: item.price,
-                                    );
-
-                                    gameController.isActionChoicing = false;
-                                  },
-                                ));
-                              }
-                            },
-                            child: (gameController.currentActionType ==
-                                    GameActionType.investment)
-                                ? GameItemCard(
-                                    item: item,
-                                    evaluatedPrice: evaluatedPrice,
-                                    priceTitle: gameController
-                                            .curretnSpecificActionModel
-                                            ?.priceTitle ??
-                                        "",
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  )
-                                : GameItemCard(
-                                    item: item,
-                                    accentColor:
-                                        gameController.currentCardColor,
-                                  ),
-                          );
+                              },
+                              child: GameItemCard(
+                                item: item,
+                                evaluatedPrice: evaluatedPrice,
+                                priceTitle: gameController
+                                        .curretnSpecificActionModel
+                                        ?.priceTitle ??
+                                    "",
+                                accentColor: gameController.currentCardColor,
+                              ));
                         }),
                   ),
                 ],
@@ -468,6 +551,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                                   .toInt(),
                                             );
                                           }
+                                          Get.back();
                                         }
 
                                         gameController.isActionChoicing = false;
@@ -782,6 +866,7 @@ class _GameActionDialogState extends State<GameActionDialog> {
 
                                           gameController.isActionChoicing =
                                               false;
+                                          Get.back();
                                         },
                                       ));
                                     },
@@ -1066,9 +1151,9 @@ class _GameActionDialogState extends State<GameActionDialog> {
                                         title: item.title,
                                         price: currentAmount.toInt(),
                                       );
-
-                                      gameController.isActionChoicing = false;
                                     }
+                                    gameController.isActionChoicing = false;
+                                    Get.back();
                                   },
                                 ));
                               },

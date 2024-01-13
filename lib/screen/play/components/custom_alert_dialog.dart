@@ -8,7 +8,7 @@ class CustomAlertDialog extends StatelessWidget {
   final String description;
   final String instruction;
   final String acionButtonTitle;
-  final Function()? onPressed;
+  final Function()? onActionButtonPressed;
   final bool? isLoading;
 
   const CustomAlertDialog({
@@ -16,7 +16,7 @@ class CustomAlertDialog extends StatelessWidget {
     required this.title,
     required this.description,
     required this.instruction,
-    this.onPressed,
+    this.onActionButtonPressed,
     required this.acionButtonTitle,
     this.isLoading,
   });
@@ -43,14 +43,17 @@ class CustomAlertDialog extends StatelessWidget {
               Text(instruction,
                   style: Constants.defaultTextStyle.copyWith(fontSize: 18)),
               const Spacer(),
-              SizedBox(
-                width: 184,
-                height: 44,
-                child: MCButton(
-                  isLoading: isLoading,
-                  title: acionButtonTitle,
-                  backgroundColor: Constants.blueNeon,
-                  onPressed: onPressed,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: SizedBox(
+                  height: 44,
+                  width: 184,
+                  child: MCButton(
+                    isLoading: isLoading,
+                    title: acionButtonTitle,
+                    backgroundColor: Constants.blueNeon,
+                    onPressed: onActionButtonPressed,
+                  ),
                 ),
               ),
             ],

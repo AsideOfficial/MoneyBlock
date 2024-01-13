@@ -87,16 +87,6 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
   }
 
   @override
-  void dispose() {
-    FirebaseService.exitRoom(
-      roomId: roomID,
-      uid: FirebaseAuth.instance.currentUser!.uid,
-    );
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetX<WaitingRoomController>(
@@ -181,6 +171,13 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
                         children: [
                           Bounceable(
                             onTap: () {
+                              if (roomData.player![0].uid ==
+                                  FirebaseAuth.instance.currentUser?.uid) {
+                                FirebaseService.exitRoom(
+                                  roomId: roomID,
+                                  uid: FirebaseAuth.instance.currentUser!.uid,
+                                );
+                              }
                               Get.back();
                             },
                             child: SizedBox(
@@ -346,7 +343,7 @@ class _WaitingRoomScreenState extends State<WaitingRoomScreen> {
 
                                       setState(() => isLoading = false);
 
-                                      Get.to(
+                                      Get.offAll(
                                         () => const GamePlayScreen(),
                                         binding: BindingsBuilder(() {
                                           Get.put(

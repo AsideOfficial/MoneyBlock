@@ -157,7 +157,7 @@ class _InputCodeScreenState extends State<InputCodeScreen> {
 
                             if (result != null) {
                               Get.off(
-                                const WaitingRoomScreen(),
+                                () => const WaitingRoomScreen(),
                                 binding: BindingsBuilder(() {
                                   Get.put(
                                     WaitingRoomController(

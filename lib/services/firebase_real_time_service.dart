@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money_cycle/main.dart';
+import 'package:money_cycle/models/game/game_contents_category.dart';
+import 'package:money_cycle/models/game/game_contents_data.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
 import 'package:money_cycle/screen/lobby/model/mc_room.dart';
 
@@ -42,6 +46,33 @@ class FirebaseRealTimeService {
         return GameDataDetails.fromJson(json);
       } else {
         debugPrint("getRoomData - 데이터 없음");
+        return null;
+      }
+
+      // 여기에서 데이터를 처리하거나 상태를 업데이트할 수 있습니다.
+    } catch (e) {
+      debugPrint('Error: $e');
+      // 오류 처리 로직을 추가할 수 있습니다.
+    }
+    return null;
+  }
+
+  static Future<GameContentsDto?> getGameContents() async {
+    final DatabaseReference roomRef = _rdb.ref('contentsData');
+    try {
+      final snapShot = await roomRef.get();
+      final dataList = snapShot.value as List<dynamic>?;
+      if (dataList != null) {
+        List<GameContentAction> contentsData = [];
+        for (final data in dataList) {
+          final json = data as Map<dynamic, dynamic>;
+          GameContentAction action = GameContentAction.fromJson(json);
+          contentsData.add(action);
+        }
+        log(contentsData.length.toString());
+        return GameContentsDto(contentsData: contentsData);
+      } else {
+        log("getRoomData - 데이터 없음");
         return null;
       }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_cycle/constants.dart';
-import 'package:money_cycle/models/game_action.dart';
+import 'package:money_cycle/models/game/game_content_item.dart';
 import 'package:money_cycle/utils/extension/int.dart';
 
 class GameItemCard extends StatelessWidget {
@@ -12,7 +12,7 @@ class GameItemCard extends StatelessWidget {
     this.priceTitle,
   });
 
-  final GameActionItem? item;
+  final GameContentItem? item;
   final Color? accentColor;
   final int? evaluatedPrice;
   final String? priceTitle;
@@ -51,10 +51,22 @@ class GameItemCard extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  item?.title ?? "",
-                  style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                padding: const EdgeInsets.only(left: 8, right: 2, bottom: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      item?.title ?? "",
+                      style: Constants.defaultTextStyle.copyWith(fontSize: 16),
+                    ),
+                    if (item?.subTitle != null && item!.subTitle!.isNotEmpty)
+                      Text(
+                        item?.subTitle ?? "",
+                        style:
+                            Constants.defaultTextStyle.copyWith(fontSize: 11),
+                      ),
+                  ],
                 ),
               ),
             ),

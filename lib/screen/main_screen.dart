@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:money_cycle/screen/lobby/screens/lobby_screen.dart';
+import 'package:money_cycle/screen/lobby/screens/test_screen.dart';
 import 'package:money_cycle/start/start_screen.dart';
 
 class MainScreen extends StatelessWidget {

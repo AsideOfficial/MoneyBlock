@@ -419,7 +419,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
 
                                     if (roomData != null) {
                                       Get.off(
-                                        const WaitingRoomScreen(),
+                                        () => const WaitingRoomScreen(),
                                         binding: BindingsBuilder(() {
                                           Get.put(
                                             WaitingRoomController(

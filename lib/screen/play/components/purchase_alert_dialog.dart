@@ -158,7 +158,6 @@ class _PurchaseAlertDialogState extends State<PurchaseAlertDialog> {
                                   isLoading = true;
                                 });
                                 await widget.onPurchase!(count);
-                                Get.back();
                                 setState(() {
                                   isLoading = false;
                                 });

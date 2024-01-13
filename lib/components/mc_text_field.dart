@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import '../constants.dart';
 
 class MCTextField extends StatelessWidget {
-  MCTextField({
+  const MCTextField({
     super.key,
     this.controller,
     this.hintText,

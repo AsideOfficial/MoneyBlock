@@ -3,17 +3,19 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:money_cycle/models/enums/game_action_type.dart';
+import 'package:money_cycle/models/game/game_content_item.dart';
 import 'package:money_cycle/models/game/game_data_detail.dart';
+import 'package:money_cycle/models/game/lottery.dart';
 import 'package:money_cycle/models/game/lucky_lottery.dart';
 import 'package:money_cycle/models/game/news_article.dart';
 import 'package:money_cycle/models/game/player.dart';
-import 'package:money_cycle/models/game/user_action.dart';
 import 'package:money_cycle/models/game_action.dart';
 import 'package:money_cycle/screen/play/components/end_game_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/end_round_alert_dialog.dart';
 import 'package:money_cycle/screen/play/components/start_game_alert_dialog.dart';
 import 'package:money_cycle/services/cloud_fuction_service.dart';
 import 'package:money_cycle/services/firebase_real_time_service.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 import '../constants.dart';
 
@@ -21,6 +23,7 @@ class GameController extends GetxController {
   GameController({required this.roomId, required this.myIndex});
   final String roomId;
   final int myIndex;
+  List<GameContentCategory>? expendItems;
 
   // Mock 데이터를 LuckyLottery 인스턴스로 변환
   List<LuckyLottery> lotteryList =
@@ -30,6 +33,14 @@ class GameController extends GetxController {
   void onInit() async {
     debugPrint("[게임 컨트롤러 onInit 시작]");
     final roomData = await FirebaseRealTimeService.getRoomData(roomId: roomId);
+    final contentsData = await FirebaseRealTimeService.getGameContents();
+
+    for (final content in contentsData!.contentsData!) {
+      debugPrint(content.actionType);
+      if (content.actionType == "소비") {
+        expendItems = content.categories;
+      }
+    }
     _currentRoom.value = roomData;
     super.onInit();
     bindRoomStream(roomId);
@@ -40,7 +51,8 @@ class GameController extends GetxController {
   void onReady() {
     super.onReady();
     Future.delayed(const Duration(seconds: 1), () {
-      Get.dialog(const StartGameAlertDialog(), barrierDismissible: false);
+      Get.dialog(const StartGameAlertDialog(),
+          barrierDismissible: false, name: "StartGameAlertDialog");
     });
   }
 
@@ -57,7 +69,15 @@ class GameController extends GetxController {
   set isActionChoicing(bool newValue) => _isActionChoicing.value = newValue;
 
   void specificActionButtonTap(int index) {
-    _curretnSpecificActionModel.value = currentActionTypeModel.actions[index];
+    if (currentActionType == GameActionType.expend) {
+      _curretnSpecificActionModel.value = SpecifitGameAction(
+        title: expendItems![index].type!,
+        items: expendItems![index].contents!,
+      );
+    } else {
+      _curretnSpecificActionModel.value = currentActionTypeModel.actions[index];
+    }
+
     debugPrint(_curretnSpecificActionModel.value?.title ?? "");
   }
 
@@ -67,6 +87,9 @@ class GameController extends GetxController {
     // _curretnSpecificActionModel.value = currentActionTypeModel.actions[0];
     isActionChoicing = true;
   }
+
+  int previousRoundReductionValue = 0;
+  bool isDna4PurchasedRecord = false;
 
   //MARK: - <게임 플레이 리스너
 
@@ -110,17 +133,10 @@ class GameController extends GetxController {
         FirebaseRealTimeService.getRoundIndexStream(roomId: roomId));
     _isGameEnded.bindStream(
         FirebaseRealTimeService.getIsGameEndedStream(roomId: roomId));
-    ever(_currentRoom, _roomDataHandler);
     ever(_currentTurnIndex, _turnIndexHandler);
     ever(_currentRoundIndex, _roundIndexHandler);
     ever(_isGameEnded, _endGameHandler);
     debugPrint("[게임 이벤트 핸들러 바인딩 완료]");
-  }
-
-  _roomDataHandler(GameDataDetails? room) {
-    debugPrint("_roomDataHandler 트리거 -");
-    // debugPrint("[게임 데이터 변경 수신 핸들러] 플레이어 리스트 - ${_currentRoom.value?.player}");
-    // _currentRoom.value.
   }
 
   _turnIndexHandler(int? index) {
@@ -173,7 +189,7 @@ class GameController extends GetxController {
 
   //MARK: - UI 비즈니스 로직
 
-  List<UserAction>? get myInvestmentItems {
+  List<GameContentItem>? get myInvestmentItems {
     if (currentRoom == null) return null;
     final list = currentRoom!.player?[myIndex].investment
         ?.where((element) => element.isItem == true)
@@ -182,6 +198,60 @@ class GameController extends GetxController {
       return list;
     } else {
       return null;
+    }
+  }
+
+  List<GameContentItem>? get myConsumptionItems =>
+      currentRoom!.player?[myIndex].consumption
+          ?.where((element) => !(element.isDeleted ?? false))
+          .toList();
+
+  List<GameContentItem>? get myInsuranceItems =>
+      currentRoom!.player?[myIndex].insurance
+          ?.where((element) => !(element.isDeleted ?? false))
+          .toList();
+  List<GameContentItem>? get myDonationItems =>
+      currentRoom!.player?[myIndex].donation
+          ?.where((element) => !(element.isDeleted ?? false))
+          .toList();
+
+  List<GameContentItem>? get myExpendItems {
+    if (currentRoom == null) return null;
+    final List<GameContentItem> result = [];
+    final expendList = currentRoom!.player?[myIndex].expend
+        ?.where((element) => element.isItem == true)
+        .where((element) => !(element.isDeleted ?? false))
+        .toList();
+    final consumptionList = myConsumptionItems;
+    final insuranceList = myInsuranceItems;
+    final donationList = currentRoom!.player?[myIndex].donation
+        ?.where((element) => !(element.isDeleted ?? false))
+        .toList();
+
+    if (expendList != null) {
+      result.addAll(expendList);
+    }
+
+    if (consumptionList != null && consumptionList.isNotEmpty) {
+      result.addAll(consumptionList);
+      debugPrint(consumptionList.length.toString());
+    }
+
+    if (insuranceList != null && insuranceList.isNotEmpty) {
+      result.addAll(insuranceList);
+      debugPrint(insuranceList.length.toString());
+    }
+
+    if (donationList != null && donationList.isNotEmpty) {
+      result.addAll(donationList);
+      debugPrint(donationList.length.toString());
+    }
+
+    if (result.isEmpty) {
+      debugPrint("myExpendItems - 지출 아이템 없음");
+      return null;
+    } else {
+      return result;
     }
   }
 
@@ -352,7 +422,7 @@ class GameController extends GetxController {
     return assetString;
   }
 
-  String luckyItemAssetString(LuckyLottery item) {
+  String luckyItemAssetString(Lottery item) {
     String assetString = "assets/icons/lottery.png";
     switch (item.title) {
       case "행운복권 당첨!":
@@ -372,6 +442,90 @@ class GameController extends GetxController {
   }
 
   // MARK: - 계산 비즈니스 로직
+
+  int getTotalEstimatedInvestment({required int roundIndex}) {
+    int result = 0;
+    for (final investItem in myInvestmentItems!) {
+      final perPrice = getEstimatedPrice(
+        purchasedPrice: investItem.price,
+        purchaseRoundIndex: investItem.purchaseRoundIndex ?? 0,
+        currentRoundIndex: roundIndex,
+      );
+      result += perPrice * (investItem.qty ?? 0);
+    }
+    return result;
+  }
+
+  int getEstimatedPrice({
+    required int purchasedPrice,
+    required int purchaseRoundIndex,
+    required int currentRoundIndex,
+  }) {
+    debugPrint("getEstimatedPrice() - 평가금액 산출 시작");
+    double result = purchasedPrice.toDouble(); // 1개 가격 계산
+    debugPrint("getEstimatedPrice - 구매가 - $purchasedPrice");
+    for (var index = 0; index < currentRoundIndex; index++) {
+      double currentInvestmentRate = investmentRateAt(index) / 100;
+      if (currentInvestRate < 0) {
+        if (myInsuranceItems != null && myInsuranceItems!.isNotEmpty) {
+          if (myInsuranceItems!.any((element) =>
+              element.id == "si2" && !(element.isDeleted ?? false))) {
+            currentInvestmentRate = 0;
+            debugPrint("투자 손실금 보전  - $currentInvestRate");
+          }
+        }
+      }
+
+      if (purchaseRoundIndex <= index) {
+        if (myConsumptionItems!.any((element) =>
+            (element.id == "ima1" || element.id == "ima2") &&
+            !(element.isDeleted ?? false))) {
+          // 투자 관리 상품 존재
+          final GameContentItem investAdvisorItem = myConsumptionItems!
+              .firstWhere((element) =>
+                  (element.id == "ima1" || element.id == "ima2") &&
+                  !(element.isDeleted ?? false));
+          debugPrint("getEstimatedPrice() - 효과 적용 전 $result");
+
+          if (investAdvisorItem.purchaseRoundIndex! <= index) {
+            result *= (1 +
+                currentInvestmentRate +
+                investAdvisorItem.preferentialRate! / 100); // 투자 금리 혜택 적용
+            debugPrint(
+                "getEstimatedPrice() - 투자 상품 혜택 ${investAdvisorItem.subTitle} 우대율 ${investAdvisorItem.preferentialRate}% - $result");
+          } else {
+            result *= (1 + currentInvestmentRate).toInt();
+          }
+        } else {
+          result *= (1 + currentInvestmentRate).toInt();
+          debugPrint("getEstimatedPrice() - 투자 관리 상품 존재 X");
+        }
+      }
+    }
+    return result.toInt();
+  }
+
+  double investmentRateAt(index) {
+    if (currentRoom == null) return 0;
+    double result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
+    switch (index) {
+      case 0:
+        result = 1 + (currentRoom!.investmentRateInfo![0] / 100);
+
+      case 1:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100);
+      case 2:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
+      case 3:
+        result = (1 + currentRoom!.investmentRateInfo![0] / 100) *
+            (1 + currentRoom!.investmentRateInfo![1] / 100) *
+            (1 + currentRoom!.investmentRateInfo![2] / 100);
+    }
+    return result;
+  }
 
   double get currentTotalInvestmentRate {
     if (currentRoom == null) return 0;
@@ -441,8 +595,8 @@ class GameController extends GetxController {
     final myCashList = currentRoom?.player?[myIndex].cash;
     int total = 0;
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myCashList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -450,14 +604,23 @@ class GameController extends GetxController {
 
   int? get totalInvestment {
     // 리스트를 순회하면서 price 합산
-    final myCashList = currentRoom?.player?[myIndex].investment;
+    final myInvestItems = currentRoom?.player?[myIndex].investment;
     int total = 0;
-    if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
-        total += (cashData.price! * cashData.qty!);
+
+    if (myInvestItems != null) {
+      for (GameContentItem investItem in myInvestItems) {
+        final estimatedPrice = getEstimatedPrice(
+          purchasedPrice: investItem.price * investItem.qty!,
+          purchaseRoundIndex: investItem.purchaseRoundIndex!,
+          currentRoundIndex: currentRoundIndex!,
+        );
+        debugPrint("Hi - $estimatedPrice @");
+
+        total += estimatedPrice * (investItem.qty ?? 1);
       }
     }
-    return (total * currentTotalInvestmentRate).toInt();
+    debugPrint("Hi - $total");
+    return total.toInt();
   }
 
   int? get totalSaving {
@@ -466,18 +629,18 @@ class GameController extends GetxController {
     final myLongSavingList = currentRoom?.player?[myIndex].longSaving;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myLongSavingList) {
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myshortSavingList) {
+        total += cashData.price;
       }
     }
 
-    debugPrint("totalCash - $total");
+    debugPrint("totalSaving - 현재 총 저축 금액 $total");
 
     return total;
   }
@@ -488,8 +651,8 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myshortSavingList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -501,8 +664,8 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myshortSavingList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -514,8 +677,8 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myCreditLoanList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -527,8 +690,8 @@ class GameController extends GetxController {
     int total = 0;
 
     if (myLongMortgagesList != null) {
-      for (UserAction cashData in myLongMortgagesList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myLongMortgagesList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -540,14 +703,14 @@ class GameController extends GetxController {
     final myMortgagesLoanList = currentRoom?.player?[myIndex].mortgageLoan;
     int total = 0;
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myCreditLoanList) {
+        total += cashData.price;
       }
     }
 
     if (myMortgagesLoanList != null) {
-      for (UserAction cashData in myMortgagesLoanList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myMortgagesLoanList) {
+        total += cashData.price;
       }
     }
 
@@ -564,41 +727,37 @@ class GameController extends GetxController {
     final myCreditLoanList = currentRoom?.player?[myIndex].creditLoan;
     final myMortgagesList = currentRoom?.player?[myIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[myIndex].investment;
+    final playerInsuranceList = currentRoom?.player?[myIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myLongSavingList) {
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myshortSavingList) {
+        total += cashData.price;
       }
     }
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
-        total -= cashData.price!;
+      for (GameContentItem cashData in myCreditLoanList) {
+        total -= cashData.price;
       }
     }
 
     if (myMortgagesList != null) {
-      for (UserAction cashData in myMortgagesList) {
-        total -= cashData.price!;
+      for (GameContentItem cashData in myMortgagesList) {
+        total -= cashData.price;
       }
     }
 
-    if (myInvestList != null) {
-      for (UserAction cashData in myInvestList) {
-        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
-            .toInt();
-      }
-    }
+    total += totalInvestment!;
 
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myCashList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -612,41 +771,37 @@ class GameController extends GetxController {
     final myCreditLoanList = currentRoom?.player?[playerIndex].creditLoan;
     final myMortgagesList = currentRoom?.player?[playerIndex].mortgageLoan;
     final myInvestList = currentRoom?.player?[playerIndex].investment;
+    final playerInsuranceList = currentRoom?.player?[playerIndex].insurance;
     int total = 0;
     if (myLongSavingList != null) {
-      for (UserAction cashData in myLongSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myLongSavingList) {
+        total += cashData.price;
       }
     }
 
     if (myshortSavingList != null) {
-      for (UserAction cashData in myshortSavingList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myshortSavingList) {
+        total += cashData.price;
       }
     }
 
     if (myCreditLoanList != null) {
-      for (UserAction cashData in myCreditLoanList) {
-        total -= cashData.price!;
+      for (GameContentItem cashData in myCreditLoanList) {
+        total -= cashData.price;
       }
     }
 
     if (myMortgagesList != null) {
-      for (UserAction cashData in myMortgagesList) {
-        total -= cashData.price!;
+      for (GameContentItem cashData in myMortgagesList) {
+        total -= cashData.price;
       }
     }
 
-    if (myInvestList != null) {
-      for (UserAction cashData in myInvestList) {
-        total += (cashData.price! * cashData.qty! * currentTotalInvestmentRate)
-            .toInt();
-      }
-    }
+    total += totalInvestment!;
 
     if (myCashList != null) {
-      for (UserAction cashData in myCashList) {
-        total += cashData.price!;
+      for (GameContentItem cashData in myCashList) {
+        total += cashData.price;
       }
     }
     return total;
@@ -725,25 +880,28 @@ class GameController extends GetxController {
 
   //MARK: - 플레이어 액션
 
-  LuckyLottery getRandomLuckyLottery() {
-    if (lotteryList.isEmpty) {
-      throw Exception('행운 복권 콘텐츠 확인 불가.');
-    }
+  Future<Lottery?> getRandomLuckyLottery() async {
+    final lottery = await CloudFunctionService.lottery(
+        roomId: roomId, playerIndex: myIndex);
+    // if (lotteryList.isEmpty) {
+    //   throw Exception('행운 복권 콘텐츠 확인 불가.');
+    // }
 
-    Random random = Random();
-    int randomIndex = random.nextInt(lotteryList.length);
+    // Random random = Random();
+    // int randomIndex = random.nextInt(lotteryList.length);
 
-    return lotteryList[randomIndex];
+    // return lotteryList[randomIndex];
+    return lottery;
   }
 
-  Future<void> luckyDrawAction({required LuckyLottery lotteryItem}) async {
+  Future<void> luckyDrawAction({required Lottery lotteryItem}) async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
         // cash +-
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: lotteryItem.title,
             price: lotteryItem.price,
@@ -754,10 +912,10 @@ class GameController extends GetxController {
   }
 
   Future<void> endTurn() async {
+    if (!isMyTurn) return;
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  //정상동작 확인 ✅
   Future<void> firstSalary() async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -765,12 +923,11 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
+        GameContentItem(type: "cash", title: "월급", price: 2000000, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> salaryAndIncentive() async {
     await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
@@ -778,13 +935,13 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "월급", price: 2000000, qty: 1),
-        UserAction(type: "cash", title: "인센티브", price: myIncentive, qty: 1),
+        GameContentItem(type: "cash", title: "월급", price: 2000000, qty: 1),
+        GameContentItem(
+            type: "cash", title: "인센티브", price: myIncentive, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> shortSavingAction({
     required String title,
     required int price,
@@ -795,15 +952,14 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- shortSaving ++
-        UserAction(type: "cash", title: "예금", price: -price, qty: 1),
-        UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "예금", price: -price, qty: 1),
+        GameContentItem(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
     // 턴 넘기기
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
-  //정상동작 확인 ✅
   Future<void> longSavingAction({
     required String title,
     required int price,
@@ -814,8 +970,8 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- longSaving ++
-        UserAction(type: "cash", title: "적금", price: -price, qty: 1),
-        UserAction(type: "longSaving", title: "적금", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "적금", price: -price, qty: 1),
+        GameContentItem(type: "longSaving", title: "적금", price: price, qty: 1),
       ],
     ));
     // 턴 넘기기
@@ -832,8 +988,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "creditLoan", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(
+            type: "creditLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -848,8 +1005,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "creditLoan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(
+            type: "creditLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
@@ -864,8 +1022,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 실행", price: price, qty: 1),
-        UserAction(type: "mortgageLoan", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 실행", price: price, qty: 1),
+        GameContentItem(
+            type: "mortgageLoan", title: "대출 실행", price: price, qty: 1),
       ],
     ));
   }
@@ -880,8 +1039,9 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash ++ loan ++
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "mortgageLoan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(
+            type: "mortgageLoan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
@@ -896,38 +1056,43 @@ class GameController extends GetxController {
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: "대출 상환", price: -price, qty: 1),
-        UserAction(type: "loan", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "cash", title: "대출 상환", price: -price, qty: 1),
+        GameContentItem(type: "loan", title: "대출 상환", price: -price, qty: 1),
       ],
     ));
   }
 
-  //정상동작 확인 ✅
   Future<void> investAction({
     required String title,
     required int price,
     required int evealuatedPrice,
     required int qty,
   }) async {
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
         // cash -- invest ++
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: title,
             price: -(evealuatedPrice * qty),
             qty: 1),
-        UserAction(
-            type: "investment",
-            title: title,
-            price: price,
-            qty: qty,
-            isItem: true),
+        GameContentItem(
+          type: "investment",
+          title: title,
+          price: price,
+          qty: qty,
+          isItem: true,
+          purchaseRoundIndex: currentRoundIndex,
+        ),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
@@ -935,19 +1100,114 @@ class GameController extends GetxController {
   Future<void> expendAction({
     required String title,
     required int price,
+    required String? description,
   }) async {
-    await CloudFunctionService.userAction(
+    final response = await CloudFunctionService.userAction(
         userAction: PlayerActionDto(
       roomId: roomId,
       playerIndex: myIndex,
       userActions: [
         // cash -- loan --
-        UserAction(type: "cash", title: title, price: -price, qty: 1),
-        UserAction(
-            type: "expend", title: title, price: -price, qty: 1, isItem: true),
+        GameContentItem(type: "cash", title: title, price: -price, qty: 1),
+        GameContentItem(
+          type: "expend",
+          title: title,
+          price: price,
+          qty: 1,
+          isItem: true,
+          description: description,
+        ),
       ],
     ));
+    if (response?.success == false && response?.message != null) {
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+  }
+
+  Future<void> consumeAction({
+    required GameContentItem gameContentItem,
+  }) async {
+    // TODO - 중복 구매 불가능 처리 필요
+    final response = await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        gameContentItem.copyWith(purchaseRoundIndex: currentRoundIndex),
+        GameContentItem(
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
+      ],
+    ));
+    if (response?.success == false && response?.message != null) {
+      Get.back(closeOverlays: true);
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
+    isActionChoicing = false;
+  }
+
+  Future<void> insuranceAction({
+    required GameContentItem gameContentItem,
+  }) async {
+    debugPrint("${gameContentItem.id!}wow");
+    final response = await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        gameContentItem,
+        GameContentItem(
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
+      ],
+    ));
+    if (response?.success == false && response?.message != null) {
+      Get.back(closeOverlays: true);
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
+
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
+    isActionChoicing = false;
+  }
+
+  Future<void> donationAction({
+    required GameContentItem gameContentItem,
+  }) async {
+    final response = await CloudFunctionService.userAction(
+        userAction: PlayerActionDto(
+      roomId: roomId,
+      playerIndex: myIndex,
+      userActions: [
+        // cash -- loan --
+        gameContentItem,
+        GameContentItem(
+            type: "cash",
+            title: gameContentItem.title,
+            price: -gameContentItem.price,
+            qty: 1),
+      ],
+    ));
+    if (response?.success == false && response?.message != null) {
+      Get.back();
+      SnackBarUtil.showToastMessage(message: response!.message!);
+      return;
+    }
+    await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
+    Get.back();
+    isActionChoicing = false;
   }
 
   Future<void> startVacation() async {
@@ -962,24 +1222,69 @@ class GameController extends GetxController {
     await CloudFunctionService.endTurn(roomId: roomId, playerIndex: myIndex);
   }
 
+  Future<void> deleteTicket() async {
+    await CloudFunctionService.deleteTicket(
+        inGameRequest: MCInGameRequest(
+      roomId: roomId,
+      playerIndex: myIndex,
+    ));
+    debugPrint("deleteTicket()");
+  }
+
+  Future<void> usePrivateInsurance() async {
+    final response = await CloudFunctionService.deleteInsurance1(
+        inGameRequest: MCInGameRequest(
+      roomId: roomId,
+      playerIndex: myIndex,
+    ));
+    if (response?.message != null) {
+      SnackBarUtil.showToastMessage(
+        message: response!.message!,
+      );
+    }
+    debugPrint("deleteInsurance1()");
+  }
+
   Future<List<int>> calculateRound() async {
     final int previousTotalAsset = totalAsset ?? 0;
-    //저축이자
+
+    // 예금 계산
     final int previousShrotSaving = totalShortSaving ?? 0;
     final int shortSavingInterest =
         totalShortSaving! * (currentSavingRate) ~/ 100 * 3;
     final int previousTotalShortSaving = totalShortSaving ?? 0;
-    final int longSavingInterest =
-        totalLongSaving! * (currentSavingRate + 2) ~/ 100 * 3;
+
+    // 적금 계산 + 저축 관리 어드바이저 효과 적용
+    double preferentialRate = 0;
+    if (myConsumptionItems != null) {
+      for (final item in myConsumptionItems!) {
+        if ((item.id == "sma1" || item.id == "sma2") &&
+            (item.isDeleted ?? false) == false) {
+          preferentialRate += (item.preferentialRate ?? 0.0);
+          debugPrint(
+              "라운드 정산 - 적금 우대 혜택 적용 ${item.subTitle} - 우대율 $preferentialRate%");
+        }
+      }
+    }
+
+    debugPrint("라운드 정산 - 적금 우대 혜택 적용 $preferentialRate%");
+
+    final int previousTotalLongSaving = totalLongSaving ?? 0;
+
+    final int longSavingInterest = (previousTotalLongSaving *
+            ((currentSavingRate + 2 + preferentialRate) / 100))
+        .toInt();
 
     //대출이자
     final int creditLoanInterest = totalCreditLoan! * currentLoanRate ~/ 100;
     final int mortgagesLoanInterest =
         totalMortgagesLoan! * (currentLoanRate - 1) ~/ 100;
     final int totalLoanInterest = creditLoanInterest + mortgagesLoanInterest;
-    //투자이익
+
+    // TODO - 투자 이익 => 평가 금액으로 계산
     final int investmentInterest =
-        totalInvestment! * (currentInvestRate) ~/ 100;
+        getTotalEstimatedInvestment(roundIndex: currentRoundIndex! - 1) -
+            getTotalEstimatedInvestment(roundIndex: currentRoundIndex!);
 
     int tax = ((totalCash! +
                 shortSavingInterest +
@@ -988,6 +1293,64 @@ class GameController extends GetxController {
                 investmentInterest) *
             0.1)
         .toInt();
+
+    if (tax < 0) {
+      tax = 0;
+    } else {
+      if (myDonationItems!
+          .any((element) => element.id == "dna3" || element.id == "dna4")) {
+        // 세금 할인
+        final donationItem = myDonationItems!.firstWhere(
+            (element) => element.id == "dna3" || element.id == "dna4");
+        tax = (tax * (1 - (donationItem.reductionRate ?? 0.3))).toInt();
+
+        debugPrint(
+            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionRate}%");
+      }
+    }
+
+    if (tax < 0) {
+      tax = 0;
+    } else {
+      if (myDonationItems!.any((element) => element.id == "dna1")) {
+        final donationItem =
+            myDonationItems!.firstWhere((element) => element.id == "dna1");
+        tax -= donationItem.reductionValue ?? 100000;
+        debugPrint(
+            "라운드 정산 - 세금 우대 혜택 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
+      }
+
+      if (myDonationItems!.any((element) => element.id == "dna2")) {
+        final donationItem =
+            myDonationItems!.firstWhere((element) => element.id == "dna2");
+        if (isDna4PurchasedRecord) {
+          if (previousRoundReductionValue > 0) {
+            debugPrint(
+                "라운드 정산 - 잔여 세금 우대 혜택 적용 ${donationItem.subTitle} - $previousRoundReductionValue");
+            tax -= previousRoundReductionValue;
+            if (tax < 0) {
+              previousRoundReductionValue = -tax;
+            }
+          } else {
+            await CloudFunctionService.deleteInsurance2(
+                inGameRequest: MCInGameRequest(
+              roomId: roomId,
+              playerIndex: myIndex,
+            ));
+            isDna4PurchasedRecord = false;
+          }
+        } else {
+          debugPrint(
+              "라운드 정산 - 세금 우대 혜택 최초 적용 ${donationItem.subTitle} - ${donationItem.reductionValue}");
+          tax -= donationItem.reductionValue ?? 100000;
+          if (tax < 0) {
+            previousRoundReductionValue = -tax;
+          }
+          isDna4PurchasedRecord = true;
+        }
+      }
+    }
+
     if (tax < 0) {
       tax = 0;
     }
@@ -1002,11 +1365,11 @@ class GameController extends GetxController {
         // 1. 예금
         // shortSaving sum -> shortSaving -- cash ++
         // shortSaving sum * 이번 라운드 이자 -> cash ++
-        UserAction(
+        GameContentItem(
             type: "cash", title: "예금 출금", price: totalShortSaving!, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "cash", title: "예금 이자", price: shortSavingInterest, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "shortSaving",
             title: "출금",
             price: -totalShortSaving!,
@@ -1014,7 +1377,7 @@ class GameController extends GetxController {
 
         // 2. 적금
         // longSaving sum * 이번 라운드 이자 -> longSaving ++
-        UserAction(
+        GameContentItem(
             type: "longSaving",
             title: "적금 이자",
             price: longSavingInterest,
@@ -1023,9 +1386,9 @@ class GameController extends GetxController {
         // 3. 대출
         // loan sum * 이번 라운드 이자 -> cash ++
         // TODO - 담보 신용 대출 금리 따로 적용
-        UserAction(
+        GameContentItem(
             type: "cash", title: "신용대출 이자", price: -creditLoanInterest, qty: 1),
-        UserAction(
+        GameContentItem(
             type: "cash",
             title: "담보대출 이자",
             price: -mortgagesLoanInterest,
@@ -1038,13 +1401,14 @@ class GameController extends GetxController {
         //     qty: 1),
 
         // 4. 세금
-        UserAction(
+        GameContentItem(
             type: "cash", title: "$currentRound라운드 세금", price: -tax, qty: 1),
 
         // UserAction(type: "cash", title: "예금", price: -price, qty: 1),
         // UserAction(type: "shortSaving", title: "예금", price: price, qty: 1),
       ],
     ));
+
     return [
       previousTotalAsset,
       (previousShrotSaving + shortSavingInterest),
@@ -1052,6 +1416,7 @@ class GameController extends GetxController {
       investmentInterest,
       -totalLoanInterest,
       -tax,
+      preferentialRate.toInt(),
     ];
   }
 
@@ -1068,6 +1433,7 @@ class GameController extends GetxController {
     }
   }
 
+  // MARK : - UI
   LinearGradient get currentBackgroundGradient {
     switch (_curretnActionType.value) {
       case GameActionType.saving:

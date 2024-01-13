@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:money_cycle/components/mc_container.dart';
@@ -394,7 +395,7 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                             const SizedBox(
                                                                 height: 4),
                                                             Text(
-                                                              "${((item!.price! * item.qty!) * gameController.currentTotalInvestmentRate).toInt().commaString} 원",
+                                                              "${gameController.getEstimatedPrice(purchasedPrice: item!.price, purchaseRoundIndex: item.purchaseRoundIndex!, currentRoundIndex: gameController.currentRoundIndex!).commaString} 원",
                                                               style: Constants
                                                                   .defaultTextStyle
                                                                   .copyWith(
@@ -413,6 +414,54 @@ class _MyAssetSheetState extends State<MyAssetSheet> {
                                                     ),
                                                   ),
                                                 );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      if (gameController
+                                              .myExpendItems?.isNotEmpty ??
+                                          false)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 28, left: 28, bottom: 20),
+                                          child: Text(
+                                            "지출",
+                                            style: Constants.titleTextStyle
+                                                .copyWith(
+                                                    color: Constants.dark100),
+                                          ),
+                                        ),
+                                      if (gameController
+                                              .myExpendItems?.isNotEmpty ??
+                                          false)
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 28),
+                                            child: GridView.builder(
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      childAspectRatio:
+                                                          110 / 136,
+                                                      crossAxisCount: 4,
+                                                      crossAxisSpacing: 10.0,
+                                                      mainAxisSpacing: 20),
+                                              shrinkWrap: true,
+                                              itemCount: gameController
+                                                      .myExpendItems?.length ??
+                                                  0,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                final item = gameController
+                                                    .myExpendItems?[index];
+
+                                                return GameItemCard(
+                                                  accentColor:
+                                                      Constants.cardBlue,
+                                                  item: item,
+                                                );
+                                                // return GameItemCard(item: item);
                                               },
                                             ),
                                           ),

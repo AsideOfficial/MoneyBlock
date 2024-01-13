@@ -56,7 +56,9 @@ class _StartGameAlertDialogState extends State<StartGameAlertDialog> {
                             setState(() => isLoading = true);
                             await gameController.firstSalary();
                             setState(() => isLoading = false);
+
                             Get.back();
+                            Future.delayed(const Duration(milliseconds: 150));
                             Get.dialog(
                               const FirstNewsDialog(),
                               barrierDismissible: false,
@@ -114,8 +116,9 @@ class _FirstNewsDialogState extends State<FirstNewsDialog> {
                     backgroundColor: Constants.blueNeon,
                     onPressed: () {
                       Get.back();
+                      Future.delayed(const Duration(milliseconds: 150));
                       Get.dialog(
-                        NewsDialog(),
+                        const NewsDialog(),
                         useSafeArea: false,
                       );
                     }),

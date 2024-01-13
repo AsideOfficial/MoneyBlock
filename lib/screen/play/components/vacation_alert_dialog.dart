@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:money_cycle/components/mc_container.dart';
 import 'package:money_cycle/constants.dart';
 import 'package:money_cycle/controller/game_controller.dart';
+import 'package:money_cycle/utils/snack_bar_util.dart';
 
 class VacationAlert extends StatefulWidget {
   const VacationAlert({
@@ -54,10 +55,28 @@ class _VacationAlertState extends State<VacationAlert> {
                         setState(() {
                           isLoading = true;
                         });
+                        if (gameController.myInsuranceItems!
+                            .any((element) => element.id == "si1")) {
+                          final item = gameController.myInsuranceItems!
+                              .firstWhere((element) =>
+                                  element.id == "si1" &&
+                                  !(element.isDeleted ?? false));
+                          SnackBarUtil.showToastMessage(
+                              message: "'${item.title}'을 사용해서 무급 휴가를 건너뛰시겠습니까?",
+                              actionTitle: '사용하기',
+                              onActionPressed: () {
+                                Get.back(closeOverlays: true);
+                                gameController.endTurn();
+                                SnackBarUtil.showToastMessage(
+                                    message:
+                                        "'${item.title}'을 사용해서 무급 휴가를 건너 뛰었습니다.");
+                              });
+
+                          return;
+                        }
+
                         await gameController.startVacation();
-
                         Get.back();
-
                         const inVacationAlert = InVacationAlert();
                         Get.dialog(inVacationAlert,
                             barrierDismissible: false, useSafeArea: false);
